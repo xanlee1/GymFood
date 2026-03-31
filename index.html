@@ -74,7 +74,7 @@
   
 
   /* TABS */
-  .tabs-container { margin:20px 24px 0; }
+  .tabs-container { margin:16px 12px 0; }
   .tabs-nav { display:flex; gap:4px; border-bottom:1px solid var(--border); }
   .tab-btn {
     font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1.5px;
@@ -228,7 +228,7 @@
     display: flex;
     align-items: center;
     gap: 0;
-    padding: calc(env(safe-area-inset-top, 0px) + 36px) 24px 28px;
+    padding: calc(env(safe-area-inset-top, 0px) + 36px) 12px 20px;
     position: relative;
     overflow: hidden;
   }
@@ -375,7 +375,7 @@
     position: relative;
     overflow: hidden;
   }
-  .tab-panel { display:none; padding:0 24px 100px; }
+  .tab-panel { display:none; padding:0 12px 100px; }
   .tab-panel.active { display:block; }
 
 
@@ -391,7 +391,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 14px 16px;
+    padding: 12px 12px;
     border-bottom: 1px solid var(--border);
     background: rgba(200,255,0,0.04);
   }
@@ -409,7 +409,7 @@
     letter-spacing: 0.5px;
   }
   .batch-step {
-    padding: 12px 16px;
+    padding: 10px 12px;
     border-bottom: 1px solid var(--border);
     display: flex;
     gap: 12px;
@@ -444,7 +444,7 @@
     margin-bottom: 14px;
   }
   .reg-day-header {
-    padding: 12px 16px;
+    padding: 10px 12px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -513,7 +513,7 @@
     cursor: pointer;
   }
   .reg-chart-wrap {
-    padding: 12px 16px;
+    padding: 10px 12px;
     overflow-x: auto;
   }
   .reg-chart-bar-wrap { display: flex; align-items: flex-end; gap: 4px; height: 60px; }
@@ -588,7 +588,7 @@
   /* Editable routine */
   .edit-day-card {
     border-bottom: 1px solid var(--border);
-    padding: 12px 16px;
+    padding: 10px 12px;
   }
   .edit-day-card:last-child { border-bottom: none; }
   .edit-day-header {
@@ -865,7 +865,7 @@
   .batch-edit-panel {
     display: none;
     border-top: 1px solid var(--border);
-    padding: 14px 16px;
+    padding: 12px 12px;
   }
   .batch-edit-panel.open { display: block; }
   .batch-step-edit-row {
@@ -1077,7 +1077,7 @@
     width: 100%;
     background: none;
     border: none;
-    padding: 12px 16px;
+    padding: 10px 12px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1093,7 +1093,7 @@
   .menu-edit-body.open { display: block; }
   .menu-edit-day {
     border-bottom: 1px solid var(--border);
-    padding: 12px 16px;
+    padding: 10px 12px;
   }
   .menu-edit-day:last-child { border-bottom: none; }
   .menu-edit-day-label {
@@ -1157,7 +1157,7 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: 16px;
     letter-spacing: 1.5px;
-    padding: 12px 16px;
+    padding: 10px 12px;
     cursor: pointer;
     margin: 14px 0 4px;
     transition: background 0.15s, border-color 0.15s;
@@ -1368,7 +1368,7 @@
     font-size: 14px;
     flex: 0 0 auto;
     width: auto;
-    padding: 12px 16px;
+    padding: 10px 12px;
   }
   .recetas-fab-reset:hover { border-color: #ff6b6b; color: #ff6b6b; background: rgba(255,107,107,0.06); }
 </style>
@@ -1435,7 +1435,7 @@
     </div>
   </div>
 
-  <div id="tab-compra" class="tab-panel" style="padding-top:16px;">
+  <div id="tab-compra" class="tab-panel" style="padding-top:12px;">
     <!-- Tiendas + total -->
     <div id="compra-content"></div>
 
@@ -1734,15 +1734,40 @@ function onMealDrop(e, targetDay, targetSlot) {
   onMealDragEnd(e);
 }
 
+var mealTouchTimer = null;
+var mealTouchPending = null;
+
 function onMealTouchStart(e, dayIdx, slot) {
   var row = e.currentTarget.closest('.meal-row');
-  dragSource = { dayIdx: dayIdx, slot: slot, html: getMealSlotHTML(dayIdx, slot) };
-  var rect = row.getBoundingClientRect();
-  touchClone = row.cloneNode(true);
-  touchClone.style.cssText = 'position:fixed;top:' + rect.top + 'px;left:' + rect.left + 'px;width:' + rect.width + 'px;opacity:0.85;z-index:9999;pointer-events:none;background:var(--surface);border-radius:8px;padding:8px 12px;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
-  document.body.appendChild(touchClone);
-  e.preventDefault();
+  mealTouchPending = { dayIdx: dayIdx, slot: slot, row: row };
+
+  mealTouchTimer = setTimeout(function() {
+    if (!mealTouchPending) return;
+    var p = mealTouchPending;
+    dragSource = { dayIdx: p.dayIdx, slot: p.slot, html: getMealSlotHTML(p.dayIdx, p.slot) };
+    var rect = p.row.getBoundingClientRect();
+    touchClone = p.row.cloneNode(true);
+    touchClone.style.cssText = 'position:fixed;top:'+rect.top+'px;left:'+rect.left+'px;width:'+rect.width+'px;opacity:0.85;z-index:9999;pointer-events:none;background:var(--surface);border-radius:8px;padding:8px 12px;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+    document.body.appendChild(touchClone);
+    if (navigator.vibrate) navigator.vibrate(40);
+    mealTouchPending = null;
+  }, 350);
 }
+
+function onMealTouchMoveCheck(e) {
+  if (mealTouchPending) {
+    clearTimeout(mealTouchTimer);
+    mealTouchPending = null;
+  }
+}
+
+function onMealTouchCancel() {
+  clearTimeout(mealTouchTimer);
+  mealTouchPending = null;
+  if (touchClone) { touchClone.remove(); touchClone = null; }
+  dragSource = null;
+}
+
 
 function onMealTouchMove(e) {
   if (!touchClone) return;
