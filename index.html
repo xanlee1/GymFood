@@ -1639,15 +1639,22 @@
 
   /* Frosted glass en la barra de tabs al hacer scroll */
   .tabs-container {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 50;
     background: rgba(15,15,15,0.82);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: none;
   }
+  .tabs-container.tabs-pinned {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  .tabs-pin-spacer { display: none; }
+  .tabs-pin-spacer.visible { display: block; }
 
   /* Spring en panel de recetas */
   .recetas-panel {
@@ -1724,8 +1731,8 @@
   </div>
 </header>
 
-
-<div class="tabs-container">
+<div class="tabs-pin-spacer" id="tabs-pin-spacer"></div>
+<div class="tabs-container" id="tabs-container">
   <div class="tabs-nav">
     <button class="tab-btn active" onclick="switchTab('menu',this)">🍽 Menú</button>
     <button class="tab-btn" onclick="switchTab('compra',this)">🛒 Compra</button>
@@ -3107,6 +3114,30 @@ function getDynamicIngredients() {
   return result;
 }
 
+
+// ── TABS STICKY (JS, compatible con position:fixed scroll container) ──────────
+(function() {
+  var sc = document.getElementById('main-scroll');
+  var tc = document.getElementById('tabs-container');
+  var spacer = document.getElementById('tabs-pin-spacer');
+  if (!sc || !tc) return;
+  var pinned = false;
+  sc.addEventListener('scroll', function() {
+    var tcTop = tc.getBoundingClientRect().top;
+    if (!pinned && tcTop <= 0) {
+      var h = tc.offsetHeight;
+      spacer.style.height = h + 'px';
+      spacer.classList.add('visible');
+      tc.classList.add('tabs-pinned');
+      pinned = true;
+    } else if (pinned && sc.scrollTop < spacer.offsetTop) {
+      spacer.classList.remove('visible');
+      spacer.style.height = '';
+      tc.classList.remove('tabs-pinned');
+      pinned = false;
+    }
+  }, { passive: true });
+})();
 
 // ── HORIZONTAL SWIPE BETWEEN TABS ─────────────────────────────────────────────
 var swipeStartX = 0;
