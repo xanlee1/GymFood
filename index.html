@@ -1700,16 +1700,17 @@
   <button class="tab-btn" onclick="switchTab('rutina',this)"><span class="tab-icon">🏋️</span><span class="tab-label">Rutina</span></button>
   <button class="tab-btn" onclick="switchTab('registro',this)"><span class="tab-icon">📊</span><span class="tab-label">Progreso</span></button>
 </div>
-<div class="main-scroll-container" id="main-scroll">
-<div class="tabs-container" id="tabs-container">
-
-
-    </div>
-    <div style="display:flex;gap:4px;flex-shrink:0;">
-      <button class="week-arrow" onclick="changeWeek(-1)">‹</button>
-      <button class="week-arrow" onclick="changeWeek(1)">›</button>
-    </div>
+<div class="cal-strip" id="cal-strip">
+  <div class="cal-header">
+    <button class="cal-arrow" onclick="changeWeek(-1)">‹</button>
+    <span class="cal-month-name" id="cal-month"></span>
+    <button class="cal-arrow" onclick="changeWeek(1)">›</button>
   </div>
+  <div class="cal-days-row" id="cal-days"></div>
+</div>
+
+<div class="main-scroll-container" id="main-scroll">
+<div class="tabs-container" id="tabs-container" style="padding-top:105px;">
 
   <div class="tabs-panels-wrap"><div class="tabs-panels-inner" id="tabs-slider">
   <div id="tab-menu" class="tab-panel active">
@@ -3629,17 +3630,26 @@ function runPriceMigration() {
 
 function renderWeekNav() {
   const monday = getMonday(weekOffset);
-  const friday = new Date(monday); friday.setDate(friday.getDate() + 4);
-  const vKey = getCurrentVariantKey();
-  const vData = allVariants[vKey];
+  const thursday = new Date(monday); thursday.setDate(thursday.getDate() + 3);
+  const monthName = thursday.toLocaleDateString('es-ES', { month: 'long' }).toUpperCase();
+  document.getElementById('cal-month').textContent = monthName;
 
   const today = new Date();
-  const todayFormatted = today.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
-  const todayStr = todayFormatted.charAt(0).toUpperCase() + todayFormatted.slice(1);
-  document.getElementById('week-label').textContent = todayStr;
-  document.getElementById('week-dates').textContent = 'Semana ' + formatDate(monday) + ' – ' + formatDate(friday);
-
-
+  const todayStr = today.toDateString();
+  const dayNames = ['lun','mar','mié','jue','vie','sáb','dom'];
+  const calDays = document.getElementById('cal-days');
+  if (!calDays) return;
+  calDays.innerHTML = '';
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(monday);
+    d.setDate(d.getDate() + i);
+    var isToday = d.toDateString() === todayStr;
+    var div = document.createElement('div');
+    div.className = 'cal-day' + (isToday ? ' today' : '');
+    div.innerHTML = '<span class="cal-day-name">' + dayNames[i] + '</span>'
+      + '<span class="cal-day-num">' + d.getDate() + '</span>';
+    calDays.appendChild(div);
+  }
 }
 
 function renderMenu() {
