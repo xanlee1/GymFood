@@ -1634,6 +1634,53 @@
 
   /* Frosted glass en la barra de tabs al hacer scroll */
 
+  /* ── CREAR MENÚ ──────────────────────────────────────────────────────────── */
+  .menu-empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 60px 24px; text-align: center; gap: 12px;
+  }
+  .menu-empty-icon { font-size: 52px; }
+  .menu-empty-title { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:2px; color:var(--text); }
+  .menu-empty-sub { font-size:14px; color:var(--muted); line-height:1.5; max-width:260px; }
+  .btn-crear-menu {
+    margin-top:12px; background:var(--accent); color:#000;
+    font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px;
+    border:none; padding:14px 40px; border-radius:14px; cursor:pointer;
+  }
+  .crear-overlay {
+    position:fixed; inset:0; z-index:5000; background:rgba(0,0,0,0.65);
+    display:none; align-items:flex-end;
+  }
+  .crear-overlay.visible { display:flex; }
+  .crear-sheet {
+    width:100%; background:var(--surface);
+    border-radius:24px 24px 0 0;
+    padding:16px 20px calc(env(safe-area-inset-bottom,0px) + 24px);
+    max-height:88vh; overflow-y:auto;
+    transform:translateY(100%);
+    transition:transform 0.38s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .crear-overlay.visible .crear-sheet { transform:translateY(0); }
+  .crear-handle { width:36px; height:4px; background:rgba(255,255,255,0.18); border-radius:2px; margin:0 auto 18px; }
+  .crear-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; margin-bottom:18px; }
+  .crear-section-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+  .crear-options { display:grid; gap:10px; margin-bottom:22px; }
+  .crear-option {
+    background:var(--surface2); border:2px solid transparent; border-radius:14px;
+    padding:14px 12px; display:flex; flex-direction:column; align-items:center;
+    gap:6px; cursor:pointer; transition:border-color 0.15s, background 0.15s;
+    text-align:center;
+  }
+  .crear-option.sel { border-color:var(--accent); background:rgba(200,255,0,0.06); }
+  .crear-option-emoji { font-size:26px; }
+  .crear-option-name { font-size:13px; font-weight:600; line-height:1.3; }
+  .crear-option-sub { font-size:11px; color:var(--muted); }
+  .btn-generar {
+    width:100%; background:var(--accent); color:#000;
+    font-family:'Bebas Neue',sans-serif; font-size:19px; letter-spacing:2px;
+    border:none; padding:16px; border-radius:14px; cursor:pointer; margin-top:4px;
+  }
+
   /* Spring en panel de recetas */
   .recetas-panel {
     transition: transform 0.42s cubic-bezier(0.34,1.56,0.64,1) !important;
@@ -1715,11 +1762,20 @@
   <div class="tabs-panels-wrap"><div class="tabs-panels-inner" id="tabs-slider">
   <div id="tab-menu" class="tab-panel active">
 
-    <div id="legumbre-banner" class="legumbre-banner"></div>
-    <div id="tupper-banner"></div>
-    <div id="day-grid-wrap" class="day-grid-wrap">
-    <div class="day-grid" id="day-grid"></div>
-    </div><!-- /day-grid-wrap -->
+    <div id="menu-empty-state" class="menu-empty-state" style="display:none;">
+      <div class="menu-empty-icon">🗓</div>
+      <div class="menu-empty-title">Sin menú esta semana</div>
+      <div class="menu-empty-sub">Elige tu legumbre y tupper para generar el plan de comidas</div>
+      <button class="btn-crear-menu" onclick="openCrearMenu()">Crear menú</button>
+    </div>
+
+    <div id="menu-content-wrap">
+      <div id="legumbre-banner" class="legumbre-banner"></div>
+      <div id="tupper-banner"></div>
+      <div id="day-grid-wrap" class="day-grid-wrap">
+      <div class="day-grid" id="day-grid"></div>
+      </div><!-- /day-grid-wrap -->
+    </div>
 
     <!-- BATCH COOKING -->
     <div id="batch-section-wrap" class="batch-section">
@@ -3655,7 +3711,60 @@ function renderWeekNav() {
   }
 }
 
+// ── CREAR MENÚ ────────────────────────────────────────────────────────────────
+var _crearLeg = null;
+var _crearTup = null;
+
+function openCrearMenu() {
+  _crearLeg = getCurrentLegumbre().key;
+  _crearTup = weekVariants[weekOffset] || 'pasta-0';
+  renderCrearMenuOpts();
+  document.getElementById('crear-overlay').classList.add('visible');
+}
+function cerrarCrearMenu() {
+  document.getElementById('crear-overlay').classList.remove('visible');
+}
+function renderCrearMenuOpts() {
+  document.getElementById('crear-legumbre-opts').innerHTML = LEGUMBRES.map(function(l) {
+    return '<div class="crear-option' + (l.key === _crearLeg ? ' sel' : '') + '" onclick="_crearLeg=\'' + l.key + '\';renderCrearMenuOpts()">'
+      + '<span class="crear-option-emoji">' + l.emoji + '</span>'
+      + '<span class="crear-option-name">' + l.label + '</span>'
+      + '</div>';
+  }).join('');
+  document.getElementById('crear-tupper-opts').innerHTML = Object.keys(allVariants).map(function(k) {
+    var v = allVariants[k];
+    var words = v.label.split(' ');
+    var short = words.slice(0, 4).join(' ') + (words.length > 4 ? '…' : '');
+    return '<div class="crear-option' + (k === _crearTup ? ' sel' : '') + '" onclick="_crearTup=\'' + k + '\';renderCrearMenuOpts()">'
+      + '<span class="crear-option-emoji">' + v.emoji + '</span>'
+      + '<span class="crear-option-name">' + short + '</span>'
+      + '<span class="crear-option-sub">' + (v.type === 'pasta' ? 'Pasta' : 'Arroz') + '</span>'
+      + '</div>';
+  }).join('');
+}
+function confirmarCrearMenu() {
+  localStorage.setItem('legumbre-' + weekOffset, _crearLeg);
+  weekVariants[weekOffset] = _crearTup;
+  localStorage.setItem('menuConfirmed-' + weekOffset, '1');
+  cerrarCrearMenu();
+  renderMenu();
+  renderBatchCooking();
+}
+
 function renderMenu() {
+  var confirmed = localStorage.getItem('menuConfirmed-' + weekOffset);
+  var emptyEl = document.getElementById('menu-empty-state');
+  var contentEl = document.getElementById('menu-content-wrap');
+  var batchEl = document.getElementById('batch-section-wrap');
+  if (!confirmed) {
+    if (emptyEl) emptyEl.style.display = 'flex';
+    if (contentEl) contentEl.style.display = 'none';
+    if (batchEl) batchEl.style.display = 'none';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (contentEl) contentEl.style.display = 'block';
+  if (batchEl) batchEl.style.display = '';
   renderLegumbreBanner();
   // Build select options filtered by week type
   const vKey    = getCurrentVariantKey();
@@ -5127,6 +5236,19 @@ setTimeout(function(){
 </div>
 
 </div><!-- /main-scroll -->
+
+<!-- CREAR MENÚ MODAL -->
+<div class="crear-overlay" id="crear-overlay" onclick="if(event.target===this)cerrarCrearMenu()">
+  <div class="crear-sheet" id="crear-sheet">
+    <div class="crear-handle"></div>
+    <div class="crear-title">Crear menú</div>
+    <div class="crear-section-label">Legumbre de la semana</div>
+    <div class="crear-options" id="crear-legumbre-opts" style="grid-template-columns:1fr 1fr 1fr;"></div>
+    <div class="crear-section-label">Tupper · Martes y Jueves</div>
+    <div class="crear-options" id="crear-tupper-opts" style="grid-template-columns:1fr 1fr;"></div>
+    <button class="btn-generar" onclick="confirmarCrearMenu()">Generar menú</button>
+  </div>
+</div>
 
 <div id="price-overlay-persistent" style="display:none;position:fixed;inset:0;z-index:8000;align-items:flex-end;background:rgba(0,0,0,0.6);" onclick="if(event.target===this)priceInputCancel()">
   <div style="background:var(--surface);width:100%;border-radius:20px 20px 0 0;padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));">
