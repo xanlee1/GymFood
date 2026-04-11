@@ -1755,7 +1755,10 @@
 // ── SEMANA BASE ───────────────────────────────────────────────────────────────
 // Lunes 31 mar 2025 = semana 0 → pasta por defecto
 const BASE_MONDAY = new Date(2025, 2, 31);
-let weekOffset = 0;
+// Inicializar weekOffset a la semana actual basándose en la fecha real
+const _todayInit = new Date();
+const _baseInit = new Date(BASE_MONDAY);
+let weekOffset = Math.max(0, Math.round((_todayInit - _baseInit) / (7 * 24 * 60 * 60 * 1000)));
 
 // Variantes manuales por semana (weekOffset → value del select)
 const weekVariants = {};
