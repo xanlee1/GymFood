@@ -1613,6 +1613,98 @@
   .compra-total-val { font-size: 18px; font-weight: 600; }
   .compra-total-val.marked { color: var(--accent); }
   .compra-totals-divider { width: 1px; height: 32px; background: var(--border); }
+
+  /* ── iOS UX ───────────────────────────────────────────────────────────────── */
+
+  /* Eliminar delay 300ms en todos los elementos interactivos */
+  button, a, .check-item, .tab-btn, .meal-row, .receta-chip,
+  .week-arrow, .day-card, .rutina-week-row, .rutina-otro-row,
+  [onclick], [ontouchstart] {
+    touch-action: manipulation;
+  }
+
+  /* Spring press en botones — sensación táctil iOS */
+  .tab-btn:active {
+    transform: scale(0.88);
+    transition: transform 0.08s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .week-arrow:active, .recetas-fab:active,
+  .rutina-entrenar-btn:active, .rutina-otro-entrenar:active,
+  .rutina-edit-btn:active {
+    transform: scale(0.93);
+    transition: transform 0.08s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .receta-chip:active {
+    transform: scale(0.92);
+    transition: transform 0.1s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .check-item:active {
+    transform: scale(0.98);
+    transition: transform 0.08s ease;
+  }
+
+  /* Spring en checkbox al marcar */
+  .checkbox {
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1) !important;
+  }
+  .check-item.checked .checkbox {
+    transform: scale(1.1);
+  }
+
+  /* Frosted glass en la barra de tabs al hacer scroll */
+  .tabs-container {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(15,15,15,0.82);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* Spring en panel de recetas */
+  .recetas-panel {
+    transition: transform 0.42s cubic-bezier(0.34,1.56,0.64,1) !important;
+  }
+
+  /* Spring en modales / bottom sheets */
+  #confirm-modal > div {
+    animation: sheetUp 0.38s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes sheetUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  /* Menú contextual de receta */
+  .receta-ctx-menu {
+    position: fixed;
+    z-index: 10000;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    min-width: 160px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    animation: ctxIn 0.22s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes ctxIn {
+    from { opacity:0; transform: scale(0.85); }
+    to   { opacity:1; transform: scale(1); }
+  }
+  .receta-ctx-item {
+    padding: 13px 18px;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  .receta-ctx-item:last-child { border-bottom: none; }
+  .receta-ctx-item:active { background: rgba(255,255,255,0.08); }
+  .receta-ctx-item.danger { color: #ff453a; }
 </style>
 
 <script>
@@ -2309,8 +2401,21 @@ function onRecetaTouchStart(e, idx) {
   recetaTouchStartY = e.touches[0].clientY;
   recetaTouchPendingIdx = idx;
   recetaTouchPendingChip = e.currentTarget;
+
+  // Long press 600ms → menú contextual (editar/eliminar)
+  recetaCtxTimer = setTimeout(function() {
+    recetaCtxTimer = null;
+    clearTimeout(recetaTouchTimer);
+    recetaTouchTimer = null;
+    recetaTouchPendingChip = null;
+    showRecetaCtxMenu(idx, recetaTouchStartX, recetaTouchStartY);
+  }, 600);
+
+  // Drag 350ms → arrastrar al menú
   recetaTouchTimer = setTimeout(function() {
     recetaTouchTimer = null;
+    clearTimeout(recetaCtxTimer);
+    recetaCtxTimer = null;
     var chip = recetaTouchPendingChip;
     if (!chip) return;
     recetasDragItem = getRecetas()[recetaTouchPendingIdx];
@@ -2329,17 +2434,44 @@ function onRecetaTouchStart(e, idx) {
 
 var recetasPanelCollapsed = false;
 
+// ── MENÚ CONTEXTUAL DE RECETA (long press 600ms) ──────────────────────────────
+var recetaCtxTimer = null;
+
+function showRecetaCtxMenu(idx, x, y) {
+  closeRecetaCtxMenu();
+  var receta = getRecetas()[idx];
+  if (!receta) return;
+  if (navigator.vibrate) navigator.vibrate(18);
+  var menu = document.createElement('div');
+  menu.className = 'receta-ctx-menu';
+  menu.id = 'receta-ctx-menu';
+  // Position near finger, keep inside viewport
+  var left = Math.min(x, window.innerWidth - 180);
+  var top  = Math.min(y + 10, window.innerHeight - 120);
+  menu.style.cssText = 'left:' + left + 'px;top:' + top + 'px;';
+  menu.innerHTML =
+    '<div class="receta-ctx-item" onclick="closeRecetaCtxMenu();abrirEditarReceta(' + idx + ')">✏️ Editar</div>' +
+    '<div class="receta-ctx-item danger" onclick="closeRecetaCtxMenu();eliminarReceta(' + idx + ')">🗑 Eliminar</div>';
+  document.body.appendChild(menu);
+  document.addEventListener('touchstart', closeRecetaCtxMenu, { once: true, passive: true });
+}
+
+function closeRecetaCtxMenu() {
+  var m = document.getElementById('receta-ctx-menu');
+  if (m) m.remove();
+}
+
 document.addEventListener('touchmove', function(e) {
-  // Cancel pending drag timer if finger scrolled before delay
-  if (recetaTouchTimer) {
+  // Cancel pending timers if finger scrolled before delay
+  if (recetaTouchTimer || recetaCtxTimer) {
     var dx = e.touches[0].clientX - recetaTouchStartX;
     var dy = e.touches[0].clientY - recetaTouchStartY;
     if (Math.sqrt(dx*dx + dy*dy) > 8) {
-      clearTimeout(recetaTouchTimer);
-      recetaTouchTimer = null;
+      clearTimeout(recetaTouchTimer); recetaTouchTimer = null;
+      clearTimeout(recetaCtxTimer);  recetaCtxTimer = null;
       recetaTouchPendingChip = null;
     }
-    return;
+    if (!recetaTouchClone) return;
   }
   if (!recetaTouchClone) return;
   var t = e.touches[0];
@@ -3955,6 +4087,7 @@ function toggleItem(key, el) {
   checkedItems[key] = !isChecked;
   saveCheckedItem(key, checkedItems[key]);
   item.classList.toggle('checked', checkedItems[key]);
+  if (navigator.vibrate) navigator.vibrate(checkedItems[key] ? [12] : [6]);
   updateMarkedTotal();
 }
 
@@ -4941,6 +5074,7 @@ function toggleSessionDetail(idx) {
 
 
 function switchTab(id, btn) {
+  if (navigator.vibrate) navigator.vibrate(8);
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
   var panel = document.getElementById('tab-' + id);
