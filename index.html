@@ -1909,8 +1909,20 @@ function renderLegumbreBanner() {
 
 // ── MENU EDITOR ───────────────────────────────────────────────────────────────
 
+var undoStack = [];
+
 function saveMealOverrides(data) {
+  undoStack.push(getMealOverrides());
   localStorage.setItem('meal-overrides-' + getCurrentVariantKey(), JSON.stringify(data));
+}
+
+function undoMealOverride() {
+  if (undoStack.length === 0) { showToast('Nada que deshacer'); return; }
+  var prev = undoStack.pop();
+  localStorage.setItem('meal-overrides-' + getCurrentVariantKey(), JSON.stringify(prev));
+  renderMenu();
+  renderBatchCooking();
+  showToast('Acción deshecha');
 }
 
 function resetMealOverrides() {
@@ -3672,7 +3684,7 @@ function renderMenu() {
       + '</div>'
       + '</div>';
   })()
-  }).join('') + '<div style="padding:4px 0;display:flex;gap:8px;">'  + '<button class="recetas-fab" onclick="abrirRecetas()">📝 Recetas</button>'  + '<button class="recetas-fab recetas-fab-reset" onclick="confirmarResetMenu()">↺ Restablecer</button>'  + '</div>';
+  }).join('') + '<div style="padding:4px 0;display:flex;gap:8px;">'  + '<button class="recetas-fab" onclick="abrirRecetas()">📝 Recetas</button>'  + '<button class="recetas-fab recetas-fab-reset" onclick="undoMealOverride()">↩ Deshacer</button>'  + '</div>';
 }
 
 // ── PRECIOS PERSONALIZADOS (localStorage) ─────────────────────────────────────
