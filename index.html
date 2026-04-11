@@ -3120,23 +3120,25 @@ function getDynamicIngredients() {
   var sc = document.getElementById('main-scroll');
   var tc = document.getElementById('tabs-container');
   var spacer = document.getElementById('tabs-pin-spacer');
-  if (!sc || !tc) return;
+  var hero = document.querySelector('header');
+  if (!sc || !tc || !hero) return;
   var pinned = false;
-  sc.addEventListener('scroll', function() {
-    var tcTop = tc.getBoundingClientRect().top;
-    if (!pinned && tcTop <= 0) {
+  function updatePin() {
+    var heroBottom = hero.getBoundingClientRect().bottom;
+    if (!pinned && heroBottom <= 0) {
       var h = tc.offsetHeight;
       spacer.style.height = h + 'px';
       spacer.classList.add('visible');
       tc.classList.add('tabs-pinned');
       pinned = true;
-    } else if (pinned && sc.scrollTop < spacer.offsetTop) {
+    } else if (pinned && heroBottom > 0) {
       spacer.classList.remove('visible');
       spacer.style.height = '';
       tc.classList.remove('tabs-pinned');
       pinned = false;
     }
-  }, { passive: true });
+  }
+  sc.addEventListener('scroll', updatePin, { passive: true });
 })();
 
 // ── HORIZONTAL SWIPE BETWEEN TABS ─────────────────────────────────────────────
