@@ -72,7 +72,7 @@
 
   /* TABS */
   .tabs-container { margin:6px 0 0; }
-  .tabs-nav { display:flex; gap:4px; border-bottom:1px solid var(--border); }
+  .tabs-nav { display:flex; gap:4px; border-bottom:1px solid var(--border); position:fixed; top:env(safe-area-inset-top,0px); left:0; right:0; z-index:100; background:rgba(15,15,15,0.88); backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%); }
   .tab-btn {
     font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1.5px;
     padding:8px 12px 10px; background:none; border:none; color:var(--muted); cursor:pointer; position:relative; transition:color 0.2s;
@@ -225,7 +225,7 @@
     display: flex;
     align-items: center;
     gap: 0;
-    padding: calc(env(safe-area-inset-top, 0px) + 12px) 12px 10px;
+    padding: calc(env(safe-area-inset-top, 0px) + 12px + 44px) 12px 10px;
     position: relative;
     overflow: hidden;
   }
@@ -1638,23 +1638,6 @@
   }
 
   /* Frosted glass en la barra de tabs al hacer scroll */
-  .tabs-container {
-    position: relative;
-    z-index: 50;
-    background: rgba(15,15,15,0.82);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    transition: none;
-  }
-  .tabs-container.tabs-pinned {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-  .tabs-pin-spacer { display: none; }
-  .tabs-pin-spacer.visible { display: block; }
 
   /* Spring en panel de recetas */
   .recetas-panel {
@@ -1716,6 +1699,12 @@
 </head>
 <body>
 
+<div class="tabs-nav" id="tabs-nav">
+  <button class="tab-btn active" onclick="switchTab('menu',this)">🍽 Menú</button>
+  <button class="tab-btn" onclick="switchTab('compra',this)">🛒 Compra</button>
+  <button class="tab-btn" onclick="switchTab('rutina',this)">🏋️ Rutina</button>
+  <button class="tab-btn" onclick="switchTab('registro',this)">📊 Progreso</button>
+</div>
 <div class="main-scroll-container" id="main-scroll">
 <header>
   <div class="hero-header">
@@ -1731,14 +1720,7 @@
   </div>
 </header>
 
-<div class="tabs-pin-spacer" id="tabs-pin-spacer"></div>
 <div class="tabs-container" id="tabs-container">
-  <div class="tabs-nav">
-    <button class="tab-btn active" onclick="switchTab('menu',this)">🍽 Menú</button>
-    <button class="tab-btn" onclick="switchTab('compra',this)">🛒 Compra</button>
-    <button class="tab-btn" onclick="switchTab('rutina',this)">🏋️ Rutina</button>
-    <button class="tab-btn" onclick="switchTab('registro',this)">📊 Progreso</button>
-  </div>
 
   <div class="week-nav">
     <div class="week-info">
@@ -3115,31 +3097,6 @@ function getDynamicIngredients() {
 }
 
 
-// ── TABS STICKY (JS, compatible con position:fixed scroll container) ──────────
-(function() {
-  var sc = document.getElementById('main-scroll');
-  var tc = document.getElementById('tabs-container');
-  var spacer = document.getElementById('tabs-pin-spacer');
-  var hero = document.querySelector('header');
-  if (!sc || !tc || !hero) return;
-  var pinned = false;
-  function updatePin() {
-    var heroBottom = hero.getBoundingClientRect().bottom;
-    if (!pinned && heroBottom <= 0) {
-      var h = tc.offsetHeight;
-      spacer.style.height = h + 'px';
-      spacer.classList.add('visible');
-      tc.classList.add('tabs-pinned');
-      pinned = true;
-    } else if (pinned && heroBottom > 0) {
-      spacer.classList.remove('visible');
-      spacer.style.height = '';
-      tc.classList.remove('tabs-pinned');
-      pinned = false;
-    }
-  }
-  sc.addEventListener('scroll', updatePin, { passive: true });
-})();
 
 // ── HORIZONTAL SWIPE BETWEEN TABS ─────────────────────────────────────────────
 var swipeStartX = 0;
