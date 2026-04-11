@@ -374,11 +374,6 @@
   }
   .tab-panel { display:none; padding:0 8px 80px; }
   .tab-panel.active { display:block; }
-  .tab-panel.tab-enter-right { animation: tabEnterRight 0.28s cubic-bezier(0.25,0.46,0.45,0.94) both; }
-  .tab-panel.tab-enter-left  { animation: tabEnterLeft  0.28s cubic-bezier(0.25,0.46,0.45,0.94) both; }
-  @keyframes tabEnterRight { from { opacity:0; transform:translateX(32px); }  to { opacity:1; transform:translateX(0); } }
-  @keyframes tabEnterLeft  { from { opacity:0; transform:translateX(-32px); } to { opacity:1; transform:translateX(0); } }
-
 
   /* BATCH COOKING */
   .batch-section {
@@ -1025,20 +1020,6 @@
     gap: 12px;
     padding: 20px 0;
   }
-  .skeleton {
-    background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.2s infinite;
-    border-radius: var(--radius);
-  }
-  @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-  .skeleton-nav  { height: 70px; margin: 0; }
-  .skeleton-card { height: 140px; }
-  .skeleton-batch { height: 220px; margin-top: 8px; }
-
   /* LEGUMBRE BANNER */
   .legumbre-banner {
     display:flex; align-items:center; gap:12px;
@@ -1392,11 +1373,6 @@
     -webkit-backdrop-filter: blur(12px);
   }
   .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-  .toast.t-success { border-color:rgba(52,199,89,0.5);  background:rgba(20,40,20,0.96); }
-  .toast.t-error   { border-color:rgba(255,69,58,0.5);  background:rgba(40,15,15,0.96); }
-  .toast.t-warning { border-color:rgba(255,159,10,0.5); background:rgba(40,30,10,0.96); }
-  .toast.t-info    { border-color:rgba(0,212,255,0.4);  background:rgba(10,30,40,0.96); }
-  .toast-icon { font-size:16px; flex-shrink:0; }
 
   .main-scroll-container {
     position: fixed;
@@ -1717,51 +1693,6 @@
   .receta-ctx-item:active { background: rgba(255,255,255,0.08); }
   .receta-ctx-item.danger { color: #ff453a; }
 
-  /* ── SKELETON SCREENS ────────────────────────────────────────────────────── */
-  .skeleton-wrap { padding: 0 8px; }
-  .sk-block {
-    background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.4s infinite;
-    border-radius: 10px;
-  }
-  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-  .sk-card  { height: 90px;  margin-bottom: 10px; }
-  .sk-line  { height: 14px; margin-bottom: 8px; }
-  .sk-line.short { width: 55%; }
-  .sk-line.mid   { width: 75%; }
-
-  /* ── PULL TO REFRESH ─────────────────────────────────────────────────────── */
-  .ptr-indicator {
-    position: fixed;
-    top: -60px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 7px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    z-index: 999;
-    white-space: nowrap;
-    transition: top 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    pointer-events: none;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  .ptr-indicator.visible { top: calc(env(safe-area-inset-top,0px) + 10px); }
-  .ptr-indicator.triggered { color: var(--accent); border-color: rgba(200,255,0,0.4); }
-
-  /* ── LANDSCAPE ────────────────────────────────────────────────────────────── */
-  @media (orientation:landscape) and (max-height:520px) {
-    .hero-header { display: none; }
-    .tabs-container { top: 0; }
-    .day-grid { grid-template-columns: repeat(3, 1fr) !important; }
-    .tab-panel { padding-bottom: 40px; }
-    .gym-grid { grid-template-columns: 1fr 1fr !important; }
-    header { padding-top: 8px !important; }
-  }
 </style>
 
 <script>
@@ -1778,7 +1709,6 @@
 </head>
 <body>
 
-<div class="ptr-indicator" id="ptr-indicator">↓ Desliza para actualizar</div>
 <div class="main-scroll-container" id="main-scroll">
 <header>
   <div class="hero-header">
@@ -2067,12 +1997,12 @@ function saveMealOverrides(data) {
 }
 
 function undoMealOverride() {
-  if (undoStack.length === 0) { showToast('Nada que deshacer', 'warning'); return; }
+  if (undoStack.length === 0) { showToast('Nada que deshacer'); return; }
   var prev = undoStack.pop();
   localStorage.setItem('meal-overrides-' + getCurrentVariantKey(), JSON.stringify(prev));
   renderMenu();
   renderBatchCooking();
-  showToast('Acción deshecha', 'success');
+  showToast('Acción deshecha');
 }
 
 function resetMealOverrides() {
@@ -2961,7 +2891,7 @@ function guardarEdicionReceta() {
 
 function confirmarResetMenu() {
   resetMealOverrides();
-  showToast('Menú restablecido', 'info');
+  showToast('Menú restablecido');
 }
 
 function showConfirmModal(title, msg, onConfirm) {
@@ -3053,69 +2983,20 @@ document.addEventListener('touchend', function(e) {
 
 // ── TOAST ──────────────────────────────────────────────────────────────────────
 var toastTimer = null;
-var TOAST_ICONS = { success:'✅', error:'❌', warning:'⚠️', info:'ℹ️' };
-function showToast(msg, type) {
+function showToast(msg) {
   var el = document.getElementById('toast');
   if (!el) {
     el = document.createElement('div');
     el.id = 'toast';
     document.body.appendChild(el);
   }
-  el.className = 'toast' + (type ? ' t-' + type : '');
-  var icon = type && TOAST_ICONS[type] ? '<span class="toast-icon">' + TOAST_ICONS[type] + '</span>' : '';
-  el.innerHTML = icon + '<span>' + msg + '</span>';
+  el.className = 'toast';
+  el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(function() { el.classList.remove('show'); }, 2400);
 }
 
-
-
-// ── PULL TO REFRESH ───────────────────────────────────────────────────────────
-var ptrActive = false;
-var ptrStartY = 0;
-var ptrTriggered = false;
-
-document.addEventListener('touchstart', function(e) {
-  var sc = document.getElementById('main-scroll');
-  if (!sc || sc.scrollTop > 0) return;
-  if (mealTouchActive || recetaTouchClone) return;
-  if (e.target.closest('.recetas-overlay, .recetas-panel')) return;
-  ptrStartY = e.touches[0].clientY;
-  ptrActive = true;
-  ptrTriggered = false;
-}, { passive: true });
-
-document.addEventListener('touchmove', function(e) {
-  if (!ptrActive) return;
-  var dy = e.touches[0].clientY - ptrStartY;
-  if (dy <= 0) { ptrActive = false; return; }
-  var el = document.getElementById('ptr-indicator');
-  if (dy > 70 && !ptrTriggered) {
-    ptrTriggered = true;
-    if (el) { el.textContent = '↑ Suelta para actualizar'; el.classList.add('visible', 'triggered'); }
-    if (navigator.vibrate) navigator.vibrate(20);
-  } else if (dy > 0 && dy <= 70) {
-    if (el) { el.textContent = '↓ Desliza para actualizar'; el.classList.add('visible'); el.classList.remove('triggered'); }
-  }
-}, { passive: true });
-
-document.addEventListener('touchend', function() {
-  if (!ptrActive) return;
-  var el = document.getElementById('ptr-indicator');
-  if (ptrTriggered) {
-    if (el) { el.textContent = '⟳ Actualizando...'; }
-    setTimeout(function() {
-      if (el) { el.classList.remove('visible', 'triggered'); el.textContent = '↓ Desliza para actualizar'; }
-      renderAll();
-      showToast('Actualizado', 'success');
-    }, 500);
-  } else {
-    if (el) el.classList.remove('visible', 'triggered');
-  }
-  ptrActive = false;
-  ptrTriggered = false;
-}, { passive: true });
 
 
 // ── INGREDIENTS DATABASE ───────────────────────────────────────────────────────
@@ -3651,7 +3532,7 @@ function saveTrainingSession(di) {
   });
   saveSession(day.day, day.focus, exercises);
   closeTrainingMode();
-  showToast('Entrenamiento guardado', 'success');
+  showToast('Entrenamiento guardado');
   renderRutina();
 }
 
@@ -3703,7 +3584,7 @@ function borrarHistorialGym() {
     'Se eliminarán todos los registros de entrenamiento.',
     function() {
       localStorage.removeItem('gym-sessions');
-      showToast('Historial eliminado', 'warning');
+      showToast('Historial eliminado');
       renderRutina();
     }
   );
@@ -5149,36 +5030,22 @@ function toggleSessionDetail(idx) {
 }
 
 
-var _lastTabIdx = 0;
 function switchTab(id, btn) {
   if (navigator.vibrate) navigator.vibrate(8);
-  var newIdx = tabOrder.indexOf(id);
-  var dir = newIdx > _lastTabIdx ? 'right' : 'left';
-  _lastTabIdx = newIdx;
-
-  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active','tab-enter-right','tab-enter-left'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
 
+  var sc = document.getElementById('main-scroll');
+  if (sc) sc.scrollTop = 0;
+
   var panel = document.getElementById('tab-' + id);
-  if (panel) {
-    // Skeleton flash before render
-    panel.innerHTML = '<div class="skeleton-wrap">'
-      + '<div class="sk-block sk-card"></div>'
-      + '<div class="sk-block sk-line mid"></div>'
-      + '<div class="sk-block sk-line short"></div>'
-      + '<div class="sk-block sk-card"></div>'
-      + '<div class="sk-block sk-line mid"></div>'
-      + '</div>';
-    panel.classList.add('active', dir === 'right' ? 'tab-enter-right' : 'tab-enter-left');
-  }
+  if (panel) panel.classList.add('active');
   if (btn) btn.classList.add('active');
 
-  requestAnimationFrame(function() {
-    if (id === 'compra') renderCompra();
-    if (id === 'menu') { renderMenu(); renderBatchCooking(); }
-    if (id === 'registro') renderRegistro();
-    if (id === 'rutina') renderRutina();
-  });
+  if (id === 'compra') renderCompra();
+  if (id === 'menu') { renderMenu(); renderBatchCooking(); }
+  if (id === 'registro') renderRegistro();
+  if (id === 'rutina') renderRutina();
 }
 
 
