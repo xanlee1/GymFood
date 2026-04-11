@@ -2089,6 +2089,7 @@ document.addEventListener('touchend', onMealTouchEnd);
 // ── MEAL DRAG TOUCHMOVE ───────────────────────────────────────────────────────
 document.addEventListener('touchmove', function(e) {
   // Cancel pending drag if finger moved too much before activation
+
   if (mealTouchTimer && !mealTouchActive) {
     var dx = e.touches[0].clientX - mealTouchStartX;
     var dy = e.touches[0].clientY - mealTouchStartY;
@@ -2100,6 +2101,7 @@ document.addEventListener('touchmove', function(e) {
   }
 
   if (!mealTouchActive || !touchClone) return;
+  e.preventDefault();
 
   // Move clone — uses clientY so it's always relative to viewport
   var t = e.touches[0];
@@ -2129,7 +2131,7 @@ document.addEventListener('touchmove', function(e) {
       mealScrollRAF = requestAnimationFrame(down);
     })();
   }
-}, { passive: true });
+}, { passive: false });
 
 
 
@@ -2296,20 +2298,49 @@ function onRecetaDragEnd() {
 // Touch drag from panel to day
 var recetaTouchClone = null;
 
+var recetaTouchTimer = null;
+var recetaTouchStartX = 0;
+var recetaTouchStartY = 0;
+var recetaTouchPendingChip = null;
+var recetaTouchPendingIdx = -1;
+
 function onRecetaTouchStart(e, idx) {
-  recetasDragItem = getRecetas()[idx];
-  var chip = e.currentTarget;
-  var rect = chip.getBoundingClientRect();
-  recetaTouchClone = chip.cloneNode(true);
-  recetaTouchClone.style.cssText = 'position:fixed;top:'+rect.top+'px;left:'+rect.left+'px;width:'+rect.width+'px;opacity:0.9;z-index:9999;pointer-events:none;background:var(--surface2);border-radius:10px;padding:8px 14px;font-size:14px;box-shadow:0 4px 20px rgba(0,0,0,0.6);color:var(--text);';
-  document.body.appendChild(recetaTouchClone);
-  recetasPanelCollapsed = false;
-  e.preventDefault();
+  recetaTouchStartX = e.touches[0].clientX;
+  recetaTouchStartY = e.touches[0].clientY;
+  recetaTouchPendingIdx = idx;
+  recetaTouchPendingChip = e.currentTarget;
+  recetaTouchTimer = setTimeout(function() {
+    recetaTouchTimer = null;
+    var chip = recetaTouchPendingChip;
+    if (!chip) return;
+    recetasDragItem = getRecetas()[recetaTouchPendingIdx];
+    var rect = chip.getBoundingClientRect();
+    recetaTouchClone = chip.cloneNode(true);
+    recetaTouchClone.style.cssText = 'position:fixed;top:'+rect.top+'px;left:'+rect.left+'px;width:'+rect.width+'px;opacity:0;z-index:9999;pointer-events:none;background:var(--surface2);border-radius:10px;padding:8px 14px;font-size:14px;box-shadow:0 4px 20px rgba(0,0,0,0.6);color:var(--text);transform:scale(0.95);transition:opacity 0.15s,transform 0.15s;';
+    document.body.appendChild(recetaTouchClone);
+    requestAnimationFrame(function() {
+      recetaTouchClone.style.opacity = '0.95';
+      recetaTouchClone.style.transform = 'scale(1.05)';
+    });
+    recetasPanelCollapsed = false;
+    if (navigator.vibrate) navigator.vibrate(30);
+  }, 350);
 }
 
 var recetasPanelCollapsed = false;
 
 document.addEventListener('touchmove', function(e) {
+  // Cancel pending drag timer if finger scrolled before delay
+  if (recetaTouchTimer) {
+    var dx = e.touches[0].clientX - recetaTouchStartX;
+    var dy = e.touches[0].clientY - recetaTouchStartY;
+    if (Math.sqrt(dx*dx + dy*dy) > 8) {
+      clearTimeout(recetaTouchTimer);
+      recetaTouchTimer = null;
+      recetaTouchPendingChip = null;
+    }
+    return;
+  }
   if (!recetaTouchClone) return;
   var t = e.touches[0];
   recetaTouchClone.style.top = (t.clientY - 20) + 'px';
@@ -2381,18 +2412,16 @@ document.addEventListener('touchend', function(e) {
   var dayIdx = card.id ? parseInt(card.id.replace('day-card-','')) : -1;
   if (isNaN(dayIdx) || dayIdx < 0) { recetasDragItem = null; return; }
 
-  // Determine slot
+  // Determine slot — try DOM first, then fall back to Y position within card
   var slot;
   var slotEl2 = document.elementFromPoint(t.clientX, t.clientY);
   var slotTarget = slotEl2 ? slotEl2.closest('[data-slot]') : null;
   if (slotTarget && slotTarget.dataset.slot) {
     slot = slotTarget.dataset.slot;
-  } else if (recetasDragItem.type === 'comida') {
-    slot = 'comida';
-  } else if (recetasDragItem.type === 'cena') {
-    slot = 'cena';
   } else {
-    slot = recetasDragItem && recetasDragItem.type === 'cena' ? 'cena' : 'comida';
+    // Use drop Y position relative to card: upper half = comida, lower half = cena
+    var cardRect = card.getBoundingClientRect();
+    slot = (t.clientY - cardRect.top) < (cardRect.height * 0.5) ? 'comida' : 'cena';
   }
 
   var nombre = recetasDragItem.name;
