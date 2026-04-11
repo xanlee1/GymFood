@@ -374,6 +374,11 @@
   }
   .tab-panel { display:none; padding:0 8px 80px; }
   .tab-panel.active { display:block; }
+  .tabs-panels-wrap { overflow-x: hidden; }
+  .tab-panel.slide-in-right { animation: tabSlideInR 0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
+  .tab-panel.slide-in-left  { animation: tabSlideInL 0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
+  @keyframes tabSlideInR { from { transform:translateX(100%); } to { transform:translateX(0); } }
+  @keyframes tabSlideInL { from { transform:translateX(-100%); } to { transform:translateX(0); } }
 
   /* BATCH COOKING */
   .batch-section {
@@ -5030,16 +5035,21 @@ function toggleSessionDetail(idx) {
 }
 
 
+var _lastTabIdx = 0;
 function switchTab(id, btn) {
   if (navigator.vibrate) navigator.vibrate(8);
-  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  var newIdx = tabOrder.indexOf(id);
+  var dir = newIdx > _lastTabIdx ? 'right' : 'left';
+  _lastTabIdx = newIdx;
+
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active','slide-in-right','slide-in-left'); });
   document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
 
   var sc = document.getElementById('main-scroll');
   if (sc) sc.scrollTop = 0;
 
   var panel = document.getElementById('tab-' + id);
-  if (panel) panel.classList.add('active');
+  if (panel) panel.classList.add('active', dir === 'right' ? 'slide-in-right' : 'slide-in-left');
   if (btn) btn.classList.add('active');
 
   if (id === 'compra') renderCompra();
