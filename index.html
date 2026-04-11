@@ -72,15 +72,38 @@
 
   /* TABS */
   .tabs-container { margin:6px 0 0; }
-  .tabs-nav { display:flex; gap:4px; border-bottom:1px solid var(--border); position:fixed; top:env(safe-area-inset-top,0px); left:0; right:0; z-index:100; background:rgba(15,15,15,0.88); backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%); }
-  .tab-btn {
-    font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1.5px;
-    padding:8px 12px 10px; background:none; border:none; color:var(--muted); cursor:pointer; position:relative; transition:color 0.2s;
+  .tabs-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    z-index: 100;
+    background: rgba(15,15,15,0.92);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
-  .tab-btn::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:2px; background:var(--accent); transform:scaleX(0); transition:transform 0.2s; }
-  .tab-btn.active { color:var(--text); }
-  .tab-btn.active::after { transform:scaleX(1); }
-  .tab-btn:hover { color:#ccc; }
+  .tab-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 10px 4px 8px;
+    background: none; border: none;
+    color: var(--muted);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.18s;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+  }
+  .tab-btn .tab-icon { font-size: 26px; line-height: 1; }
+  .tab-btn .tab-label { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1px; }
+  .tab-btn.active { color: var(--accent); }
+  .tab-btn.active .tab-icon { filter: drop-shadow(0 0 6px rgba(200,255,0,0.5)); }
 
 
 
@@ -225,7 +248,7 @@
     display: flex;
     align-items: center;
     gap: 0;
-    padding: calc(env(safe-area-inset-top, 0px) + 12px + 44px) 12px 10px;
+    padding: calc(env(safe-area-inset-top, 0px) + 12px) 12px 10px;
     position: relative;
     overflow: hidden;
   }
@@ -1700,10 +1723,10 @@
 <body>
 
 <div class="tabs-nav" id="tabs-nav">
-  <button class="tab-btn active" onclick="switchTab('menu',this)">🍽 Menú</button>
-  <button class="tab-btn" onclick="switchTab('compra',this)">🛒 Compra</button>
-  <button class="tab-btn" onclick="switchTab('rutina',this)">🏋️ Rutina</button>
-  <button class="tab-btn" onclick="switchTab('registro',this)">📊 Progreso</button>
+  <button class="tab-btn active" onclick="switchTab('menu',this)"><span class="tab-icon">🍽</span><span class="tab-label">Menú</span></button>
+  <button class="tab-btn" onclick="switchTab('compra',this)"><span class="tab-icon">🛒</span><span class="tab-label">Compra</span></button>
+  <button class="tab-btn" onclick="switchTab('rutina',this)"><span class="tab-icon">🏋️</span><span class="tab-label">Rutina</span></button>
+  <button class="tab-btn" onclick="switchTab('registro',this)"><span class="tab-icon">📊</span><span class="tab-label">Progreso</span></button>
 </div>
 <div class="main-scroll-container" id="main-scroll">
 <header>
@@ -3098,48 +3121,7 @@ function getDynamicIngredients() {
 
 
 
-// ── HORIZONTAL SWIPE BETWEEN TABS ─────────────────────────────────────────────
-var swipeStartX = 0;
-var swipeStartY = 0;
-var swipeActive = false;
-
 var tabOrder = ['menu', 'compra', 'rutina', 'registro'];
-
-function getCurrentTabIdx() {
-  var active = document.querySelector('.tab-btn.active');
-  if (!active) return 0;
-  var btns = Array.from(document.querySelectorAll('.tab-btn'));
-  return btns.indexOf(active);
-}
-
-document.addEventListener('touchstart', function(e) {
-  // Don't swipe if dragging a meal or recipe
-  if (mealTouchActive || recetaTouchClone) return;
-  // Don't swipe if inside a scrollable element (recetas panel, etc)
-  if (e.target.closest('.recetas-overlay, .recetas-panel, .receta-edit-modal, .confirm-modal')) return;
-  swipeStartX = e.touches[0].clientX;
-  swipeStartY = e.touches[0].clientY;
-  swipeActive = true;
-}, { passive: true });
-
-document.addEventListener('touchend', function(e) {
-  if (!swipeActive) return;
-  swipeActive = false;
-  if (mealTouchActive || recetaTouchClone) return;
-
-  var dx = e.changedTouches[0].clientX - swipeStartX;
-  var dy = e.changedTouches[0].clientY - swipeStartY;
-
-  // Only horizontal swipe: dx must be dominant and long enough
-  if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.6) return;
-
-  var idx = getCurrentTabIdx();
-  var newIdx = dx < 0 ? idx + 1 : idx - 1;
-  if (newIdx < 0 || newIdx >= tabOrder.length) return;
-
-  var btn = document.querySelectorAll('.tab-btn')[newIdx];
-  if (btn) switchTab(tabOrder[newIdx], btn);
-}, { passive: true });
 
 
 
