@@ -2726,11 +2726,10 @@ document.addEventListener('drop', function(e) {
 });
 
 
-// ── DEFAULT RECIPES (one-time init) ──────────────────────────────────────────
+// ── DEFAULT RECIPES (non-destructive merge) ───────────────────────────────────
 (function() {
-  var existing = null;
-  try { existing = JSON.parse(localStorage.getItem('banco-recetas')); } catch(e) {}
-  if (localStorage.getItem('banco-recetas-init') === '1') return;
+  var existing = [];
+  try { existing = JSON.parse(localStorage.getItem('banco-recetas') || '[]'); } catch(e) {}
   var defaults = [
   {name:"Arroz con pollo, champiñones y verduras salteadas",type:"ambas",cat:"arroz"},
   {name:"Arroz con pollo al curry",type:"ambas",cat:"arroz"},
@@ -2753,7 +2752,9 @@ document.addEventListener('drop', function(e) {
   {name:"Bocadillo de lomo",type:"ambas",cat:"carne"},
   {name:"Wrap de pollo",type:"ambas",cat:"carne"},
   {name:"Quesadillas de pollo",type:"ambas",cat:"carne"},
+  {name:"Merluza con patata cocida",type:"cena",cat:"pescado"},
   {name:"Salmón con patatas",type:"cena",cat:"pescado"},
+  {name:"Bacalao al horno",type:"cena",cat:"pescado"},
   {name:"Lentejas",type:"ambas",cat:"legumbre"},
   {name:"Garbanzos",type:"ambas",cat:"legumbre"},
   {name:"Alubias",type:"ambas",cat:"legumbre"},
@@ -2765,8 +2766,18 @@ document.addEventListener('drop', function(e) {
   {name:"Verduras al horno (parrillada)",type:"ambas",cat:"verdura"},
   {name:"Salteado de verduras con proteína",type:"ambas",cat:"verdura"},
   {name:"Berenjena rellena",type:"ambas",cat:"verdura"}
-];
-  localStorage.setItem('banco-recetas', JSON.stringify(defaults));
+  ];
+  if (existing.length === 0) {
+    // Instalación nueva: carga todos los defaults
+    localStorage.setItem('banco-recetas', JSON.stringify(defaults));
+  } else {
+    // Ya hay datos: fusionar solo los que falten (nunca borrar recetas del usuario)
+    var names = existing.map(function(r){ return r.name.toLowerCase(); });
+    var toAdd = defaults.filter(function(d){ return names.indexOf(d.name.toLowerCase()) < 0; });
+    if (toAdd.length > 0) {
+      localStorage.setItem('banco-recetas', JSON.stringify(existing.concat(toAdd)));
+    }
+  }
   localStorage.setItem('banco-recetas-init', '1');
 })();
 
