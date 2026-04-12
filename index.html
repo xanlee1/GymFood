@@ -1924,11 +1924,11 @@ function changeWeek(dir) {
 // ── DAY TEMPLATES ─────────────────────────────────────────────────────────────
 // lunch: null = calculado dinámicamente según día
 const dayTemplates = [
-  { name:'Lunes',     gym:true,  gymDay:'Pecho · Hombro · Tríceps', lunchType:'legumbre', dinner:'Fajita de pollo con pimientos y cebolla' },
-  { name:'Martes',    gym:true,  gymDay:'Espalda · Bíceps',          lunchType:'pasta-fija', dinner:'Merluza/Salmón con patata cocida' },
-  { name:'Miér.',     gym:false, gymDay:null,                         lunchType:'fijo', lunchText:'Muslo de pollo al horno con patata, pimiento y brócoli', dinner:'Fajita de pollo con pimientos y cebolla' },
-  { name:'Jueves',    gym:true,  gymDay:'Pierna',                     lunchType:'pasta-fija', dinner:'Muslo de pollo' },
-  { name:'Viernes',   gym:true,  gymDay:'Brazos · Hombro posterior',  lunchType:'fijo', lunchText:'Huevos revueltos con bacon, champiñones y tomate', dinnerType:'aleatorio', dinner:'' },
+  { name:'Lun',  gym:true,  gymDay:'Pecho · Hombro · Tríceps', lunchType:'legumbre', dinner:'Fajita de pollo con pimientos y cebolla' },
+  { name:'Mar',  gym:true,  gymDay:'Espalda · Bíceps',          lunchType:'pasta-fija', dinner:'Merluza/Salmón con patata cocida' },
+  { name:'Mié',  gym:false, gymDay:null,                         lunchType:'fijo', lunchText:'Muslo de pollo al horno con patata, pimiento y brócoli', dinner:'Fajita de pollo con pimientos y cebolla' },
+  { name:'Jue',  gym:true,  gymDay:'Pierna',                     lunchType:'pasta-fija', dinner:'Muslo de pollo' },
+  { name:'Vie',  gym:true,  gymDay:'Brazos · Hombro posterior',  lunchType:'fijo', lunchText:'Huevos revueltos con bacon, champiñones y tomate', dinnerType:'aleatorio', dinner:'' },
 ];
 
 // ── STORES (dinámicas según semana) ──────────────────────────────────────────
@@ -3969,7 +3969,7 @@ function renderMenu() {
   const verdArr    = getCurrentVerdurasArr();
   document.getElementById('day-grid').innerHTML = dayTemplates.map((d, i) => {
     const dayDate = new Date(monday); dayDate.setDate(dayDate.getDate() + i);
-    const dayName = ['Lunes','Martes','Miér.','Jueves','Viernes'][i];
+    const dayName = ['Lun','Mar','Mié','Jue','Vie'][i];
     const dayEdit = {};
 
     let lunchHTML = '';
@@ -4078,8 +4078,8 @@ function renderWeekend() {
     var monday = getMonday(weekOffset);
     var mo = getMealOverrides();
     var weekendDays = [
-      { name:'Sáb.', offset:5 },
-      { name:'Dom.', offset:6 },
+      { name:'Sáb', offset:5 },
+      { name:'Dom', offset:6 },
     ];
     grid.style.display = 'flex';
     grid.style.flexDirection = 'column';
