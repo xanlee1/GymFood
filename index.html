@@ -182,13 +182,19 @@
 
   /* DAYS */
   .day-grid-wrap { margin-top:0; }
-  .day-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
-  .day-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; transition:border-color 0.2s; }
-  .day-card:hover { border-color:#444; }
-  .day-header { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:flex-start; }
-  .day-name { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1px; }
-  .day-date { font-size:13px; color:var(--muted); margin-top:1px; }
-  .day-badge { font-size:10px; font-weight:500; letter-spacing:1px; padding:2px 8px; border-radius:4px; text-transform:uppercase; }
+  .day-grid { display:flex; flex-direction:column; gap:8px; }
+  .day-card { background:var(--surface); border-radius:var(--radius); overflow:hidden; display:flex; transition:opacity 0.2s; }
+  .day-card-stripe { width:4px; flex-shrink:0; background:#444; }
+  .day-card.gym .day-card-stripe { background:var(--accent); }
+  .day-card-body { display:flex; flex:1; align-items:stretch; }
+  .day-left { flex:0 0 80px; padding:12px 10px 12px 14px; display:flex; flex-direction:column; justify-content:center; border-right:1px solid var(--border); }
+  .day-name { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; line-height:1.1; }
+  .day-date { font-size:11px; color:var(--muted); margin-top:2px; }
+  .day-badge { font-size:9px; font-weight:500; letter-spacing:0.5px; padding:2px 6px; border-radius:4px; text-transform:uppercase; margin-top:5px; display:inline-block; }
+  .day-meals { flex:1; display:flex; flex-direction:column; }
+  .meal-row { padding:9px 14px; border-bottom:1px solid var(--border); flex:1; }
+  .meal-row:last-child { border-bottom:none; }
+  .meal-label { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:3px; }
   .badge-gym { background:rgba(200,255,0,0.12); color:var(--accent); }
   .badge-rest { background:rgba(136,136,136,0.12); color:var(--muted); }
   .meal-row { padding:10px 16px; border-bottom:1px solid var(--border); }
@@ -3836,11 +3842,15 @@ function renderMenu() {
     } else {
       cenaHTML = '<div class="meal-text">' + (d.dinner || '') + '</div>';
     }
-    return '<div class="day-card" id="day-card-' + i + '">'
-      + '<div class="day-header">'
-      + '<div><div class="day-name">' + d.name + '</div><div class="day-date">' + formatDate(dayDate) + '</div></div>'
-      + '<span class="day-badge ' + (d.gym ? 'badge-gym' : 'badge-rest') + '">' + (d.gym ? '🏋 ' + d.gymDay.split('·')[0].trim() : 'Descanso') + '</span>'
+    return '<div class="day-card' + (d.gym ? ' gym' : '') + '" id="day-card-' + i + '">'
+      + '<div class="day-card-stripe"></div>'
+      + '<div class="day-card-body">'
+      + '<div class="day-left">'
+      + '<div class="day-name">' + d.name + '</div>'
+      + '<div class="day-date">' + formatDate(dayDate) + '</div>'
+      + '<span class="day-badge ' + (d.gym ? 'badge-gym' : 'badge-rest') + '">' + (d.gym ? d.gymDay.split('·')[0].trim() : 'Descanso') + '</span>'
       + '</div>'
+      + '<div class="day-meals">'
       + '<div class="meal-row" data-day="' + i + '" data-slot="comida" ondragover="event.preventDefault()" ondrop="onMealDrop(event,' + i + ',\'comida\')" ontouchstart="onMealTouchStart(event,' + i + ',\'comida\')" id="meal-slot-' + i + '-comida">'
       + '<div class="meal-label">Comida</div>'
       + '<div class="meal-slot-content">' + comidaHTML + '</div>'
@@ -3848,6 +3858,8 @@ function renderMenu() {
       + '<div class="meal-row" data-day="' + i + '" data-slot="cena" ondragstart="onMealDragStart(event,' + i + ',\'cena\')" ondragend="onMealDragEnd(event)" ondragover="onMealDragOver(event,' + i + ',\'cena\')" ondrop="onMealDrop(event,' + i + ',\'cena\')" ontouchstart="onMealTouchStart(event,' + i + ',\'cena\')" id="meal-slot-' + i + '-cena">'
       + '<div class="meal-label">Cena</div>'
       + '<div class="meal-slot-content">' + cenaHTML + '</div>'
+      + '</div>'
+      + '</div>'
       + '</div>'
       + '</div>';
   })()
