@@ -1691,10 +1691,18 @@
   }
   .crear-summary { background:var(--surface2); border-radius:12px; padding:12px 14px; margin-bottom:16px; display:flex; flex-direction:column; gap:5px; }
   .crear-summary-row { display:flex; align-items:center; gap:10px; }
-  .crear-option-recipe { padding:10px 12px; min-height:44px; justify-content:center; }
-  .crear-option-recipe .crear-option-name { text-align:center; }
   .crear-sum-icon { font-size:15px; width:22px; text-align:center; }
   .crear-sum-val { font-size:13px; color:var(--text); }
+  /* Opciones del banco de recetas */
+  .crear-option { position:relative; }
+  .crear-option-recipe { padding:10px 12px; min-height:44px; display:flex; align-items:center; gap:6px; }
+  .crear-option-recipe .crear-option-name { font-size:11px; white-space:normal; line-height:1.3; text-align:left; flex:1; }
+  /* Multi-selección */
+  .crear-multi { cursor:pointer; }
+  .crear-cb { font-size:11px; font-weight:700; color:var(--accent); width:14px; flex-shrink:0; text-align:center; }
+  .crear-multi-hint { font-size:9px; background:rgba(200,255,0,0.12); color:var(--accent); border-radius:4px; padding:2px 6px; letter-spacing:0.5px; text-transform:uppercase; margin-left:4px; font-family:sans-serif; vertical-align:middle; }
+  /* Estado vacío banco */
+  .crear-bank-empty { font-size:12px; color:var(--muted); padding:8px 4px; grid-column:1/-1; font-style:italic; }
 
   /* Spring en panel de recetas */
   .recetas-panel {
@@ -1856,9 +1864,27 @@ function getCurrentRecetaName(cat, storeKey) {
   if (saved && options.some(function(r) { return r.name === saved; })) return saved;
   return options.length > 0 ? options[0].name : null;
 }
-function getCurrentPescadoName()  { return getCurrentRecetaName('pescado', 'pescado')  || 'Merluza/Salmón'; }
-function getCurrentProteinaName() { return getCurrentRecetaName('carne',   'proteina') || 'Pollo'; }
-function getCurrentVerduraNombre(){ return getCurrentRecetaName('verdura',  'verdura')  || 'Verduras'; }
+function getCurrentPescadoName() { return getCurrentRecetaName('pescado', 'pescado') || 'Merluza/Salmón'; }
+
+// Multi-selección: arrays desde localStorage
+function getCurrentProteinasArr() {
+  try { return JSON.parse(localStorage.getItem('proteinas-' + weekOffset) || '[]'); } catch(e) { return []; }
+}
+function getCurrentCenasArr() {
+  try { return JSON.parse(localStorage.getItem('cenas-' + weekOffset) || '[]'); } catch(e) { return []; }
+}
+function getCurrentVerdurasArr() {
+  try { return JSON.parse(localStorage.getItem('verduras-' + weekOffset) || '[]'); } catch(e) { return []; }
+}
+// Fallback strings (backward compat)
+function getCurrentProteinaName() {
+  var arr = getCurrentProteinasArr();
+  return arr.length > 0 ? arr[0] : (getCurrentRecetaName('carne', 'proteina') || 'Pollo');
+}
+function getCurrentVerduraNombre() {
+  var arr = getCurrentVerdurasArr();
+  return arr.length > 0 ? arr[0] : (getCurrentRecetaName('verdura', 'verdura') || 'Verduras');
+}
 
 // Legumbres rotan por semana
 const legumbres = ['Lentejas', 'Alubias', 'Garbanzos'];
@@ -3746,18 +3772,20 @@ function renderWeekNav() {
 }
 
 // ── CREAR MENÚ ────────────────────────────────────────────────────────────────
-var _crearLeg  = null;
-var _crearTup  = null;
-var _crearPesc = null;
-var _crearProt = null;
-var _crearVerd = null;
+var _crearLeg     = null;   // único
+var _crearTup     = null;   // único
+var _crearPesc    = null;   // único
+var _crearProtArr = [];     // multi
+var _crearCenaArr = [];     // multi
+var _crearVerdArr = [];     // multi
 
 function openCrearMenu() {
-  _crearLeg  = getCurrentLegumbre().key;
-  _crearTup  = weekVariants[weekOffset] || 'pasta-0';
-  _crearPesc = getCurrentPescadoName();
-  _crearProt = getCurrentProteinaName();
-  _crearVerd = getCurrentVerduraNombre();
+  _crearLeg     = getCurrentLegumbre().key;
+  _crearTup     = weekVariants[weekOffset] || 'pasta-0';
+  _crearPesc    = getCurrentPescadoName();
+  _crearProtArr = getCurrentProteinasArr().slice();
+  _crearCenaArr = getCurrentCenasArr().slice();
+  _crearVerdArr = getCurrentVerdurasArr().slice();
   renderCrearMenuOpts();
   document.getElementById('crear-overlay').classList.add('visible');
 }
@@ -3775,26 +3803,51 @@ function recrearMenu() {
   openCrearMenu();
 }
 
+// Toggle para multi-selección (por índice para evitar escapes)
+function _toggleInArr(arr, name) {
+  var idx = arr.indexOf(name);
+  if (idx >= 0) arr.splice(idx, 1); else arr.push(name);
+}
+function toggleProteinaByIdx(idx) {
+  var items = getRecetasByCat('carne');
+  if (items[idx]) { _toggleInArr(_crearProtArr, items[idx].name); renderCrearMenuOpts(); }
+}
+function toggleCenaByIdx(idx) {
+  var items = getRecetas().filter(function(r){ return r.cat !== 'arroz' && r.cat !== 'pasta' && r.cat !== 'legumbre'; });
+  if (items[idx]) { _toggleInArr(_crearCenaArr, items[idx].name); renderCrearMenuOpts(); }
+}
+function toggleVerduraByIdx(idx) {
+  var items = getRecetasByCat('verdura');
+  if (items[idx]) { _toggleInArr(_crearVerdArr, items[idx].name); renderCrearMenuOpts(); }
+}
+
 function renderCrearMenuOpts() {
-  // --- Resumen dinámico ---
-  var legObj  = LEGUMBRES.find(function(l){ return l.key === _crearLeg; }) || LEGUMBRES[0];
-  var tupObj  = allVariants[_crearTup] || allVariants['pasta-0'];
+  var legObj = LEGUMBRES.find(function(l){ return l.key === _crearLeg; }) || LEGUMBRES[0];
+  var tupObj = allVariants[_crearTup] || allVariants['pasta-0'];
+
+  // Resumen dinámico
+  function summaryMulti(arr, emoji) {
+    var val = arr.length === 0 ? '<span style="color:var(--muted)">—</span>'
+      : arr.slice(0,2).map(function(n){ return n.length>20?n.slice(0,20)+'…':n; }).join(', ')
+        + (arr.length > 2 ? ' <span style="color:var(--muted)">+' + (arr.length-2) + '</span>' : '');
+    return '<div class="crear-summary-row"><span class="crear-sum-icon">' + emoji + '</span><span class="crear-sum-val">' + val + '</span></div>';
+  }
   document.getElementById('crear-summary').innerHTML =
     '<div class="crear-summary-row"><span class="crear-sum-icon">🍝</span><span class="crear-sum-val">' + tupObj.label + '</span></div>'
   + '<div class="crear-summary-row"><span class="crear-sum-icon">🫘</span><span class="crear-sum-val">' + legObj.label + '</span></div>'
-  + '<div class="crear-summary-row"><span class="crear-sum-icon">🐟</span><span class="crear-sum-val">' + (_crearPesc || '—') + '</span></div>'
-  + '<div class="crear-summary-row"><span class="crear-sum-icon">🍗</span><span class="crear-sum-val">' + (_crearProt || '—') + '</span></div>'
-  + '<div class="crear-summary-row"><span class="crear-sum-icon">🥦</span><span class="crear-sum-val">' + (_crearVerd || '—') + '</span></div>';
+  + '<div class="crear-summary-row"><span class="crear-sum-icon">🐟</span><span class="crear-sum-val">' + (_crearPesc || '<span style="color:var(--muted)">—</span>') + '</span></div>'
+  + summaryMulti(_crearProtArr, '🍗')
+  + summaryMulti(_crearCenaArr, '🌙')
+  + summaryMulti(_crearVerdArr, '🥦');
 
-  // --- Selector legumbre ---
+  // Legumbre — único
   document.getElementById('crear-legumbre-opts').innerHTML = LEGUMBRES.map(function(l) {
     return '<div class="crear-option' + (l.key === _crearLeg ? ' sel' : '') + '" onclick="_crearLeg=\'' + l.key + '\';renderCrearMenuOpts()">'
       + '<span class="crear-option-emoji">' + l.emoji + '</span>'
-      + '<span class="crear-option-name">' + l.label + '</span>'
-      + '</div>';
+      + '<span class="crear-option-name">' + l.label + '</span></div>';
   }).join('');
 
-  // --- Selector tupper ---
+  // Tupper — único
   document.getElementById('crear-tupper-opts').innerHTML = Object.keys(allVariants).map(function(k) {
     var v = allVariants[k];
     var words = v.label.split(' ');
@@ -3802,34 +3855,79 @@ function renderCrearMenuOpts() {
     return '<div class="crear-option' + (k === _crearTup ? ' sel' : '') + '" onclick="_crearTup=\'' + k + '\';renderCrearMenuOpts()">'
       + '<span class="crear-option-emoji">' + v.emoji + '</span>'
       + '<span class="crear-option-name">' + short + '</span>'
-      + '<span class="crear-option-sub">' + (v.type === 'pasta' ? 'Pasta' : 'Arroz') + '</span>'
-      + '</div>';
+      + '<span class="crear-option-sub">' + (v.type === 'pasta' ? 'Pasta' : 'Arroz') + '</span></div>';
   }).join('');
 
-  // --- Selector banco (helper) ---
-  function bankOpts(cat, selName, varName) {
-    var items = getRecetasByCat(cat);
+  // Pescado — único, del banco
+  (function() {
+    var items = getRecetasByCat('pescado');
     if (items.length === 0) {
-      return '<div style="color:var(--muted);font-size:12px;padding:8px 4px;grid-column:1/-1;">Añade recetas al banco 📝</div>';
+      document.getElementById('crear-pescado-opts').innerHTML = '<div class="crear-bank-empty">Añade recetas de pescado al banco 📝</div>';
+      return;
     }
-    return items.map(function(r) {
-      var short = r.name.length > 26 ? r.name.slice(0, 26) + '…' : r.name;
-      var safeVal = r.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-      return '<div class="crear-option crear-option-recipe' + (r.name === selName ? ' sel' : '') + '" onclick="' + varName + '=\'' + safeVal + '\';renderCrearMenuOpts()">'
-        + '<span class="crear-option-name" style="font-size:11px;white-space:normal;line-height:1.3;">' + short + '</span>'
-        + '</div>';
+    document.getElementById('crear-pescado-opts').innerHTML = items.map(function(r) {
+      var short = r.name.length > 26 ? r.name.slice(0,26)+'…' : r.name;
+      var safe  = r.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      return '<div class="crear-option crear-option-recipe' + (r.name === _crearPesc ? ' sel' : '') + '" onclick="_crearPesc=\'' + safe + '\';renderCrearMenuOpts()">'
+        + '<span class="crear-option-name">' + short + '</span></div>';
     }).join('');
-  }
-  document.getElementById('crear-pescado-opts').innerHTML  = bankOpts('pescado', _crearPesc, '_crearPesc');
-  document.getElementById('crear-proteina-opts').innerHTML = bankOpts('carne',   _crearProt, '_crearProt');
-  document.getElementById('crear-verdura-opts').innerHTML  = bankOpts('verdura',  _crearVerd, '_crearVerd');
+  })();
+
+  // Proteína — MULTI, del banco (carne)
+  (function() {
+    var items = getRecetasByCat('carne');
+    if (items.length === 0) {
+      document.getElementById('crear-proteina-opts').innerHTML = '<div class="crear-bank-empty">Añade recetas de carne al banco 📝</div>';
+      return;
+    }
+    document.getElementById('crear-proteina-opts').innerHTML = items.map(function(r, idx) {
+      var isSel = _crearProtArr.indexOf(r.name) >= 0;
+      var short = r.name.length > 22 ? r.name.slice(0,22)+'…' : r.name;
+      return '<div class="crear-option crear-option-recipe crear-multi' + (isSel ? ' sel' : '') + '" onclick="toggleProteinaByIdx(' + idx + ')">'
+        + '<span class="crear-cb">' + (isSel ? '✓' : '') + '</span>'
+        + '<span class="crear-option-name">' + short + '</span></div>';
+    }).join('');
+  })();
+
+  // Cena — MULTI, todas las recetas excepto arroz/pasta/legumbre
+  (function() {
+    var items = getRecetas().filter(function(r){ return r.cat !== 'arroz' && r.cat !== 'pasta' && r.cat !== 'legumbre'; });
+    if (items.length === 0) {
+      document.getElementById('crear-cena-opts').innerHTML = '<div class="crear-bank-empty">Añade recetas al banco 📝</div>';
+      return;
+    }
+    document.getElementById('crear-cena-opts').innerHTML = items.map(function(r, idx) {
+      var isSel = _crearCenaArr.indexOf(r.name) >= 0;
+      var short = r.name.length > 22 ? r.name.slice(0,22)+'…' : r.name;
+      return '<div class="crear-option crear-option-recipe crear-multi' + (isSel ? ' sel' : '') + '" onclick="toggleCenaByIdx(' + idx + ')">'
+        + '<span class="crear-cb">' + (isSel ? '✓' : '') + '</span>'
+        + '<span class="crear-option-name">' + short + '</span></div>';
+    }).join('');
+  })();
+
+  // Verdura — MULTI, del banco (verdura)
+  (function() {
+    var items = getRecetasByCat('verdura');
+    if (items.length === 0) {
+      document.getElementById('crear-verdura-opts').innerHTML = '<div class="crear-bank-empty">Añade recetas de verdura al banco 📝</div>';
+      return;
+    }
+    document.getElementById('crear-verdura-opts').innerHTML = items.map(function(r, idx) {
+      var isSel = _crearVerdArr.indexOf(r.name) >= 0;
+      var short = r.name.length > 22 ? r.name.slice(0,22)+'…' : r.name;
+      return '<div class="crear-option crear-option-recipe crear-multi' + (isSel ? ' sel' : '') + '" onclick="toggleVerduraByIdx(' + idx + ')">'
+        + '<span class="crear-cb">' + (isSel ? '✓' : '') + '</span>'
+        + '<span class="crear-option-name">' + short + '</span></div>';
+    }).join('');
+  })();
 }
 
 function confirmarCrearMenu() {
-  localStorage.setItem('legumbre-' + weekOffset, _crearLeg);
-  if (_crearPesc) localStorage.setItem('pescado-'  + weekOffset, _crearPesc);
-  if (_crearProt) localStorage.setItem('proteina-' + weekOffset, _crearProt);
-  if (_crearVerd) localStorage.setItem('verdura-'  + weekOffset, _crearVerd);
+  localStorage.setItem('legumbre-'  + weekOffset, _crearLeg);
+  if (_crearPesc) localStorage.setItem('pescado-' + weekOffset, _crearPesc);
+  localStorage.setItem('proteinas-' + weekOffset, JSON.stringify(_crearProtArr));
+  localStorage.setItem('cenas-'     + weekOffset, JSON.stringify(_crearCenaArr));
+  localStorage.setItem('verduras-'  + weekOffset, JSON.stringify(_crearVerdArr));
   weekVariants[weekOffset] = _crearTup;
   localStorage.setItem('menuConfirmed-' + weekOffset, '1');
   cerrarCrearMenu();
@@ -3857,8 +3955,9 @@ function renderMenu() {
   const monday = getMonday(weekOffset);
   const legumbre = getCurrentLegumbre().label;
   const pescNombre = getCurrentPescadoName();
-  const protNombre = getCurrentProteinaName();
-  const verdNombre = getCurrentVerduraNombre();
+  const protArr    = getCurrentProteinasArr();
+  const cenaArr    = getCurrentCenasArr();
+  const verdArr    = getCurrentVerdurasArr();
   document.getElementById('day-grid').innerHTML = dayTemplates.map((d, i) => {
     const dayDate = new Date(monday); dayDate.setDate(dayDate.getDate() + i);
     const dayName = ['Lunes','Martes','Miér.','Jueves','Viernes'][i];
@@ -3873,15 +3972,21 @@ function renderMenu() {
       lunchHTML = `<div class="meal-text">${d.lunchText}</div>`;
     }
 
-    // Dynamic overrides based on selections
-    var dinnerOverride = d.dinner;
+    // Dynamic overrides based on selections (rotation across days)
+    var dinnerOverride    = null;
     var lunchTextOverride = d.lunchText;
-    if (i === 0) dinnerOverride = protNombre;
+    if (i === 0) dinnerOverride = protArr.length > 0 ? protArr[0 % protArr.length] : d.dinner;
     if (i === 1) dinnerOverride = pescNombre;
     if (i === 2) {
-      dinnerOverride = protNombre;
-      lunchTextOverride = verdNombre;
+      dinnerOverride    = protArr.length > 0 ? protArr[1 % protArr.length] : d.dinner;
+      lunchTextOverride = verdArr.length > 0 ? verdArr[0 % verdArr.length] : d.lunchText;
     }
+    if (i === 3) {
+      if      (cenaArr.length > 0) dinnerOverride = cenaArr[0 % cenaArr.length];
+      else if (protArr.length > 0) dinnerOverride = protArr[2 % protArr.length];
+      else                         dinnerOverride = d.dinner;
+    }
+    if (i === 4 && cenaArr.length >= 2) dinnerOverride = cenaArr[1 % cenaArr.length];
 
     // Recompute lunchHTML with overrides for fijo type
     if (d.lunchType === 'fijo') {
@@ -3902,6 +4007,8 @@ function renderMenu() {
       cenaHTML = stripLabel(mo[i+'-cena']);
     } else if (dayEdit && dayEdit.cena) {
       cenaHTML = '<div class="meal-text">' + dayEdit.cena + '</div>';
+    } else if (dinnerOverride) {
+      cenaHTML = '<div class="meal-text">' + dinnerOverride + '</div>';
     } else if (d.dinnerType === 'aleatorio') {
       var viernesRec = getViernesCena();
       if (viernesRec) {
@@ -3912,7 +4019,7 @@ function renderMenu() {
         cenaHTML = '<div class="meal-text" style="color:var(--muted)">—</div>';
       }
     } else {
-      cenaHTML = '<div class="meal-text">' + (dinnerOverride || '') + '</div>';
+      cenaHTML = '<div class="meal-text">' + (d.dinner || '') + '</div>';
     }
     return '<div class="day-card' + (d.gym ? ' gym' : '') + '" id="day-card-' + i + '">'
       + '<div class="day-card-stripe"></div>'
@@ -5408,13 +5515,16 @@ setTimeout(function(){
     <div class="crear-options" id="crear-tupper-opts" style="grid-template-columns:1fr 1fr;"></div>
 
     <div class="crear-section-label" style="margin-top:18px;">🐟 Pescado · Martes cena</div>
-    <div class="crear-options" id="crear-pescado-opts" style="grid-template-columns:1fr 1fr 1fr;"></div>
+    <div class="crear-options" id="crear-pescado-opts" style="grid-template-columns:1fr 1fr;"></div>
 
-    <div class="crear-section-label" style="margin-top:18px;">🍗 Proteína · Fajitas</div>
-    <div class="crear-options" id="crear-proteina-opts" style="grid-template-columns:1fr 1fr 1fr;"></div>
+    <div class="crear-section-label" style="margin-top:18px;">🍗 Proteína · Lunes y Miércoles <span class="crear-multi-hint">multi</span></div>
+    <div class="crear-options" id="crear-proteina-opts" style="grid-template-columns:1fr 1fr;"></div>
 
-    <div class="crear-section-label" style="margin-top:18px;">🥦 Verdura · Miércoles</div>
-    <div class="crear-options" id="crear-verdura-opts" style="grid-template-columns:1fr 1fr 1fr;"></div>
+    <div class="crear-section-label" style="margin-top:18px;">🌙 Cena · Jueves y Viernes <span class="crear-multi-hint">multi</span></div>
+    <div class="crear-options" id="crear-cena-opts" style="grid-template-columns:1fr 1fr;"></div>
+
+    <div class="crear-section-label" style="margin-top:18px;">🥦 Verdura · Miércoles <span class="crear-multi-hint">multi</span></div>
+    <div class="crear-options" id="crear-verdura-opts" style="grid-template-columns:1fr 1fr;"></div>
 
     <button class="btn-generar" onclick="confirmarCrearMenu()">Generar menú ✓</button>
   </div>
