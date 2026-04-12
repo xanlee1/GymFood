@@ -4036,7 +4036,7 @@ function renderMenu() {
       + '<div class="day-left">'
       + '<div class="day-name">' + d.name + '</div>'
       + '<div class="day-date">' + formatDate(dayDate) + '</div>'
-      + '<span class="day-badge ' + (d.gym ? 'badge-gym' : 'badge-rest') + '">' + (d.gym ? d.gymDay.split('·')[0].trim() : 'Descanso') + '</span>'
+      + '<span class="day-badge ' + (d.gym ? 'badge-gym' : 'badge-rest') + '">' + (d.gym ? d.gymDay.split('·')[0].trim() : '–') + '</span>'
       + '</div>'
       + '<div class="day-meals">'
       + '<div class="meal-row" data-day="' + i + '" data-slot="comida" ondragover="event.preventDefault()" ondrop="onMealDrop(event,' + i + ',\'comida\')" ontouchstart="onMealTouchStart(event,' + i + ',\'comida\')" id="meal-slot-' + i + '-comida">'
