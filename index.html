@@ -187,7 +187,7 @@
   .day-card-stripe { width:4px; flex-shrink:0; background:#444; }
   .day-card.gym .day-card-stripe { background:var(--accent); }
   .day-card-body { display:flex; flex:1; align-items:stretch; }
-  .day-left { flex:0 0 80px; padding:12px 10px 12px 14px; display:flex; flex-direction:column; justify-content:center; border-right:1px solid var(--border); }
+  .day-left { flex:0 0 76px; padding:12px 8px 12px 14px; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; border-right:1px solid var(--border); }
   .day-name { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; line-height:1.1; }
   .day-date { font-size:11px; color:var(--muted); margin-top:2px; }
   .day-badge { font-size:9px; font-weight:500; letter-spacing:0.5px; padding:2px 6px; border-radius:4px; text-transform:uppercase; margin-top:5px; display:inline-block; }
@@ -1872,9 +1872,9 @@ function changeWeek(dir) {
 const dayTemplates = [
   { name:'Lunes',     gym:true,  gymDay:'Pecho · Hombro · Tríceps', lunchType:'legumbre', dinner:'Fajita de pollo con pimientos y cebolla' },
   { name:'Martes',    gym:true,  gymDay:'Espalda · Bíceps',          lunchType:'pasta-fija', dinner:'Merluza/Salmón con patata cocida' },
-  { name:'Miércoles', gym:false, gymDay:null,                         lunchType:'fijo', lunchText:'Muslo de pollo al horno con patata, pimiento y brócoli', dinner:'Fajita de pollo con pimientos y cebolla' },
+  { name:'Miér.',     gym:false, gymDay:null,                         lunchType:'fijo', lunchText:'Muslo de pollo al horno con patata, pimiento y brócoli', dinner:'Fajita de pollo con pimientos y cebolla' },
   { name:'Jueves',    gym:true,  gymDay:'Pierna',                     lunchType:'pasta-fija', dinner:'Muslo de pollo' },
-  { name:'Viernes',   gym:true,  gymDay:'Brazos · Hombro posterior',  lunchType:'fijo', lunchText:'Huevos revueltos con bacon, champiñones y tomate', dinnerType:'aleatorio', dinner:'' },
+  { name:'Vier.',     gym:true,  gymDay:'Brazos · Hombro posterior',  lunchType:'fijo', lunchText:'Huevos revueltos con bacon, champiñones y tomate', dinnerType:'aleatorio', dinner:'' },
 ];
 
 // ── STORES (dinámicas según semana) ──────────────────────────────────────────
@@ -3804,7 +3804,7 @@ function renderMenu() {
   const legumbre = getCurrentLegumbre().label;
   document.getElementById('day-grid').innerHTML = dayTemplates.map((d, i) => {
     const dayDate = new Date(monday); dayDate.setDate(dayDate.getDate() + i);
-    const dayName = ['Lunes','Martes','Miércoles','Jueves','Viernes'][i];
+    const dayName = ['Lunes','Martes','Miér.','Jueves','Vier.'][i];
     const dayEdit = {};
 
     let lunchHTML = '';
