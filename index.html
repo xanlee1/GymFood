@@ -1671,6 +1671,59 @@
   }
   .crear-overlay.visible .crear-sheet { transform:translateY(0); }
   .crear-handle { width:36px; height:4px; background:rgba(255,255,255,0.18); border-radius:2px; margin:0 auto 18px; }
+
+  /* ── MEAL PICKER ──────────────────────────────────────────────────────────── */
+  .meal-picker-overlay {
+    position:fixed; inset:0; z-index:4500;
+    display:none; align-items:flex-end;
+  }
+  .meal-picker-overlay.open { display:flex; }
+  .meal-picker-backdrop {
+    position:absolute; inset:0;
+    background:rgba(0,0,0,0.6); backdrop-filter:blur(2px);
+  }
+  .meal-picker-sheet {
+    position:relative; z-index:1; width:100%;
+    background:var(--surface); border-radius:20px 20px 0 0;
+    max-height:80vh; display:flex; flex-direction:column;
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .meal-picker-handle {
+    width:36px; height:4px; background:rgba(255,255,255,0.18);
+    border-radius:2px; margin:10px auto 0; flex-shrink:0;
+  }
+  .meal-picker-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 20px 8px; flex-shrink:0;
+  }
+  .meal-picker-title {
+    font-size:15px; font-weight:700; color:var(--text);
+  }
+  .meal-picker-close {
+    background:none; border:none; color:var(--muted);
+    font-size:20px; cursor:pointer; padding:4px 6px;
+  }
+  .meal-picker-list {
+    overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding:4px 14px 20px; flex:1; min-height:0;
+  }
+  .meal-picker-cat {
+    font-size:10px; font-weight:700; letter-spacing:1px;
+    text-transform:uppercase; padding:10px 2px 5px;
+  }
+  .meal-picker-item {
+    display:block; width:100%; text-align:left;
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:10px; padding:11px 14px; margin-bottom:6px;
+    font-size:14px; color:var(--text); cursor:pointer; box-sizing:border-box;
+  }
+  .meal-picker-item.current {
+    border-color:var(--accent); background:rgba(200,255,0,0.08);
+  }
+  .meal-picker-item.current::after {
+    content:' ✓'; color:var(--accent); font-size:12px; font-weight:700;
+  }
+  .meal-slot-content { cursor:pointer; }
   .crear-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; margin-bottom:18px; }
   .crear-section-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
   .crear-options { display:grid; gap:10px; margin-bottom:22px; }
@@ -2100,6 +2153,74 @@ function resetMealOverrides() {
   renderBatchCooking();
 }
 
+// ── MEAL PICKER ───────────────────────────────────────────────────────────────
+var _pickerDay = -1;
+var _pickerSlot = '';
+
+function openMealPicker(dayIdx, slot) {
+  // Ignore if a drag just completed
+  if (mealTouchActive) return;
+
+  _pickerDay  = dayIdx;
+  _pickerSlot = slot;
+
+  // Detect current meal text to highlight it
+  var slotEl = document.getElementById('meal-slot-' + dayIdx + '-' + slot);
+  var currentText = slotEl ? (slotEl.querySelector('.meal-text') || {}).textContent || '' : '';
+
+  // Title
+  var titleEl = document.getElementById('meal-picker-title');
+  if (titleEl) titleEl.textContent = 'Cambiar ' + (slot === 'comida' ? 'comida' : 'cena') + ' · ' + ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'][dayIdx] || '';
+
+  // Build list
+  var cats = [
+    { key:'arroz',    label:'🍚 Arroz',    color:'#00d4ff' },
+    { key:'pasta',    label:'🍝 Pasta',    color:'#ff6b35' },
+    { key:'carne',    label:'🥩 Carne',    color:'#ff4444' },
+    { key:'pescado',  label:'🐟 Pescado',  color:'#4fc3f7' },
+    { key:'legumbre', label:'🫘 Legumbre', color:'#a882ff' },
+    { key:'huevos',   label:'🥚 Huevos',  color:'#ffd54f' },
+    { key:'verdura',  label:'🥦 Verdura', color:'#a8e6a3' },
+    { key:null,       label:'⚡ Otros',    color:'#888888' },
+  ];
+  var recetas = getRecetas();
+  var html = '';
+  cats.forEach(function(cat) {
+    var items = recetas.filter(function(r) {
+      return cat.key === null
+        ? (!r.cat || ['arroz','pasta','carne','pescado','legumbre','huevos','verdura'].indexOf(r.cat) === -1)
+        : r.cat === cat.key;
+    });
+    if (!items.length) return;
+    html += '<div class="meal-picker-cat" style="color:' + cat.color + '">' + cat.label + '</div>';
+    items.forEach(function(r) {
+      var isCurrent = currentText && currentText.trim() === r.name.trim();
+      var safeName = r.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      html += '<button class="meal-picker-item' + (isCurrent ? ' current' : '') + '" onclick="selectMealFromPicker(\'' + safeName + '\')">' + r.name + '</button>';
+    });
+  });
+  if (!html) html = '<div style="color:var(--muted);font-size:13px;padding:16px 2px;">No hay recetas en el banco todavía.</div>';
+
+  document.getElementById('meal-picker-list').innerHTML = html;
+  document.getElementById('meal-picker-overlay').classList.add('open');
+}
+
+function selectMealFromPicker(name) {
+  if (_pickerDay < 0) return;
+  var overrides = getMealOverrides();
+  overrides[_pickerDay + '-' + _pickerSlot] = '<div class="meal-text">' + name + '</div>';
+  saveMealOverrides(overrides);
+  closeMealPicker();
+  renderMenu();
+  renderBatchCooking();
+}
+
+function closeMealPicker() {
+  document.getElementById('meal-picker-overlay').classList.remove('open');
+  _pickerDay = -1;
+  _pickerSlot = '';
+}
+
 // ── MEAL OVERRIDES ────────────────────────────────────────────────────────────
 function getMealOverrides() {
   try { return JSON.parse(localStorage.getItem('meal-overrides-' + getCurrentVariantKey()) || '{}'); } catch(e) { return {}; }
@@ -2424,6 +2545,18 @@ function eliminarReceta(i) {
   renderRecetasPanel();
 }
 
+function duplicarReceta(i) {
+  var recetas = getRecetas();
+  var r = recetas[i];
+  if (!r) return;
+  var copia = { name: r.name + ' (copia)', type: r.type || 'ambas', cat: r.cat || null };
+  recetas.splice(i + 1, 0, copia);
+  saveRecetas(recetas);
+  renderRecetasPanel();
+  // Abrir edición de la copia para que el usuario pueda renombrarla
+  setTimeout(function() { abrirEditarReceta(i + 1); }, 80);
+}
+
 // Drag from panel to day card
 function onRecetaDragStart(e, idx) {
   recetasDragItem = getRecetas()[idx];
@@ -2526,6 +2659,7 @@ function showRecetaCtxMenu(idx, x, y) {
   menu.style.cssText = 'left:' + left + 'px;top:' + top + 'px;';
   menu.innerHTML =
     '<div class="receta-ctx-item" onclick="closeRecetaCtxMenu();abrirEditarReceta(' + idx + ')">✏️ Editar</div>' +
+    '<div class="receta-ctx-item" onclick="closeRecetaCtxMenu();duplicarReceta(' + idx + ')">📋 Duplicar</div>' +
     '<div class="receta-ctx-item danger" onclick="closeRecetaCtxMenu();eliminarReceta(' + idx + ')">🗑 Eliminar</div>';
   document.body.appendChild(menu);
   document.addEventListener('touchstart', closeRecetaCtxMenu, { once: true, passive: true });
@@ -4052,11 +4186,11 @@ function renderMenu() {
       + '<div class="day-meals">'
       + '<div class="meal-row" data-day="' + i + '" data-slot="comida" ondragover="event.preventDefault()" ondrop="onMealDrop(event,' + i + ',\'comida\')" ontouchstart="onMealTouchStart(event,' + i + ',\'comida\')" id="meal-slot-' + i + '-comida">'
       + '<div class="meal-label">Comida</div>'
-      + '<div class="meal-slot-content">' + comidaHTML + '</div>'
+      + '<div class="meal-slot-content" onclick="openMealPicker(' + i + ',\'comida\')">' + comidaHTML + '</div>'
       + '</div>'
       + '<div class="meal-row" data-day="' + i + '" data-slot="cena" ondragstart="onMealDragStart(event,' + i + ',\'cena\')" ondragend="onMealDragEnd(event)" ondragover="onMealDragOver(event,' + i + ',\'cena\')" ondrop="onMealDrop(event,' + i + ',\'cena\')" ontouchstart="onMealTouchStart(event,' + i + ',\'cena\')" id="meal-slot-' + i + '-cena">'
       + '<div class="meal-label">Cena</div>'
-      + '<div class="meal-slot-content">' + cenaHTML + '</div>'
+      + '<div class="meal-slot-content" onclick="openMealPicker(' + i + ',\'cena\')">' + cenaHTML + '</div>'
       + '</div>'
       + '</div>'
       + '</div>'
@@ -4115,11 +4249,11 @@ function renderWeekend() {
         + '<div class="day-meals">'
         + '<div class="meal-row" id="meal-slot-'+idx+'-comida" data-day="'+idx+'" data-slot="comida" ondragover="event.preventDefault()" ondrop="onMealDrop(event,'+idx+',\'comida\')" ontouchstart="onMealTouchStart(event,'+idx+',\'comida\')">'
         + '<div class="meal-label">Comida</div>'
-        + '<div class="meal-slot-content">'+comidaHTML+'</div>'
+        + '<div class="meal-slot-content" onclick="openMealPicker('+idx+',\'comida\')">'+comidaHTML+'</div>'
         + '</div>'
         + '<div class="meal-row" id="meal-slot-'+idx+'-cena" data-day="'+idx+'" data-slot="cena" ondragover="event.preventDefault()" ondrop="onMealDrop(event,'+idx+',\'cena\')" ontouchstart="onMealTouchStart(event,'+idx+',\'cena\')">'
         + '<div class="meal-label">Cena</div>'
-        + '<div class="meal-slot-content">'+cenaHTML+'</div>'
+        + '<div class="meal-slot-content" onclick="openMealPicker('+idx+',\'cena\')">'+cenaHTML+'</div>'
         + '</div>'
         + '</div>'
         + '</div>'
@@ -5526,6 +5660,19 @@ setTimeout(function(){
 </div>
 
 </div><!-- /main-scroll -->
+
+<!-- MEAL PICKER MODAL -->
+<div class="meal-picker-overlay" id="meal-picker-overlay">
+  <div class="meal-picker-backdrop" onclick="closeMealPicker()"></div>
+  <div class="meal-picker-sheet">
+    <div class="meal-picker-handle"></div>
+    <div class="meal-picker-header">
+      <span class="meal-picker-title" id="meal-picker-title">Cambiar plato</span>
+      <button class="meal-picker-close" onclick="closeMealPicker()">✕</button>
+    </div>
+    <div class="meal-picker-list" id="meal-picker-list"></div>
+  </div>
+</div>
 
 <!-- CREAR MENÚ MODAL -->
 <div class="crear-overlay" id="crear-overlay" onclick="if(event.target===this)cerrarCrearMenu()">
