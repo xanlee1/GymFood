@@ -135,38 +135,99 @@
 
   /* TABS */
   .tabs-container { margin:6px 0 0; }
-  .tabs-nav {
-    display: flex;
+
+  /* CART BUTTON (Compra) */
+  .compra-cart-btn {
     position: fixed;
-    bottom: 0;
-    left: 0; right: 0;
-    z-index: 100;
-    background: rgba(15,15,15,0.92);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border-top: 1px solid rgba(255,255,255,0.08);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    top: calc(env(safe-area-inset-top, 0px) + 14px);
+    right: 14px;
+    z-index: 110;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(15,15,15,0.75);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text);
+    font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
   }
-  .tab-btn {
-    flex: 1;
+
+  /* FLOATING BUTTONS (Recetas / Recrear) */
+  .menu-fab-row {
+    position: fixed;
+    left: 16px; right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 500;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 2px;
-    padding: 10px 4px 8px;
+    gap: 10px;
+  }
+  .fab-circle {
+    flex: 0 0 auto;
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: rgba(20,20,20,0.92);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--text);
+    font-size: 22px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  }
+  .fab-pill {
+    flex: 1;
+    background: var(--accent);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 1.5px;
+    border: none;
+    border-radius: 999px;
+    padding: 16px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(200,255,0,0.25);
+  }
+
+  /* COMPRA OVERLAY */
+  .compra-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: var(--bg);
+    display: none;
+    flex-direction: column;
+  }
+  .compra-overlay.open { display: flex; }
+  .compra-overlay-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px 14px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .compra-overlay-back {
     background: none; border: none;
     color: var(--muted);
+    font-size: 15px;
     cursor: pointer;
-    position: relative;
-    transition: color 0.18s;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.3px;
+    padding: 4px 0;
   }
-  .tab-btn .tab-icon { font-size: 26px; line-height: 1; }
-  .tab-btn .tab-label { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1px; }
-  .tab-btn.active { color: var(--accent); }
-  .tab-btn.active .tab-icon { filter: drop-shadow(0 0 6px rgba(200,255,0,0.5)); }
+  .compra-overlay-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1.5px;
+  }
+  .compra-overlay-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 14px 8px 120px;
+  }
 
 
 
@@ -196,14 +257,14 @@
   .meal-row { padding:9px 14px; border-bottom:1px solid var(--border); flex:1; }
   .meal-row:last-child { border-bottom:none; }
   .meal-label { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:3px; }
-  .meal-row { padding:10px 16px; border-bottom:1px solid var(--border); }
+  .meal-row { padding:16px; border-bottom:1px solid var(--border); }
   .meal-row:last-child { border-bottom:none; }
-  .meal-label { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:3px; }
-  .meal-text { font-size:15px; line-height:1.4; }
+  .meal-label { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:6px; }
+  .meal-text { font-size:19px; line-height:1.3; font-weight:600; }
   .meal-text.col-pasta { color:var(--accent2); }
   .meal-text.col-arroz { color:var(--accent3); }
   .meal-text.col-legumbre { color:#a882ff; }
-  .meal-hint { font-size:13px; color:var(--muted); margin-top:2px; font-style:italic; }
+  .meal-hint { font-size:13px; color:var(--muted); margin-top:3px; font-style:italic; }
 
   /* COMPRA */
   .store-section { margin-bottom:20px; }
@@ -352,69 +413,6 @@
     pointer-events: none;
   }
 
-  /* SMOOTH TAB TRANSITIONS */
-  .tabs-panels {
-    position: relative;
-    overflow: hidden;
-  }
-  .tab-panel { display:none; padding:14px 8px 80px; }
-  .tab-panel.active { display:block; }
-  /* BATCH COOKING */
-  .batch-section {
-    margin-top: 24px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .batch-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 12px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(200,255,0,0.04);
-  }
-  .batch-icon { font-size: 20px; }
-  .batch-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 2px;
-    color: var(--accent);
-  }
-  .batch-sub {
-    font-size: 11px;
-    color: var(--muted);
-    margin-left: auto;
-    letter-spacing: 0.5px;
-  }
-  .batch-step {
-    padding: 8px 10px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-  .batch-step:last-child { border-bottom: none; }
-  .batch-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    color: var(--accent);
-    line-height: 1;
-    flex: 0 0 28px;
-  }
-  .batch-step-content {}
-  .batch-step-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-  .batch-step-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
-  .batch-tip {
-    padding: 10px 16px;
-    background: rgba(200,255,0,0.04);
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--muted);
-    font-style: italic;
-  }
-
   /* CLAUDE BUTTON */
   .claude-btn-wrap {
     position: fixed;
@@ -445,175 +443,7 @@
   }
   .claude-btn-icon { font-size: 18px; }
   /* Push tabs content so button doesn't cover it */
-  .tabs-container { padding-bottom: 80px; }
-
-  /* BATCH EDIT */
-  .batch-edit-btn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 13px;
-    padding: 5px 12px;
-    cursor: pointer;
-    margin-left: auto;
-    transition: all 0.15s;
-  }
-  .batch-edit-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .batch-edit-panel {
-    display: none;
-    border-top: 1px solid var(--border);
-    padding: 12px 12px;
-  }
-  .batch-edit-panel.open { display: block; }
-  .batch-step-edit-row {
-    margin-bottom: 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 10px;
-  }
-  .batch-step-edit-title {
-    font-size: 13px;
-    font-weight: 600;
-    width: 100%;
-    background: none;
-    border: none;
-    border-bottom: 1px dashed var(--border);
-    color: var(--text);
-    outline: none;
-    padding: 4px 0;
-    margin-bottom: 6px;
-    font-size: 16px;
-  }
-  .batch-step-edit-desc {
-    font-size: 13px;
-    width: 100%;
-    background: none;
-    border: none;
-    color: var(--muted);
-    outline: none;
-    resize: none;
-    line-height: 1.5;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-  }
-  .batch-edit-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-  .batch-save-btn {
-    background: var(--accent);
-    color: #000;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 15px;
-    letter-spacing: 1px;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 0;
-    flex: 1;
-    cursor: pointer;
-  }
-  .batch-reset-btn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 13px;
-    padding: 10px 16px;
-    cursor: pointer;
-  }
-  /* BATCH EDIT */
-  .batch-step-editing {
-    align-items: flex-start !important;
-    gap: 10px;
-  }
-  .batch-step-edit-title {
-    width: 100%;
-    background: none;
-    border: none;
-    border-bottom: 1px dashed var(--border);
-    color: var(--text);
-    outline: none;
-    font-size: 16px;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    padding: 3px 0;
-    margin-bottom: 6px;
-  }
-  .batch-step-edit-desc {
-    width: 100%;
-    background: none;
-    border: none;
-    color: var(--muted);
-    outline: none;
-    resize: none;
-    font-size: 15px;
-    line-height: 1.5;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .batch-del-step {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 0 4px;
-    flex: 0 0 auto;
-    align-self: flex-start;
-    margin-top: 2px;
-  }
-  .batch-del-step:hover { color: var(--accent2); }
-  .batch-add-step-btn {
-    width: 100%;
-    background: none;
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 13px;
-    padding: 10px;
-    cursor: pointer;
-    margin-top: 8px;
-  }
-  .batch-add-step-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .batch-edit-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-  }
-  .batch-save-btn {
-    background: var(--accent);
-    color: #000;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 15px;
-    letter-spacing: 1px;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 0;
-    flex: 1;
-    cursor: pointer;
-  }
-  .batch-reset-btn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 13px;
-    padding: 10px 14px;
-    cursor: pointer;
-  }
-  .batch-edit-btn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 12px;
-    padding: 4px 10px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .batch-edit-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .tabs-container { padding-left: 8px; padding-right: 8px; padding-bottom: 120px; }
 
   /* LOADING STATE */
   .tab-panel-loading {
@@ -721,26 +551,6 @@
   }
 
   /* RECETAS PANEL */
-  .recetas-fab {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    background: rgba(200,255,0,0.07);
-    border: 1px solid rgba(200,255,0,0.3);
-    border-radius: var(--radius);
-    color: var(--accent);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
-    letter-spacing: 1.5px;
-    padding: 8px 10px;
-    cursor: pointer;
-    margin: 14px 0 4px;
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .recetas-fab:hover { background: rgba(200,255,0,0.12); border-color: rgba(200,255,0,0.6); }
-
   .recetas-overlay {
     position: fixed;
     inset: 0;
@@ -948,17 +758,6 @@
 
 
 
-  .recetas-fab-reset {
-    background: rgba(255,255,255,0.04);
-    border-color: rgba(255,255,255,0.15);
-    color: var(--muted);
-    font-size: 14px;
-    flex: 0 0 auto;
-    width: auto;
-    padding: 8px 10px;
-  }
-  .recetas-fab-reset:hover { border-color: #ff6b6b; color: #ff6b6b; background: rgba(255,107,107,0.06); }
-
   .toast {
     position: fixed;
     bottom: calc(90px + env(safe-area-inset-bottom, 0px));
@@ -1108,18 +907,14 @@
   /* ── iOS UX ───────────────────────────────────────────────────────────────── */
 
   /* Eliminar delay 300ms en todos los elementos interactivos */
-  button, a, .check-item, .tab-btn, .meal-row, .receta-chip,
+  button, a, .check-item, .meal-row, .receta-chip,
   .week-arrow, .day-card,
   [onclick], [ontouchstart] {
     touch-action: manipulation;
   }
 
   /* Spring press en botones — sensación táctil iOS */
-  .tab-btn:active {
-    transform: scale(0.88);
-    transition: transform 0.08s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  .week-arrow:active, .recetas-fab:active {
+  .week-arrow:active, .fab-circle:active, .fab-pill:active, .compra-cart-btn:active {
     transform: scale(0.93);
     transition: transform 0.08s cubic-bezier(0.34,1.56,0.64,1);
   }
@@ -1209,8 +1004,8 @@
     content:' ✓'; color:var(--accent); font-size:12px; font-weight:700;
   }
   .meal-slot-content { cursor:pointer; }
-  .meal-with-thumb { display:flex; align-items:center; gap:10px; }
-  .meal-thumb { width:44px; height:44px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+  .meal-with-thumb { display:flex; align-items:center; gap:14px; }
+  .meal-thumb { width:84px; height:84px; border-radius:14px; object-fit:cover; flex-shrink:0; }
   .meal-text-col { flex:1; min-width:0; }
 
   .crear-overlay {
@@ -1313,10 +1108,8 @@
 </head>
 <body>
 
-<div class="tabs-nav" id="tabs-nav">
-  <button class="tab-btn active" onclick="switchTab('menu',this)"><span class="tab-icon">🍽</span><span class="tab-label">Menú</span></button>
-  <button class="tab-btn" onclick="switchTab('compra',this)"><span class="tab-icon">🛒</span><span class="tab-label">Compra</span></button>
-</div>
+<button class="compra-cart-btn" id="compra-cart-btn" onclick="abrirCompra()" aria-label="Lista de la compra">🛒</button>
+
 <div class="cal-strip" id="cal-strip">
   <div class="cal-header">
     <button class="cal-arrow" onclick="changeWeek(-1)">‹</button>
@@ -1329,49 +1122,37 @@
 <div class="main-scroll-container" id="main-scroll">
 <div class="tabs-container" id="tabs-container" style="padding-top:calc(105px + env(safe-area-inset-top, 0px));">
 
-  <div class="tabs-panels-wrap"><div class="tabs-panels-inner" id="tabs-slider">
-  <div id="tab-menu" class="tab-panel active">
-
-    <div id="menu-empty-state" class="menu-empty-state" style="display:none;">
-      <div class="menu-empty-icon">🗓</div>
-      <div class="menu-empty-title">Sin menú esta semana</div>
-      <div class="menu-empty-sub">Elige tu legumbre y tupper para generar el plan de comidas</div>
-      <button class="btn-crear-menu" onclick="openCrearMenu()">Crear menú</button>
-    </div>
-
-    <div id="menu-content-wrap">
-      <div id="day-grid-wrap" class="day-grid-wrap">
-        <div class="day-grid" id="day-grid"></div>
-        <div class="day-grid" id="weekend-grid" style="display:none;margin-top:8px;"></div>
-        <button class="btn-weekend" id="btn-weekend" onclick="toggleWeekend()">＋ Añadir fin de semana</button>
-        <div id="menu-bottom-actions" style="padding:4px 0;display:flex;gap:8px;margin-top:4px;">
-          <button class="recetas-fab recetas-fab-reset" onclick="recrearMenu()" style="gap:4px;">↺ Recrear</button>
-          <button class="recetas-fab" onclick="abrirRecetas()">📝 Recetas</button>
-        </div>
-      </div><!-- /day-grid-wrap -->
-    </div>
-
-    <!-- BATCH COOKING -->
-    <div id="batch-section-wrap" class="batch-section">
-      <div class="batch-header">
-        <span class="batch-icon">🍳</span>
-        <span class="batch-title">BATCH COOKING</span>
-      </div>
-      <div id="batch-content"></div>
-    </div>
-    </div>
+  <div id="menu-empty-state" class="menu-empty-state" style="display:none;">
+    <div class="menu-empty-icon">🗓</div>
+    <div class="menu-empty-title">Sin menú esta semana</div>
+    <div class="menu-empty-sub">Elige tu legumbre y tupper para generar el plan de comidas</div>
+    <button class="btn-crear-menu" onclick="openCrearMenu()">Crear menú</button>
   </div>
 
-  <div id="tab-compra" class="tab-panel">
-    <!-- Tiendas + total -->
+  <div id="menu-content-wrap">
+    <div id="day-grid-wrap" class="day-grid-wrap">
+      <div class="day-grid" id="day-grid"></div>
+      <div class="day-grid" id="weekend-grid" style="display:none;margin-top:8px;"></div>
+      <button class="btn-weekend" id="btn-weekend" onclick="toggleWeekend()">＋ Añadir fin de semana</button>
+    </div><!-- /day-grid-wrap -->
+  </div>
+
+</div>
+</div><!-- /main-scroll -->
+
+<div class="menu-fab-row">
+  <button class="fab-circle" onclick="abrirRecetas()" aria-label="Recetas">📝</button>
+  <button class="fab-pill" onclick="recrearMenu()">↺ Recrear</button>
+</div>
+
+<div class="compra-overlay" id="compra-overlay">
+  <div class="compra-overlay-header">
+    <button class="compra-overlay-back" onclick="cerrarCompra()">← Volver</button>
+    <span class="compra-overlay-title">🛒 Lista de la compra</span>
+  </div>
+  <div class="compra-overlay-body">
     <div id="compra-content" data-c-section="compra"></div>
-
   </div>
-
-    
-  </div>
-
-  </div></div><!-- /tabs-panels-inner /tabs-panels-wrap -->
 </div>
 
 <script>
@@ -1566,7 +1347,6 @@ function getCurrentLegumbre() {
 function setLegumbre(key) {
   localStorage.setItem('legumbre-' + weekOffset, key);
   renderMenu();
-  renderBatchCooking();
 }
 
 function renderLegumbreBanner() {
@@ -1602,7 +1382,6 @@ function resetMealOverrides() {
   var vKey = getCurrentVariantKey();
   localStorage.removeItem('meal-overrides-' + vKey);
   renderMenu();
-  renderBatchCooking();
 }
 
 // ── MEAL PICKER ───────────────────────────────────────────────────────────────
@@ -1666,7 +1445,6 @@ function selectMealFromPicker(name) {
   saveMealOverrides(overrides);
   closeMealPicker();
   renderMenu();
-  renderBatchCooking();
 }
 
 function closeMealPicker() {
@@ -1732,7 +1510,6 @@ function onMealDrop(e, targetDay, targetSlot) {
   overrides[dragSource.dayIdx + '-' + dragSource.slot] = targetHTML;
   saveMealOverrides(overrides);
   renderMenu();
-  renderBatchCooking();
   onMealDragEnd(e);
 }
 
@@ -1826,7 +1603,6 @@ function onMealTouchEnd(e) {
   overrides[dragSource.dayIdx + '-' + dragSource.slot] = targetHTML;
   saveMealOverrides(overrides);
   renderMenu();
-  renderBatchCooking();
   dragSource = null;
 }
 
@@ -1890,7 +1666,6 @@ function asignarReceta(dayIdx, slot) {
   saveMealOverrides(overrides);
   cerrarRecetas();
   renderMenu();
-  renderBatchCooking();
 }
 
 
@@ -1903,6 +1678,15 @@ function getRecetas() {
   try { return JSON.parse(localStorage.getItem('banco-recetas') || '[]'); } catch(e) { return []; }
 }
 function saveRecetas(r) { localStorage.setItem('banco-recetas', JSON.stringify(r)); }
+
+function abrirCompra() {
+  renderCompra();
+  document.getElementById('compra-overlay').classList.add('open');
+}
+
+function cerrarCompra() {
+  document.getElementById('compra-overlay').classList.remove('open');
+}
 
 function abrirRecetas() {
   renderRecetasPanel();
@@ -2301,7 +2085,6 @@ document.addEventListener('drop', function(e) {
     ? '<div class="meal-text col-legumbre">🫘 ' + nombre + '</div><div class="meal-hint">Legumbre de la semana</div>'
     : '<div class="meal-text">' + nombre + '</div>';
   saveMealOverrides(overrides);
-  renderBatchCooking();
 
   // Add displaced meal to recetas bank (if it has real content)
   if (currentText && currentText.length > 2) {
@@ -2444,12 +2227,10 @@ function toggleRecetasEditMode() {
 function abrirNuevaReceta() {
   recetaEditIdx = -1;
   var nombreEl = document.getElementById('receta-edit-nombre');
-  var prepEl   = document.getElementById('receta-edit-prep');
   var catEl    = document.getElementById('receta-edit-cat');
   var ingEl    = document.getElementById('receta-edit-ing');
   var fileEl   = document.getElementById('receta-edit-img-input');
   if (nombreEl) nombreEl.value = '';
-  if (prepEl)   prepEl.value   = '';
   if (catEl)    catEl.value    = '';
   if (ingEl)    ingEl.value    = '';
   if (fileEl)   fileEl.value   = '';
@@ -2465,7 +2246,6 @@ function abrirEditarReceta(idx) {
   recetaEditIdx = idx;
 
   var nombreEl = document.getElementById('receta-edit-nombre');
-  var prepEl   = document.getElementById('receta-edit-prep');
   if (nombreEl) nombreEl.value = r.name || '';
 
   var fileEl = document.getElementById('receta-edit-img-input');
@@ -2473,17 +2253,6 @@ function abrirEditarReceta(idx) {
   _recetaEditImg = r.img || null;
   showRecetaEditImgPreview();
 
-  // Load prep from batchDB or saved custom prep
-  var savedPrep = '';
-  try {
-    var custom = JSON.parse(localStorage.getItem('receta-prep') || '{}');
-    savedPrep = custom[r.name] || '';
-  } catch(e) {}
-  if (!savedPrep) {
-    var info = typeof findBatchInstructions === 'function' ? findBatchInstructions(r.name) : null;
-    savedPrep = info ? info.prep : '';
-  }
-  if (prepEl) prepEl.value = savedPrep;
   // Load category
   var catEl2 = document.getElementById('receta-edit-cat');
   if (catEl2) catEl2.value = r.cat || '';
@@ -2522,13 +2291,6 @@ function guardarEdicionReceta() {
     var recetas = getRecetas();
     recetas.push({ name: nombreEl.value.trim(), type: 'ambas', cat: (catElNew && catElNew.value) ? catElNew.value : null, img: _recetaEditImg || null });
     saveRecetas(recetas);
-    // Save prep if provided
-    var prepEl = document.getElementById('receta-edit-prep');
-    if (prepEl && prepEl.value.trim()) {
-      var custom = {}; try { custom = JSON.parse(localStorage.getItem('receta-prep') || '{}'); } catch(e) {}
-      custom[nombreEl.value.trim()] = prepEl.value.trim();
-      localStorage.setItem('receta-prep', JSON.stringify(custom));
-    }
     var ingEl2 = document.getElementById('receta-edit-ing');
     if (ingEl2 && ingEl2.value.trim()) {
       var custIng = {}; try { custIng = JSON.parse(localStorage.getItem('receta-ingredientes') || '{}'); } catch(e) {}
@@ -2537,17 +2299,14 @@ function guardarEdicionReceta() {
     }
     cerrarEditarReceta();
     renderRecetasPanel();
-    if (typeof renderBatchCooking === 'function') renderBatchCooking();
     return;
   }
   var nombreEl = document.getElementById('receta-edit-nombre');
-  var prepEl   = document.getElementById('receta-edit-prep');
   if (!nombreEl || !nombreEl.value.trim()) return;
 
   var recetas = getRecetas();
   var oldName = recetas[recetaEditIdx].name;
   var newName = nombreEl.value.trim();
-  var newPrep = prepEl ? prepEl.value.trim() : '';
   var ingEl = document.getElementById('receta-edit-ing');
   var newIng = ingEl ? ingEl.value.trim() : '';
 
@@ -2558,12 +2317,6 @@ function guardarEdicionReceta() {
   recetas[recetaEditIdx].img = _recetaEditImg || null;
   saveRecetas(recetas);
 
-  // Save prep instructions keyed by new name
-  var custom = {};
-  try { custom = JSON.parse(localStorage.getItem('receta-prep') || '{}'); } catch(e) {}
-  if (oldName !== newName) delete custom[oldName];
-  if (newPrep) custom[newName] = newPrep;
-  localStorage.setItem('receta-prep', JSON.stringify(custom));
   // Save ingredients
   var custIng2 = {}; try { custIng2 = JSON.parse(localStorage.getItem('receta-ingredientes') || '{}'); } catch(e) {}
   if (oldName !== newName) delete custIng2[oldName];
@@ -2572,7 +2325,6 @@ function guardarEdicionReceta() {
 
   cerrarEditarReceta();
   renderRecetasPanel();
-  if (typeof renderBatchCooking === 'function') renderBatchCooking();
 }
 
 
@@ -2797,7 +2549,6 @@ function getDynamicIngredients() {
 
 
 
-var tabOrder = ['menu', 'compra'];
 
 
 
@@ -3160,10 +2911,8 @@ function recrearMenu() {
   localStorage.removeItem('menuConfirmed-' + weekOffset);
   var contentEl = document.getElementById('menu-content-wrap');
   var emptyEl   = document.getElementById('menu-empty-state');
-  var batchEl   = document.getElementById('batch-section-wrap');
   if (contentEl) contentEl.style.display = 'none';
   if (emptyEl)   emptyEl.style.display   = 'flex';
-  if (batchEl)   batchEl.style.display   = 'none';
   openCrearMenu();
 }
 
@@ -3239,7 +2988,6 @@ function confirmarCrearMenu() {
   localStorage.setItem('menuConfirmed-' + weekOffset, '1');
   cerrarCrearMenu();
   renderMenu();
-  renderBatchCooking();
 
   if (_crearPool.length > POOL_SLOTS.length) {
     showToast('Se colocaron ' + POOL_SLOTS.length + ' platos. Arrastra el resto desde 📝 Recetas.');
@@ -3263,16 +3011,13 @@ function renderMenu() {
   var confirmed = localStorage.getItem('menuConfirmed-' + weekOffset);
   var emptyEl = document.getElementById('menu-empty-state');
   var contentEl = document.getElementById('menu-content-wrap');
-  var batchEl = document.getElementById('batch-section-wrap');
   if (!confirmed) {
     if (emptyEl) emptyEl.style.display = 'flex';
     if (contentEl) contentEl.style.display = 'none';
-    if (batchEl) batchEl.style.display = 'none';
     return;
   }
   if (emptyEl) emptyEl.style.display = 'none';
   if (contentEl) contentEl.style.display = 'block';
-  if (batchEl) batchEl.style.display = '';
   // Days
   const vKey  = getCurrentVariantKey();
   const vData = allVariants[vKey];
@@ -3877,287 +3622,6 @@ function getManualItems() { return getStagingItems(); }
 function renderManualItems() { renderStagingItems(); renderCompra(); }
 
 
-// ── BATCH COOKING ─────────────────────────────────────────────────────────────
-function getBatchKey() {
-  return 'batch-steps-' + getCurrentVariantKey();
-}
-
-function getDefaultBatchSteps() {
-  var vKey = getCurrentVariantKey();
-  var vData = allVariants[vKey];
-  var isPasta = vData.type === 'pasta';
-  var legumbre = getLegumbre(weekOffset).toLowerCase();
-  return isPasta ? [
-    { title: 'Cocina las legumbres', desc: 'Pon a remojo ' + legumbre + ' la noche anterior. Cuécelas 45-60 min con laurel y sal.' },
-    { title: 'Prepara el tupper de pasta', desc: 'Sofríe cebolla, champiñones y carne picada. Añade tomate triturado' + (vKey==='pasta-1'?' y nata':'') + '. Cuece la pasta al dente. Divide en 2 tuppers.' },
-    { title: 'Pollo al horno', desc: 'Muslos con ajo, pimentón, aceite y sal. Hornea 45 min a 200ºC con patata y pimiento.' },
-    { title: 'Fajitas de pollo', desc: 'Saltea pechuga en tiras con pimiento rojo y verde. Divide en 2 raciones.' },
-    { title: 'Prepara los desayunos', desc: 'Madura los aguacates. Ten queso y fiambre accesibles.' }
-  ] : [
-    { title: 'Cocina las legumbres', desc: 'Pon a remojo ' + legumbre + ' la noche anterior. Cuécelas 45-60 min con laurel y sal.' },
-    { title: 'Prepara el tupper de arroz', desc: 'Saltea pollo con ' + (vKey==='arroz-0'?'curry, cebolla y leche de coco':'pimientos, cebolla y champiñones') + '. Cuece arroz basmati. Divide en 2 tuppers.' },
-    { title: 'Pollo al horno', desc: 'Muslos con ajo, pimentón, aceite y sal. Hornea 45 min a 200ºC con patata y pimiento.' },
-    { title: 'Fajitas de pollo', desc: 'Saltea pechuga en tiras con pimiento rojo y verde. Divide en 2 raciones.' },
-    { title: 'Prepara los desayunos', desc: 'Madura los aguacates. Ten queso y fiambre accesibles.' }
-  ];
-}
-
-function getBatchSteps() {
-  try {
-    var saved = localStorage.getItem(getBatchKey());
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  return getDefaultBatchSteps();
-}
-
-function saveBatchSteps(steps) {
-  localStorage.setItem(getBatchKey(), JSON.stringify(steps));
-}
-
-var batchEditMode = false;
-
-
-// ── BATCH COOKING KNOWLEDGE BASE ─────────────────────────────────────────────
-var batchDB = {
-  // ARROZ
-  "arroz con pollo": { prep: "Saltea cebolla y champiñones en sartén. Añade pollo en dados. Agrega arroz basmati con caldo. Cuece 15 min tapado.", cuando: "domingo" },
-  "arroz curry": { prep: "Sofríe cebolla en sartén. Añade pollo en dados, curry y leche de coco light. Cuece 15 min. Arroz basmati aparte.", cuando: "domingo" },
-  "arroz con carne": { prep: "Sofríe cebolla y ajo. Añade carne picada, dórala. Incorpora tomate triturado y especias. Añade arroz con agua.", cuando: "domingo" },
-  // PASTA
-  "pasta bolonesa": { prep: "Sofríe cebolla en sartén. Añade carne picada. Incorpora tomate triturado, sal y orégano. 20 min. Cuece pasta al dente.", cuando: "domingo" },
-  "pasta nata": { prep: "Sofríe bacon en sartén hasta dorar. Añade champiñones. Incorpora nata, sal y pimienta. Cuece pasta. Mezcla.", cuando: "domingo" },
-  "pasta con pollo": { prep: "Saltea pollo en tiras con pimiento y cebolla en sartén. Cuece pasta al dente. Mezcla.", cuando: "domingo" },
-  "pasta pesto": { prep: "Cocina pechuga a la plancha, córtala en tiras. Cuece pasta. Mezcla con pesto. Añade el pollo.", cuando: "domingo" },
-  // LEGUMBRES
-  "lentejas": { prep: "Remojo la noche anterior. Sofríe cebolla, zanahoria y ajo en olla. Añade lentejas, tomate y agua. Cuece 35-40 min.", cuando: "domingo" },
-  "garbanzos": { prep: "Usa garbanzos de bote. Sofríe cebolla, pimiento y tomate en sartén. Añade garbanzos y especias. 10 min.", cuando: "dia" },
-  "alubias": { prep: "Usa alubias de bote. Sofríe cebolla y ajo en olla. Añade alubias, tomate y compango. 20 min.", cuando: "dia" },
-  // POLLO
-  "fajita": { prep: "Corta pechuga en tiras. Saltea en sartén con pimiento rojo y verde. Divide en 2 partes y guarda.", cuando: "domingo" },
-  "muslo": { prep: "Sazona con ajo, pimentón, sal y aceite. Airfryer a 200°C, 20-22 min dando la vuelta a mitad.", cuando: "domingo" },
-  "pechuga": { prep: "Marca pechuga en sartén caliente. Saltea verduras aparte. Combina al final.", cuando: "dia" },
-  "pollo al horno": { prep: "Sazona con ajo, pimentón, sal y aceite. Airfryer a 200°C, 20-25 min.", cuando: "dia" },
-  "pollo con verduras": { prep: "Saltea pollo en tiras con verduras en sartén. Salpimienta y añade especias al gusto.", cuando: "dia" },
-  "wrap": { prep: "Cocina pechuga a la plancha, córtala en tiras. Calienta tortilla en sartén. Rellena al gusto.", cuando: "dia" },
-  "quesadilla": { prep: "Cocina pollo en tiras en sartén. Rellena tortilla con pollo y queso. Tuesta en sartén hasta que el queso se derrita.", cuando: "dia" },
-  // CARNE
-  "carne picada": { prep: "Sofríe cebolla y pimiento en sartén. Añade carne picada, dórala. Añade tomate y especias. 15 min.", cuando: "dia" },
-  "hamburguesa": { prep: "Forma y sazona la hamburguesa. Cocina en sartén/plancha 3-4 min por lado.", cuando: "dia" },
-  "estofado": { prep: "Sofríe cebolla y ajo en olla. Añade carne en trozos. Incorpora patatas, caldo y especias. Cuece tapado 40-50 min.", cuando: "domingo" },
-  "bocadillo": { prep: "Cocina el lomo a la plancha con sal y pimienta. Tuesta el pan. Monta el bocadillo.", cuando: "dia" },
-  // PESCADO
-  "salmon": { prep: "Sazona con sal, limón y eneldo. Airfryer a 190°C, 10-12 min. Patatas: microondas 10 min o airfryer.", cuando: "dia" },
-  "salmon con patatas": { prep: "Sazona con sal, limón y eneldo. Airfryer a 190°C, 10-12 min. Patatas: microondas 10 min o airfryer.", cuando: "dia" },
-  // VERDURAS / HUEVOS
-  "tortilla de patatas": { prep: "Pocha patata y cebolla en sartén 20 min. Mezcla con huevos batidos. Cuaja en sartén antiadherente, voltea.", cuando: "dia" },
-  "tortilla francesa": { prep: "Bate 2-3 huevos con sal. Vierte en sartén con aceite a fuego medio. Añade queso y pavo al cuajar, dobla.", cuando: "dia" },
-  "frittata": { prep: "Sofríe espinacas y tomate en sartén. Añade huevos batidos con queso. Cuaja a fuego bajo y termina en airfryer 5 min.", cuando: "dia" },
-  "revuelto": { prep: "Sofríe verduras en sartén. Añade huevos batidos con sal. Remueve a fuego bajo hasta cuajar. O microondas 1 min.", cuando: "dia" },
-  "berenjena": { prep: "Vacía la berenjena, saltea la pulpa con carne picada y tomate en sartén. Rellena y airfryer a 190°C, 15-18 min.", cuando: "dia" },
-  "pastel de verdura": { prep: "Sofríe verduras variadas en sartén. Mezcla con huevos batidos y queso. Vierte en molde. Horno a 180°C, 25-30 min.", cuando: "dia" },
-  "salteado": { prep: "Sofríe la proteína elegida en sartén caliente. Añade verduras en tiras. Salpimienta y añade salsa de soja.", cuando: "dia" },
-  "verduras al horno": { prep: "Corta pimientos, calabacín, berenjena y cebolla. Aliña con aceite y hierbas. Airfryer a 200°C, 15-18 min.", cuando: "dia" },
-  "parrillada": { prep: "Corta verduras variadas. Aliña con aceite, sal y hierbas. Airfryer a 200°C, 15-18 min removiendo a mitad.", cuando: "dia" },
-  // PASTA/OTROS
-  "lasana": { prep: "Prepara boloñesa en sartén. Monta capas con láminas y bechamel. Termina con queso. Horno a 190°C, 25-30 min.", cuando: "dia" },
-  "lasaña": { prep: "Prepara boloñesa en sartén. Monta capas con láminas y bechamel. Termina con queso. Horno a 190°C, 25-30 min.", cuando: "dia" },
-  "gnocchi": { prep: "Cuece gnocchi en agua hirviendo hasta que suban (2-3 min). Prepara salsa en sartén (tomate o nata). Mezcla.", cuando: "dia" },
-  "pizza": { prep: "Extiende masa, añade tomate, queso y toppings. Horno a 220°C, 12-15 min.", cuando: "dia" },
-  "rollitos": { prep: "Extiende masa, pon tomate, queso y toppings, enrolla y corta. Airfryer a 190°C, 10-12 min.", cuando: "dia" },
-};
-
-function findBatchInstructions(mealText) {
-  if (!mealText) return null;
-  // Check custom saved prep first
-  try {
-    var custom = JSON.parse(localStorage.getItem('receta-prep') || '{}');
-    if (custom[mealText]) return { prep: custom[mealText] };
-  } catch(e) {}
-  var lower = mealText.toLowerCase()
-    .replace(/[áàä]/g, 'a').replace(/[éèë]/g, 'e')
-    .replace(/[íìï]/g, 'i').replace(/[óòö]/g, 'o')
-    .replace(/[úùü]/g, 'u').replace(/[ñ]/g, 'n');
-  var bestKey = null;
-  var bestScore = 0;
-  Object.keys(batchDB).forEach(function(key) {
-    var keyLower = key.toLowerCase()
-      .replace(/[áàä]/g, 'a').replace(/[éèë]/g, 'e')
-      .replace(/[íìï]/g, 'i').replace(/[óòö]/g, 'o')
-      .replace(/[úùü]/g, 'u').replace(/[ñ]/g, 'n');
-    if (lower.indexOf(keyLower) !== -1 || keyLower.indexOf(lower.split(' ')[0]) !== -1) {
-      if (keyLower.length > bestScore) {
-        bestScore = keyLower.length;
-        bestKey = key;
-      }
-    }
-  });
-  return bestKey ? batchDB[bestKey] : null;
-}
-
-function renderBatchCooking() {
-  var el = document.getElementById('batch-content');
-  if (!el) return;
-
-  // Custom saved steps take priority
-  var saved = null;
-  try { saved = JSON.parse(localStorage.getItem('batch-steps-' + getCurrentVariantKey())); } catch(e) {}
-  if (saved) {
-    el.innerHTML = saved.map(function(s, i) {
-      return '<div class="batch-step"><span class="batch-num">' + (i+1) + '</span>'
-        + '<div class="batch-step-content"><div class="batch-step-title">' + s.title + '</div>'
-        + '<div class="batch-step-desc">' + s.desc + '</div></div></div>';
-    }).join('') + '<div class="batch-tip">💡 Instrucciones personalizadas.</div>';
-    return;
-  }
-
-  // Collect all meal names from this week
-  var overrides = (typeof getMealOverrides === 'function') ? getMealOverrides() : {};
-  var legumbre = (typeof getCurrentLegumbre === 'function') ? getCurrentLegumbre().label : 'Lentejas';
-  var vKey = getCurrentVariantKey();
-  var vData = allVariants[vKey];
-
-  var mealNames = [];
-  var seen = {};
-
-  function addMealName(text) {
-    if (!text) return;
-    // Strip HTML tags and emojis
-    var clean = text.replace(/<[^>]+>/g, '').trim();
-    // Remove leading emoji (anything non-letter at start)
-    clean = clean.replace(/^[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ]+/, '').trim();
-    if (!clean || clean.length < 3) return;
-    // Normalize key: lowercase, no accents, no emoji, first 25 chars
-    var key = clean.toLowerCase()
-      .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e')
-      .replace(/[íìï]/g,'i').replace(/[óòö]/g,'o')
-      .replace(/[úùü]/g,'u').replace(/[ñ]/g,'n')
-      .replace(/[^a-z0-9 ]/g,'')
-      .trim().slice(0, 25);
-    if (seen[key]) return;
-    seen[key] = true;
-    // Store clean name without emoji
-    mealNames.push(clean);
-  }
-
-  // Add tupper variant and legumbre
-  addMealName(vData.label);
-  addMealName(legumbre);
-
-  // Overrides handled in dayTemplates loop below
-
-  // Add default dayTemplate meals (only if not overridden)
-  if (typeof dayTemplates !== 'undefined') {
-    var monday = typeof getMonday === 'function' ? getMonday(weekOffset) : new Date();
-    dayTemplates.forEach(function(d, i) {
-      // Comida
-      if (overrides[i + '-comida'] !== undefined) {
-        addMealName(overrides[i + '-comida']);
-      } else {
-        if (d.lunchType === 'fijo') addMealName(d.lunchText);
-        else if (d.lunchType === 'legumbre') addMealName(legumbre);
-        else if (d.lunchType === 'pasta-fija') addMealName(vData.label);
-      }
-      // Cena
-      if (overrides[i + '-cena'] !== undefined) {
-        addMealName(overrides[i + '-cena']);
-      } else {
-        addMealName(d.dinner);
-      }
-    });
-  }
-
-
-  // Build steps from knowledge base
-  var steps = [];
-  mealNames.forEach(function(name) {
-    var info = findBatchInstructions(name);
-    if (info) steps.push({ title: name, desc: info.prep });
-  });
-
-  // Add unknown meals without instructions
-  mealNames.forEach(function(name) {
-    var info = findBatchInstructions(name);
-    if (!info) steps.push({ title: name, desc: 'Sin instrucciones guardadas — añádelas con ✏️ Editar.' });
-  });
-
-  if (steps.length === 0) {
-    el.innerHTML = '<div class="batch-tip">Selecciona variantes para ver las instrucciones.</div>';
-    return;
-  }
-
-  el.innerHTML = steps.map(function(s, i) {
-    return '<div class="batch-step">'
-      + '<span class="batch-num">' + (i+1) + '</span>'
-      + '<div class="batch-step-content">'
-      + '<div class="batch-step-title">' + s.title + '</div>'
-      + '<div class="batch-step-desc">' + s.desc + '</div>'
-      + '</div></div>';
-  }).join('') + '<div class="batch-tip">💡 Prepara el domingo lo que puedas. El resto lo haces al momento.</div>';
-}
-
-
-
-function batchAddStep() {
-  // Save current inputs first
-  var steps = batchCollectCurrentInputs();
-  steps.push({ title: 'Nuevo paso', desc: '' });
-  saveBatchSteps(steps);
-  renderBatchCooking();
-  // Focus new title
-  var last = document.getElementById('btitle-' + (steps.length-1));
-  if (last) { last.focus(); last.select(); }
-}
-
-function batchDeleteStep(idx) {
-  var steps = batchCollectCurrentInputs();
-  steps.splice(idx, 1);
-  saveBatchSteps(steps);
-  renderBatchCooking();
-}
-
-function batchCollectCurrentInputs() {
-  var saved = getBatchSteps();
-  return saved.map(function(s, i) {
-    var titleEl = document.getElementById('btitle-' + i);
-    var descEl  = document.getElementById('bdesc-' + i);
-    return {
-      title: titleEl ? titleEl.value : s.title,
-      desc:  descEl  ? descEl.value  : s.desc
-    };
-  });
-}
-
-function saveBatchEdit() {
-  var steps = batchCollectCurrentInputs();
-  saveBatchSteps(steps);
-  batchEditMode = false;
-  renderBatchCooking();
-}
-
-function resetBatchSteps() {
-  localStorage.removeItem(getBatchKey());
-  batchEditMode = false;
-  renderBatchCooking();
-}
-
-
-
-function switchTab(id, btn) {
-  if (navigator.vibrate) navigator.vibrate(8);
-  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
-  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-
-  var sc = document.getElementById('main-scroll');
-  if (sc) sc.scrollTop = 0;
-
-  var panel = document.getElementById('tab-' + id);
-  if (panel) panel.classList.add('active');
-  if (btn) btn.classList.add('active');
-
-  if (id === 'compra') renderCompra();
-  if (id === 'menu') { renderMenu(); renderBatchCooking(); }
-}
-
 
 function renderAll() {
   runPriceMigration();
@@ -4165,7 +3629,6 @@ function renderAll() {
   renderMenu();
   renderCompra();
   renderManualItems();
-  renderBatchCooking();
 }
 
 // Ensure DOM is ready before first render
@@ -4300,8 +3763,6 @@ setTimeout(function(){
         <option value="huevos">🥚 Huevos</option>
         <option value="verdura">🥦 Verdura</option>
       </select>
-      <div class="receta-edit-label">Instrucciones (aparecen en Batch Cooking)</div>
-      <textarea class="recetas-input" id="receta-edit-prep" placeholder="Ej: Sazona y pon en airfryer 200°C 20 min..." rows="3" style="width:100%;box-sizing:border-box;resize:none;font-family:'DM Sans',sans-serif;line-height:1.5;font-size:15px;"></textarea>
       <div class="receta-edit-label">Ingredientes (se añaden a la Lista de la Compra)</div>
       <input class="recetas-input" id="receta-edit-ing" placeholder="Ej: Pollo, arroz basmati, cebolla, curry" style="width:100%;box-sizing:border-box;">
     </div>
