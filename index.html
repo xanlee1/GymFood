@@ -36,7 +36,7 @@
     --text: #f0f0f0; --muted: #888; --radius: 12px;
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; }
-  .tabs-container, .day-grid, .day-card, .gym-grid { max-width:100%; }
+  .tabs-container, .day-grid, .day-card { max-width:100%; }
   html { overflow-x:hidden; overscroll-behavior-x:none; }
   body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; overscroll-behavior-x:none; position:relative; width:100%; }
 
@@ -185,12 +185,10 @@
   .day-grid { display:flex; flex-direction:column; gap:8px; }
   .day-card { background:var(--surface); border-radius:var(--radius); overflow:hidden; display:flex; transition:opacity 0.2s; }
   .day-card-stripe { width:4px; flex-shrink:0; background:#444; }
-  .day-card.gym .day-card-stripe { background:var(--accent); }
   .day-card-body { display:flex; flex:1; align-items:stretch; }
   .day-left { flex:0 0 76px; padding:12px 8px 12px 14px; display:flex; flex-direction:column; justify-content:center; border-right:1px solid var(--border); }
   .day-name { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; line-height:1.1; }
   .day-date { font-size:11px; color:var(--muted); margin-top:2px; }
-  .day-badge { font-size:9px; font-weight:500; letter-spacing:0.5px; padding:2px 6px; border-radius:4px; text-transform:uppercase; margin-top:5px; display:inline-block; align-self:flex-start; }
   .btn-weekend { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; margin-top:8px; padding:10px; background:none; border:1px dashed rgba(255,255,255,0.15); border-radius:12px; color:var(--muted); font-size:13px; cursor:pointer; transition:border-color 0.2s, color 0.2s; }
   .btn-weekend:active { border-color:var(--accent); color:var(--accent); }
   .btn-weekend.active { border-color:rgba(255,80,80,0.4); color:rgba(255,100,100,0.8); }
@@ -198,8 +196,6 @@
   .meal-row { padding:9px 14px; border-bottom:1px solid var(--border); flex:1; }
   .meal-row:last-child { border-bottom:none; }
   .meal-label { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:3px; }
-  .badge-gym { background:rgba(200,255,0,0.12); color:var(--accent); }
-  .badge-rest { background:rgba(136,136,136,0.12); color:var(--muted); }
   .meal-row { padding:10px 16px; border-bottom:1px solid var(--border); }
   .meal-row:last-child { border-bottom:none; }
   .meal-label { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:3px; }
@@ -230,21 +226,6 @@
   .grand-total { margin-top:16px; background:var(--surface); border:1px solid rgba(200,255,0,0.25); border-radius:var(--radius); padding:14px 18px; display:flex; justify-content:space-between; align-items:center; }
   .gt-label { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; }
   .gt-amount { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--accent); }
-
-  /* RUTINA */
-  .gym-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
-  .gym-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
-  .gym-header { padding:14px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
-  .gym-day { font-family:'Bebas Neue',sans-serif; font-size:24px; line-height:1; }
-  .gym-focus { font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); }
-  .exercise-list { padding:12px; display:flex; flex-direction:column; gap:6px; }
-  .exercise-row { display:flex; align-items:center; gap:10px; padding:8px 10px; background:var(--surface2); border-radius:8px; }
-  .ex-name { font-size:15px; flex:1; }
-  .ex-sets { font-size:13px; color:var(--muted); background:var(--surface); padding:2px 8px; border-radius:4px; white-space:nowrap; }
-  .gym-progress { padding:0 12px 12px; display:flex; align-items:center; gap:8px; }
-  .prog-bar-bg { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
-  .prog-bar-fill { height:100%; border-radius:2px; transition:width 0.3s; }
-  .prog-label { font-size:11px; color:var(--muted); white-space:nowrap; }
 
   .divider { height:1px; background:var(--border); margin:16px 0; }
   .sec-label { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:3px; color:var(--muted); margin-bottom:12px; }
@@ -434,98 +415,6 @@
     font-style: italic;
   }
 
-  /* REGISTRO GYM */
-  .reg-day-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 14px;
-  }
-  .reg-day-header {
-    padding: 8px 10px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .reg-day-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 1px;
-  }
-  .reg-day-focus { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
-  .reg-ex-row {
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .reg-ex-row:last-child { border-bottom: none; }
-  .reg-ex-name { font-size: 14px; flex: 1; }
-  .reg-ex-sets { font-size: 12px; color: var(--muted); flex: 0 0 60px; }
-  .reg-weight-input {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--accent);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    width: 70px;
-    padding: 5px 8px;
-    text-align: center;
-    outline: none;
-  }
-  .reg-weight-input:focus { border-color: var(--accent); }
-  .reg-unit { font-size: 11px; color: var(--muted); }
-  .reg-history-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 0 4px;
-  }
-  .reg-history {
-    background: var(--surface2);
-    border-top: 1px solid var(--border);
-    padding: 8px 16px;
-    font-size: 12px;
-    color: var(--muted);
-    display: none;
-  }
-  .reg-history.open { display: block; }
-  .reg-history-entry { margin-bottom: 3px; }
-  .reg-save-btn {
-    margin: 0 16px 14px;
-    background: var(--accent);
-    color: #000;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 15px;
-    letter-spacing: 1px;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 0;
-    width: calc(100% - 32px);
-    cursor: pointer;
-  }
-  .reg-chart-wrap {
-    padding: 8px 10px;
-    overflow-x: auto;
-  }
-  .reg-chart-bar-wrap { display: flex; align-items: flex-end; gap: 4px; height: 60px; }
-  .reg-chart-bar {
-    flex: 1;
-    background: var(--accent);
-    border-radius: 3px 3px 0 0;
-    min-height: 4px;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-  }
-  .reg-chart-bar:last-child { opacity: 1; }
-
   /* CLAUDE BUTTON */
   .claude-btn-wrap {
     position: fixed;
@@ -557,296 +446,6 @@
   .claude-btn-icon { font-size: 18px; }
   /* Push tabs content so button doesn't cover it */
   .tabs-container { padding-bottom: 80px; }
-
-  /* ── RUTINA TAB ─────────────────────────────────────────────────── */
-  .rutina-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 14px;
-  }
-  .rutina-section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.15s;
-  }
-  .rutina-section-header:hover { background: rgba(200,255,0,0.04); }
-  .rutina-section-icon { font-size: 22px; }
-  .rutina-section-title { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:1px; flex:1; }
-  .rutina-section-sub { font-size:12px; color:var(--muted); }
-  .rutina-section-arrow { font-size:18px; color:var(--muted); transition:transform 0.25s; }
-  .rutina-section-arrow.open { transform: rotate(90deg); }
-  .rutina-section-body { display:none; border-top:1px solid var(--border); }
-  .rutina-section-body.open { display:block; }
-
-  /* Editable routine */
-  .edit-day-card {
-    border-bottom: 1px solid var(--border);
-    padding: 8px 10px;
-  }
-  .edit-day-card:last-child { border-bottom: none; }
-  .edit-day-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .edit-day-dot { width:10px; height:10px; border-radius:50%; flex:0 0 10px; }
-  .edit-day-name-input {
-    font-family:'Bebas Neue',sans-serif;
-    font-size:18px;
-    background:none;
-    border:none;
-    border-bottom:1px dashed var(--border);
-    color:var(--text);
-    outline:none;
-    width:120px;
-  }
-  .edit-focus-input {
-    font-size:12px;
-    background:none;
-    border:none;
-    border-bottom:1px dashed var(--border);
-    color:var(--muted);
-    outline:none;
-    flex:1;
-  }
-  .edit-ex-row {
-    display:flex;
-    gap:6px;
-    align-items:center;
-    margin-bottom:6px;
-  }
-  .edit-ex-name {
-    flex:1;
-    background:var(--surface2);
-    border:1px solid var(--border);
-    border-radius:6px;
-    color:var(--text);
-    font-size:13px;
-    padding:6px 10px;
-    outline:none;
-    font-size:16px;
-  }
-  .edit-ex-sets {
-    width:80px;
-    background:var(--surface2);
-    border:1px solid var(--border);
-    border-radius:6px;
-    color:var(--muted);
-    font-size:13px;
-    padding:6px 8px;
-    outline:none;
-    font-size:16px;
-  }
-  .edit-ex-del {
-    background:none;
-    border:none;
-    color:var(--muted);
-    font-size:18px;
-    cursor:pointer;
-    padding:0 4px;
-  }
-  .edit-add-ex-btn {
-    background:none;
-    border:1px dashed var(--border);
-    border-radius:6px;
-    color:var(--muted);
-    font-size:13px;
-    padding:6px 12px;
-    cursor:pointer;
-    width:100%;
-    margin-top:4px;
-  }
-  .edit-save-btn {
-    background:var(--accent);
-    color:#000;
-    font-family:'Bebas Neue',sans-serif;
-    font-size:15px;
-    letter-spacing:1px;
-    border:none;
-    border-radius:8px;
-    padding:10px 0;
-    width:100%;
-    cursor:pointer;
-    margin-top:12px;
-  }
-
-  /* Register workout */
-  .reg-day-selector {
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    padding:14px 16px;
-  }
-  .reg-day-btn {
-    display:flex;
-    align-items:center;
-    gap:12px;
-    background:var(--surface2);
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:12px 16px;
-    cursor:pointer;
-    transition:border-color 0.15s;
-  }
-  .reg-day-btn:hover { border-color: var(--accent); }
-  .reg-day-btn-dot { width:10px; height:10px; border-radius:50%; flex:0 0 10px; }
-  .reg-day-btn-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; }
-  .reg-day-btn-focus { font-size:12px; color:var(--muted); margin-left:auto; }
-  .reg-session {
-    padding:14px 16px;
-    display:none;
-  }
-  .reg-session.open { display:block; }
-  .reg-session-header {
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:14px;
-  }
-  .reg-session-back {
-    background:none;
-    border:1px solid var(--border);
-    border-radius:8px;
-    color:var(--muted);
-    padding:5px 10px;
-    cursor:pointer;
-    font-size:14px;
-  }
-  .reg-session-title { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:1px; }
-  .reg-ex-input-row {
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:10px 0;
-    border-bottom:1px solid var(--border);
-  }
-  .reg-ex-input-row:last-of-type { border-bottom:none; }
-  .reg-ex-label { flex:1; font-size:14px; }
-  .reg-ex-sets-label { font-size:12px; color:var(--muted); flex:0 0 55px; }
-  .reg-kg-input {
-    width:72px;
-    background:var(--surface2);
-    border:1px solid var(--border);
-    border-radius:8px;
-    color:var(--accent);
-    font-family:'DM Sans',sans-serif;
-    font-size:16px;
-    font-weight:700;
-    text-align:center;
-    padding:8px 4px;
-    outline:none;
-  }
-  .reg-kg-input:focus { border-color:var(--accent); }
-  .reg-kg-unit { font-size:11px; color:var(--muted); }
-  .reg-session-save {
-    background:var(--accent);
-    color:#000;
-    font-family:'Bebas Neue',sans-serif;
-    font-size:16px;
-    letter-spacing:1px;
-    border:none;
-    border-radius:10px;
-    padding:14px 0;
-    width:100%;
-    cursor:pointer;
-    margin-top:16px;
-  }
-
-  /* ── PROGRESO TAB ────────────────────────────────────────────────── */
-  .prog-summary {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-bottom:16px;
-  }
-  .prog-stat-card {
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    padding:14px;
-    text-align:center;
-  }
-  .prog-stat-num {
-    font-family:'Bebas Neue',sans-serif;
-    font-size:32px;
-    color:var(--accent);
-    line-height:1;
-  }
-  .prog-stat-label { font-size:11px; color:var(--muted); margin-top:4px; letter-spacing:1px; text-transform:uppercase; }
-  .prog-ex-card {
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    overflow:hidden;
-    margin-bottom:12px;
-  }
-  .prog-ex-header {
-    padding:12px 16px;
-    border-bottom:1px solid var(--border);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-  }
-  .prog-ex-name { font-size:15px; font-weight:600; }
-  .prog-ex-best { font-size:12px; color:var(--accent); font-weight:700; }
-  .prog-chart {
-    padding:12px 16px 8px;
-    display:flex;
-    align-items:flex-end;
-    gap:5px;
-    height:70px;
-  }
-  .prog-bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
-  .prog-bar {
-    width:100%;
-    background:var(--accent);
-    border-radius:3px 3px 0 0;
-    min-height:4px;
-    transition:height 0.3s;
-    opacity:0.7;
-  }
-  .prog-bar.latest { opacity:1; box-shadow:0 0 8px rgba(200,255,0,0.4); }
-  .prog-bar-date { font-size:9px; color:var(--muted); text-align:center; white-space:nowrap; }
-  .prog-bar-kg { font-size:10px; color:var(--text); font-weight:600; }
-  .prog-trend {
-    padding:6px 16px 12px;
-    font-size:12px;
-    color:var(--muted);
-  }
-  .prog-trend.up { color:#a8e6a3; }
-  .prog-trend.down { color:var(--accent2); }
-  .prog-sessions-list {
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    overflow:hidden;
-    margin-bottom:12px;
-  }
-  .prog-session-item {
-    padding:12px 16px;
-    border-bottom:1px solid var(--border);
-    cursor:pointer;
-  }
-  .prog-session-item:last-child { border-bottom:none; }
-  .prog-session-date { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:1px; color:var(--accent); }
-  .prog-session-name { font-size:13px; color:var(--muted); }
-  .prog-session-detail { display:none; padding:10px 16px; background:var(--surface2); border-top:1px solid var(--border); font-size:13px; }
-  .prog-section-title {
-    font-family:'Bebas Neue',sans-serif;
-    font-size:14px;
-    letter-spacing:3px;
-    color:var(--muted);
-    margin:16px 0 10px;
-  }
-  .prog-empty { text-align:center; color:var(--muted); font-size:14px; padding:40px 20px; }
-
 
   /* BATCH EDIT */
   .batch-edit-btn {
@@ -1235,6 +834,7 @@
     transition: border-color 0.15s;
   }
   .receta-chip:active { cursor: grabbing; border-color: var(--accent); }
+  .receta-chip-img { width:22px; height:22px; border-radius:6px; object-fit:cover; flex-shrink:0; }
   .recetas-empty-msg {
     text-align: center;
     color: var(--muted);
@@ -1310,6 +910,13 @@
     margin-top: 14px;
   }
   .receta-edit-label:first-child { margin-top: 0; }
+  .receta-edit-img-row { display:flex; align-items:center; gap:10px; }
+  .receta-edit-img-preview { width:56px; height:56px; border-radius:12px; object-fit:cover; flex-shrink:0; }
+  .receta-edit-img-btn {
+    background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+    padding:10px 14px; font-size:13px; cursor:pointer; color:var(--text); display:inline-block;
+  }
+  .receta-edit-img-remove { background:none; border:none; color:#ff453a; font-size:12px; cursor:pointer; padding:6px 8px; }
   .receta-edit-actions {
     padding: 8px 20px 12px;
     display: flex;
@@ -1477,112 +1084,6 @@
     user-select: text !important;
   }
 
-  /* ── RUTINA ── */
-  .rutina-stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
-  .rutina-stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px; }
-  .rutina-stat-label { font-size:11px; color:var(--muted); margin-bottom:4px; }
-  .rutina-stat-value { font-size:24px; font-weight:600; }
-  .rutina-hoy-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
-  .rutina-today-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:10px; }
-  .rutina-today-header { padding:14px 16px; display:flex; align-items:center; justify-content:space-between; }
-  .rutina-today-info { flex:1; }
-  .rutina-today-name { font-weight:600; font-size:15px; }
-  .rutina-today-sub { font-size:12px; margin-top:2px; opacity:0.7; }
-  .rutina-entrenar-btn { border:none; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer; background:rgba(0,0,0,0.15); }
-  .rutina-ex-list { padding:4px 0; }
-  .rutina-ex-row { display:flex; align-items:center; padding:10px 16px; border-top:1px solid var(--border); }
-  .rutina-ex-dot { width:7px; height:7px; border-radius:50%; margin-right:12px; flex-shrink:0; }
-  .rutina-ex-name { flex:1; font-size:14px; }
-  .rutina-ex-sets { font-size:12px; color:var(--muted); }
-  .rutina-ex-kg { margin-left:10px; font-size:13px; font-weight:500; color:var(--muted); min-width:40px; text-align:right; }
-  .rutina-ver-mas { padding:10px 16px; font-size:13px; color:var(--muted); text-align:center; border-top:1px solid var(--border); cursor:pointer; }
-  .rutina-otro-btn { border:1px dashed var(--border); border-radius:12px; padding:12px 16px; margin-bottom:18px; display:flex; align-items:center; gap:12px; cursor:pointer; }
-  .rutina-otro-circle { width:28px; height:28px; border-radius:50%; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--muted); flex-shrink:0; }
-  .rutina-otro-panel { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:18px; }
-  .rutina-otro-header { padding:10px 16px; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; border-bottom:1px solid var(--border); }
-  .rutina-otro-row { display:flex; align-items:center; padding:12px 16px; gap:12px; cursor:pointer; border-bottom:1px solid var(--border); }
-  .rutina-otro-row:last-child { border-bottom:none; }
-  .rutina-otro-bar { width:4px; height:36px; border-radius:2px; flex-shrink:0; }
-  .rutina-otro-info { flex:1; }
-  .rutina-otro-name { font-size:14px; font-weight:500; }
-  .rutina-otro-sub { font-size:12px; color:var(--muted); margin-top:2px; }
-  .rutina-otro-entrenar { font-size:12px; color:var(--muted); background:var(--surface2); border-radius:6px; padding:4px 10px; border:none; cursor:pointer; }
-  .rutina-week-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
-  .rutina-week-list { display:flex; flex-direction:column; gap:8px; margin-bottom:18px; }
-  .rutina-week-row { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; }
-  .rutina-week-bar { width:4px; height:36px; border-radius:2px; flex-shrink:0; }
-  .rutina-week-info { flex:1; }
-  .rutina-week-day { font-size:14px; font-weight:500; }
-  .rutina-week-focus { font-size:12px; color:var(--muted); margin-top:2px; }
-  .rutina-week-last { font-size:12px; color:var(--muted); }
-  .rutina-edit-btn { width:100%; padding:12px; border-radius:10px; background:var(--surface); border:1px solid var(--border); color:var(--muted); font-size:14px; cursor:pointer; margin-bottom:18px; }
-  /* Training mode */
-  .rut-train-overlay { position:fixed; inset:0; z-index:7000; background:var(--bg); overflow-y:auto; -webkit-overflow-scrolling:touch; }
-  .rut-train-header { padding:calc(env(safe-area-inset-top,0px)+16px) 16px 14px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--border); }
-  .rut-train-back { background:none; border:none; color:var(--muted); font-size:22px; cursor:pointer; padding:0; }
-  .rut-train-title { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; flex:1; }
-  .rut-train-save { background:var(--accent); color:#000; border:none; border-radius:8px; padding:8px 14px; font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:1px; cursor:pointer; }
-  .rut-ex-card { background:var(--surface); border-radius:12px; margin:12px; padding:16px; border:1px solid var(--border); }
-  .rut-ex-card-name { font-size:16px; font-weight:600; margin-bottom:4px; }
-  .rut-ex-card-sets { font-size:13px; color:var(--muted); margin-bottom:14px; }
-  .rut-kg-row { display:flex; align-items:center; gap:10px; }
-  .rut-kg-prev { font-size:12px; color:var(--muted); flex:1; }
-  .rut-kg-input { width:80px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px; font-size:18px; text-align:center; color:var(--text); -webkit-user-select:text!important; user-select:text!important; }
-  .rut-kg-unit { font-size:14px; color:var(--muted); }
-  .rut-train-done { display:block; width:calc(100% - 24px); margin:16px 12px; padding:16px; background:var(--accent); color:#000; border:none; border-radius:12px; font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; cursor:pointer; }
-
-  /* ── RUTINA CALENDAR ── */
-  .rut-calendar { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:18px; }
-  .rut-cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-  .rut-cal-title { font-family:'Bebas Neue',sans-serif; font-size:17px; letter-spacing:1px; }
-  .rut-cal-nav { background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer; padding:0 6px; }
-  .rut-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
-  .rut-cal-dow { font-size:10px; color:var(--muted); text-align:center; padding-bottom:6px; font-weight:500; text-transform:uppercase; }
-  .rut-cal-day { display:flex; flex-direction:column; align-items:center; padding:4px 2px 5px; border-radius:8px; min-height:38px; cursor:default; }
-  .rut-cal-day.today { background:rgba(200,255,0,0.1); }
-  .rut-cal-day-num { font-size:13px; line-height:1; margin-bottom:4px; }
-  .rut-cal-day.other-month .rut-cal-day-num { color:var(--muted); opacity:0.35; }
-  .rut-cal-day.today .rut-cal-day-num { font-weight:700; color:var(--text); }
-  .rut-cal-dot { width:16px; height:3px; border-radius:2px; }
-
-  /* ── PROGRESO ── */
-  .prog-stats-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:20px; }
-  .prog-stat-box { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px; text-align:center; }
-  .prog-stat-num { font-size:22px; font-weight:600; line-height:1; }
-  .prog-stat-unit { font-size:13px; font-weight:400; }
-  .prog-stat-lbl { font-size:11px; color:var(--muted); margin-top:4px; }
-  .prog-section-lbl { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
-  .prog-ex-chips { display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:12px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
-  .prog-ex-chip { flex-shrink:0; border-radius:20px; padding:7px 14px; font-size:13px; font-weight:500; white-space:nowrap; cursor:pointer; border:none; }
-  .prog-ex-chip.active { background:var(--accent); color:#000; }
-  .prog-ex-chip:not(.active) { background:var(--surface); border:1px solid var(--border); color:var(--muted); }
-  .prog-chart-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; }
-  .prog-chart-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
-  .prog-chart-name { font-size:15px; font-weight:600; }
-  .prog-chart-sub { font-size:12px; color:var(--muted); margin-top:2px; }
-  .prog-chart-delta { font-size:20px; font-weight:600; color:var(--accent); text-align:right; }
-  .prog-chart-delta-lbl { font-size:11px; color:var(--muted); }
-  .prog-bars { display:flex; align-items:flex-end; gap:6px; height:80px; margin-bottom:12px; }
-  .prog-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; }
-  .prog-bar { width:100%; border-radius:4px 4px 0 0; background:var(--accent); min-height:3px; transition:height 0.3s ease; }
-  .prog-bar-lbl { font-size:9px; color:var(--muted); }
-  .prog-bar-kg { font-size:10px; color:var(--text); font-weight:500; }
-  .prog-3stats { display:flex; border-top:1px solid var(--border); padding-top:12px; }
-  .prog-3stat { flex:1; text-align:center; }
-  .prog-3stat + .prog-3stat { border-left:1px solid var(--border); }
-  .prog-3stat-lbl { font-size:12px; color:var(--muted); }
-  .prog-3stat-val { font-size:16px; font-weight:600; margin-top:2px; }
-  .prog-session-row { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:8px; cursor:pointer; }
-  .prog-session-bar { width:4px; height:40px; border-radius:2px; flex-shrink:0; }
-  .prog-session-info { flex:1; }
-  .prog-session-name { font-size:14px; font-weight:500; }
-  .prog-session-sub { font-size:12px; color:var(--muted); margin-top:2px; }
-  .prog-session-detail { background:var(--surface2); border-radius:0 0 12px 12px; padding:12px 16px; margin-top:-8px; margin-bottom:8px; border:1px solid var(--border); border-top:none; display:none; }
-  .prog-session-detail.open { display:block; }
-  .prog-detail-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px; }
-  .prog-detail-row:last-child { border-bottom:none; }
-  .prog-empty { text-align:center; padding:40px 20px; color:var(--muted); font-size:14px; }
-
   .compra-totals-bar {
     position: sticky;
     bottom: calc(env(safe-area-inset-bottom,0px) + 60px);
@@ -1608,7 +1109,7 @@
 
   /* Eliminar delay 300ms en todos los elementos interactivos */
   button, a, .check-item, .tab-btn, .meal-row, .receta-chip,
-  .week-arrow, .day-card, .rutina-week-row, .rutina-otro-row,
+  .week-arrow, .day-card,
   [onclick], [ontouchstart] {
     touch-action: manipulation;
   }
@@ -1618,9 +1119,7 @@
     transform: scale(0.88);
     transition: transform 0.08s cubic-bezier(0.34,1.56,0.64,1);
   }
-  .week-arrow:active, .recetas-fab:active,
-  .rutina-entrenar-btn:active, .rutina-otro-entrenar:active,
-  .rutina-edit-btn:active {
+  .week-arrow:active, .recetas-fab:active {
     transform: scale(0.93);
     transition: transform 0.08s cubic-bezier(0.34,1.56,0.64,1);
   }
@@ -1656,22 +1155,6 @@
     font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px;
     border:none; padding:14px 40px; border-radius:14px; cursor:pointer;
   }
-  .crear-overlay {
-    position:fixed; inset:0; z-index:5000; background:rgba(0,0,0,0.65);
-    display:none; align-items:flex-end;
-  }
-  .crear-overlay.visible { display:flex; }
-  .crear-sheet {
-    width:100%; background:var(--surface);
-    border-radius:24px 24px 0 0;
-    padding:16px 20px calc(env(safe-area-inset-bottom,0px) + 24px);
-    max-height:92vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
-    transform:translateY(100%);
-    transition:transform 0.38s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  .crear-overlay.visible .crear-sheet { transform:translateY(0); }
-  .crear-handle { width:36px; height:4px; background:rgba(255,255,255,0.18); border-radius:2px; margin:0 auto 18px; }
-
   /* ── MEAL PICKER ──────────────────────────────────────────────────────────── */
   .meal-picker-overlay {
     position:fixed; inset:0; z-index:4500;
@@ -1712,11 +1195,13 @@
     text-transform:uppercase; padding:10px 2px 5px;
   }
   .meal-picker-item {
-    display:block; width:100%; text-align:left;
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left;
     background:var(--surface2); border:1px solid var(--border);
     border-radius:10px; padding:11px 14px; margin-bottom:6px;
     font-size:14px; color:var(--text); cursor:pointer; box-sizing:border-box;
   }
+  .meal-picker-item-img { width:32px; height:32px; border-radius:8px; object-fit:cover; flex-shrink:0; }
+  .meal-picker-item-text { flex:1; min-width:0; }
   .meal-picker-item.current {
     border-color:var(--accent); background:rgba(200,255,0,0.08);
   }
@@ -1724,6 +1209,25 @@
     content:' ✓'; color:var(--accent); font-size:12px; font-weight:700;
   }
   .meal-slot-content { cursor:pointer; }
+  .meal-with-thumb { display:flex; align-items:center; gap:10px; }
+  .meal-thumb { width:44px; height:44px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+  .meal-text-col { flex:1; min-width:0; }
+
+  .crear-overlay {
+    position:fixed; inset:0; z-index:5000; background:rgba(0,0,0,0.65);
+    display:none; align-items:flex-end;
+  }
+  .crear-overlay.visible { display:flex; }
+  .crear-sheet {
+    width:100%; background:var(--surface);
+    border-radius:24px 24px 0 0;
+    padding:16px 20px calc(env(safe-area-inset-bottom,0px) + 24px);
+    max-height:92vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    transform:translateY(100%);
+    transition:transform 0.38s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .crear-overlay.visible .crear-sheet { transform:translateY(0); }
+  .crear-handle { width:36px; height:4px; background:rgba(255,255,255,0.18); border-radius:2px; margin:0 auto 18px; }
   .crear-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; margin-bottom:18px; }
   .crear-section-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
   .crear-options { display:grid; gap:10px; margin-bottom:22px; }
@@ -1731,31 +1235,23 @@
     background:var(--surface2); border:2px solid transparent; border-radius:14px;
     padding:14px 12px; display:flex; flex-direction:column; align-items:center;
     gap:6px; cursor:pointer; transition:border-color 0.15s, background 0.15s;
-    text-align:center;
+    text-align:center; position:relative;
   }
   .crear-option.sel { border-color:var(--accent); background:rgba(200,255,0,0.06); }
   .crear-option-emoji { font-size:26px; }
   .crear-option-name { font-size:13px; font-weight:600; line-height:1.3; }
   .crear-option-sub { font-size:11px; color:var(--muted); }
+  .crear-option-recipe { padding:10px 12px; min-height:44px; display:flex; align-items:center; gap:6px; }
+  .crear-option-recipe .crear-option-name { font-size:11px; white-space:normal; line-height:1.3; text-align:left; flex:1; }
+  .crear-multi { cursor:pointer; }
+  .crear-cb { font-size:11px; font-weight:700; color:var(--accent); width:14px; flex-shrink:0; text-align:center; }
+  .crear-bank-empty { font-size:12px; color:var(--muted); padding:8px 4px; font-style:italic; }
+  .crear-pool-counter { font-size:12px; color:var(--muted); text-align:center; margin-bottom:10px; }
   .btn-generar {
     width:100%; background:var(--accent); color:#000;
     font-family:'Bebas Neue',sans-serif; font-size:19px; letter-spacing:2px;
     border:none; padding:16px; border-radius:14px; cursor:pointer; margin-top:4px;
   }
-  .crear-summary { background:var(--surface2); border-radius:12px; padding:12px 14px; margin-bottom:16px; display:flex; flex-direction:column; gap:5px; }
-  .crear-summary-row { display:flex; align-items:center; gap:10px; }
-  .crear-sum-icon { font-size:15px; width:22px; text-align:center; }
-  .crear-sum-val { font-size:13px; color:var(--text); }
-  /* Opciones del banco de recetas */
-  .crear-option { position:relative; }
-  .crear-option-recipe { padding:10px 12px; min-height:44px; display:flex; align-items:center; gap:6px; }
-  .crear-option-recipe .crear-option-name { font-size:11px; white-space:normal; line-height:1.3; text-align:left; flex:1; }
-  /* Multi-selección */
-  .crear-multi { cursor:pointer; }
-  .crear-cb { font-size:11px; font-weight:700; color:var(--accent); width:14px; flex-shrink:0; text-align:center; }
-  .crear-multi-hint { font-size:9px; background:rgba(200,255,0,0.12); color:var(--accent); border-radius:4px; padding:2px 6px; letter-spacing:0.5px; text-transform:uppercase; margin-left:4px; font-family:sans-serif; vertical-align:middle; }
-  /* Estado vacío banco */
-  .crear-bank-empty { font-size:12px; color:var(--muted); padding:8px 4px; grid-column:1/-1; font-style:italic; }
 
   /* Spring en panel de recetas */
   .recetas-panel {
@@ -1820,8 +1316,6 @@
 <div class="tabs-nav" id="tabs-nav">
   <button class="tab-btn active" onclick="switchTab('menu',this)"><span class="tab-icon">🍽</span><span class="tab-label">Menú</span></button>
   <button class="tab-btn" onclick="switchTab('compra',this)"><span class="tab-icon">🛒</span><span class="tab-label">Compra</span></button>
-  <button class="tab-btn" onclick="switchTab('rutina',this)"><span class="tab-icon">🏋️</span><span class="tab-label">Rutina</span></button>
-  <button class="tab-btn" onclick="switchTab('registro',this)"><span class="tab-icon">📊</span><span class="tab-label">Progreso</span></button>
 </div>
 <div class="cal-strip" id="cal-strip">
   <div class="cal-header">
@@ -1853,7 +1347,6 @@
         <div id="menu-bottom-actions" style="padding:4px 0;display:flex;gap:8px;margin-top:4px;">
           <button class="recetas-fab recetas-fab-reset" onclick="recrearMenu()" style="gap:4px;">↺ Recrear</button>
           <button class="recetas-fab" onclick="abrirRecetas()">📝 Recetas</button>
-          <button class="recetas-fab recetas-fab-reset" onclick="undoMealOverride()">↩ Deshacer</button>
         </div>
       </div><!-- /day-grid-wrap -->
     </div>
@@ -1878,13 +1371,6 @@
     
   </div>
 
-  <div id="tab-rutina" class="tab-panel">
-    <div class="gym-grid" id="gym-grid"></div>
-  </div>
-
-  <div id="tab-registro" class="tab-panel">
-    <div id="registro-content"></div>
-  </div>
   </div></div><!-- /tabs-panels-inner /tabs-panels-wrap -->
 </div>
 
@@ -1910,33 +1396,6 @@ const allVariants = {
 // ── INGREDIENTES DINÁMICOS (del banco de recetas) ──────────────────────────────
 function getRecetasByCat(cat) {
   return getRecetas().filter(function(r) { return r.cat === cat; });
-}
-function getCurrentRecetaName(cat, storeKey) {
-  var saved = localStorage.getItem(storeKey + '-' + weekOffset);
-  var options = getRecetasByCat(cat);
-  if (saved && options.some(function(r) { return r.name === saved; })) return saved;
-  return options.length > 0 ? options[0].name : null;
-}
-function getCurrentPescadoName() { return getCurrentRecetaName('pescado', 'pescado') || 'Merluza/Salmón'; }
-
-// Multi-selección: arrays desde localStorage
-function getCurrentProteinasArr() {
-  try { return JSON.parse(localStorage.getItem('proteinas-' + weekOffset) || '[]'); } catch(e) { return []; }
-}
-function getCurrentCenasArr() {
-  try { return JSON.parse(localStorage.getItem('cenas-' + weekOffset) || '[]'); } catch(e) { return []; }
-}
-function getCurrentVerdurasArr() {
-  try { return JSON.parse(localStorage.getItem('verduras-' + weekOffset) || '[]'); } catch(e) { return []; }
-}
-// Fallback strings (backward compat)
-function getCurrentProteinaName() {
-  var arr = getCurrentProteinasArr();
-  return arr.length > 0 ? arr[0] : (getCurrentRecetaName('carne', 'proteina') || 'Pollo');
-}
-function getCurrentVerduraNombre() {
-  var arr = getCurrentVerdurasArr();
-  return arr.length > 0 ? arr[0] : (getCurrentRecetaName('verdura', 'verdura') || 'Verduras');
 }
 
 // Legumbres rotan por semana
@@ -1975,14 +1434,19 @@ function changeWeek(dir) {
 // onVariantChange handled inline in banner select
 
 // ── DAY TEMPLATES ─────────────────────────────────────────────────────────────
-// lunch: null = calculado dinámicamente según día
+// lunchType 'legumbre'/'pasta-fija' = franja fija (legumbre del lunes, tupper de martes/jueves).
+// El resto de franjas (sin lunchType) se rellenan con lo elegido en "Crear menú" o arrastrando.
 const dayTemplates = [
-  { name:'Lun',  gym:true,  gymDay:'Pecho · Hombro · Tríceps', lunchType:'legumbre', dinner:'Fajita de pollo con pimientos y cebolla' },
-  { name:'Mar',  gym:true,  gymDay:'Espalda · Bíceps',          lunchType:'pasta-fija', dinner:'Merluza/Salmón con patata cocida' },
-  { name:'Mié',  gym:false, gymDay:null,                         lunchType:'fijo', lunchText:'Muslo de pollo al horno con patata, pimiento y brócoli', dinner:'Fajita de pollo con pimientos y cebolla' },
-  { name:'Jue',  gym:true,  gymDay:'Pierna',                     lunchType:'pasta-fija', dinner:'Muslo de pollo' },
-  { name:'Vie',  gym:true,  gymDay:'Brazos · Hombro posterior',  lunchType:'fijo', lunchText:'Huevos revueltos con bacon, champiñones y tomate', dinnerType:'aleatorio', dinner:'' },
+  { name:'Lun', lunchType:'legumbre' },
+  { name:'Mar', lunchType:'pasta-fija' },
+  { name:'Mié' },
+  { name:'Jue', lunchType:'pasta-fija' },
+  { name:'Vie' },
 ];
+
+// Franjas que no tienen rol fijo — se llenan con la selección de "Crear menú" (en orden)
+// o quedan en blanco para que arrastres o toques para elegir.
+const POOL_SLOTS = ['0-cena', '1-cena', '2-comida', '2-cena', '3-cena', '4-comida', '4-cena'];
 
 // ── STORES (dinámicas según semana) ──────────────────────────────────────────
 
@@ -2129,20 +1593,8 @@ function renderLegumbreBanner() {
 
 // ── MENU EDITOR ───────────────────────────────────────────────────────────────
 
-var undoStack = [];
-
 function saveMealOverrides(data) {
-  undoStack.push(getMealOverrides());
   localStorage.setItem('meal-overrides-' + getCurrentVariantKey(), JSON.stringify(data));
-}
-
-function undoMealOverride() {
-  if (undoStack.length === 0) { showToast('Nada que deshacer'); return; }
-  var prev = undoStack.pop();
-  localStorage.setItem('meal-overrides-' + getCurrentVariantKey(), JSON.stringify(prev));
-  renderMenu();
-  renderBatchCooking();
-  showToast('Acción deshecha');
 }
 
 function resetMealOverrides() {
@@ -2196,7 +1648,9 @@ function openMealPicker(dayIdx, slot) {
     items.forEach(function(r) {
       var isCurrent = currentText && currentText.trim() === r.name.trim();
       var safeName = r.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-      html += '<button class="meal-picker-item' + (isCurrent ? ' current' : '') + '" onclick="selectMealFromPicker(\'' + safeName + '\')">' + r.name + '</button>';
+      html += '<button class="meal-picker-item' + (isCurrent ? ' current' : '') + '" onclick="selectMealFromPicker(\'' + safeName + '\')">'
+        + (r.img ? '<img class="meal-picker-item-img" src="' + r.img + '">' : '')
+        + '<span class="meal-picker-item-text">' + r.name + '</span></button>';
     });
   });
   if (!html) html = '<div style="color:var(--muted);font-size:13px;padding:16px 2px;">No hay recetas en el banco todavía.</div>';
@@ -2233,10 +1687,14 @@ var dragSource = null;
 function getMealSlotHTML(dayIdx, slot) {
   var rowEl = document.getElementById('meal-slot-' + dayIdx + '-' + slot);
   if (!rowEl) return '';
-  // Strip any accidentally saved meal-label
-  var labelEl = rowEl.querySelector('.meal-label');
   var content = rowEl.querySelector('.meal-slot-content');
-  return content ? content.innerHTML : '';
+  if (!content) return '';
+  // Devuelve solo el texto/hint "canónico" (sin la miniatura añadida al renderizar),
+  // para que no se acumulen envoltorios de imagen al arrastrar/intercambiar comidas.
+  var textEl = content.querySelector('.meal-text');
+  if (!textEl) return content.innerHTML;
+  var hintEl = content.querySelector('.meal-hint');
+  return textEl.outerHTML + (hintEl ? hintEl.outerHTML : '');
 }
 
 function onMealDragStart(e, dayIdx, slot) {
@@ -2518,6 +1976,7 @@ function renderRecetasPanel() {
                 + ' ondragend="onRecetaDragEnd()"'
                 + ' ontouchstart="onRecetaTouchStart(event,' + x.i + ')"')
           + '>'
+          + (x.r.img ? '<img class="receta-chip-img" src="' + x.r.img + '">' : '')
           + x.r.name
           + (isCurrentLeg && !editMode ? ' <span style="font-size:10px;color:#a882ff;font-weight:600;">✓ esta semana</span>' : '')
           + '</div>';
@@ -2927,73 +2386,51 @@ document.addEventListener('drop', function(e) {
 
 
 
-// ── VIERNES CENA ALEATORIA ────────────────────────────────────────────────────
-function getViernesCena() {
-  // Check if user has set an override
-  var overrides = getMealOverrides();
-  if (overrides['4-cena'] !== undefined) return null; // override handles it
-
-  // Get all meals used this week (days 0-4, comida+cena)
-  var usedNames = new Set();
-  var legumbre = getCurrentLegumbre().label;
-  var vData = allVariants[getCurrentVariantKey()];
-
-  // Add fixed meals
-  usedNames.add(normalize(legumbre));
-  usedNames.add(normalize(vData.label));
-  usedNames.add(normalize('Fajita de pollo con pimientos y cebolla'));
-  usedNames.add(normalize('Merluza/Salmón con patata cocida'));
-  usedNames.add(normalize('Muslo de pollo al horno con patata, pimiento y brócoli'));
-  usedNames.add(normalize('Huevos revueltos con bacon, champiñones y tomate'));
-  usedNames.add(normalize('Muslo de pollo'));
-
-  // Add any overrides for days 0-3
-  for (var i = 0; i < 4; i++) {
-    ['comida','cena'].forEach(function(slot) {
-      var v = overrides[i + '-' + slot];
-      if (v) {
-        var tmp = document.createElement('div');
-        tmp.innerHTML = v;
-        usedNames.add(normalize(tmp.textContent.trim()));
-      }
-    });
-  }
-
-  function normalize(s) {
-    return (s || '').toLowerCase()
-      .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e')
-      .replace(/[íìï]/g,'i').replace(/[óòö]/g,'o')
-      .replace(/[úùü]/g,'u').replace(/[ñ]/g,'n')
-      .replace(/[^a-z0-9]/g,' ').trim().slice(0,20);
-  }
-
-  // Get recipes not used this week, and appropriate for cena (no arroz/pasta/legumbre)
-  var excludedCats = ['arroz', 'pasta', 'legumbre'];
-  var recetas = getRecetas();
-  var available = recetas.filter(function(r) {
-    return !usedNames.has(normalize(r.name))
-      && excludedCats.indexOf(r.cat) === -1
-      && r.type !== 'comida';
-  });
-
-  // Fallback: any non-arroz/pasta/legumbre recipe
-  if (available.length === 0) {
-    available = recetas.filter(function(r) {
-      return excludedCats.indexOf(r.cat) === -1 && r.type !== 'comida';
-    });
-  }
-
-  if (available.length === 0) available = recetas; // fallback: any recipe
-
-  // Pick deterministically based on weekOffset so it doesn't change on re-render
-  var idx = Math.abs(weekOffset * 7 + 4) % available.length;
-  return available[idx];
-}
-
-
 // ── EDITAR RECETA ─────────────────────────────────────────────────────────────
 var recetaEditIdx = -1;
 var recetasEditMode = false;
+var _recetaEditImg = null;
+
+function showRecetaEditImgPreview() {
+  var prev = document.getElementById('receta-edit-img-preview');
+  var rem  = document.getElementById('receta-edit-img-remove');
+  if (_recetaEditImg) {
+    if (prev) { prev.src = _recetaEditImg; prev.style.display = 'block'; }
+    if (rem)  rem.style.display = 'inline-block';
+  } else {
+    if (prev) { prev.src = ''; prev.style.display = 'none'; }
+    if (rem)  rem.style.display = 'none';
+  }
+}
+
+function onRecetaImgPicked(e) {
+  var file = e.target.files && e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      // Reduce a un tamaño pequeño antes de guardar en localStorage
+      var maxDim = 240;
+      var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      _recetaEditImg = canvas.toDataURL('image/jpeg', 0.72);
+      showRecetaEditImgPreview();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function quitarRecetaImg() {
+  _recetaEditImg = null;
+  var fileEl = document.getElementById('receta-edit-img-input');
+  if (fileEl) fileEl.value = '';
+  showRecetaEditImgPreview();
+}
 
 function toggleRecetasEditMode() {
   recetasEditMode = !recetasEditMode;
@@ -3010,10 +2447,14 @@ function abrirNuevaReceta() {
   var prepEl   = document.getElementById('receta-edit-prep');
   var catEl    = document.getElementById('receta-edit-cat');
   var ingEl    = document.getElementById('receta-edit-ing');
+  var fileEl   = document.getElementById('receta-edit-img-input');
   if (nombreEl) nombreEl.value = '';
   if (prepEl)   prepEl.value   = '';
   if (catEl)    catEl.value    = '';
   if (ingEl)    ingEl.value    = '';
+  if (fileEl)   fileEl.value   = '';
+  _recetaEditImg = null;
+  showRecetaEditImgPreview();
   document.getElementById('receta-edit-modal').style.display = 'flex';
 }
 
@@ -3026,6 +2467,11 @@ function abrirEditarReceta(idx) {
   var nombreEl = document.getElementById('receta-edit-nombre');
   var prepEl   = document.getElementById('receta-edit-prep');
   if (nombreEl) nombreEl.value = r.name || '';
+
+  var fileEl = document.getElementById('receta-edit-img-input');
+  if (fileEl) fileEl.value = '';
+  _recetaEditImg = r.img || null;
+  showRecetaEditImgPreview();
 
   // Load prep from batchDB or saved custom prep
   var savedPrep = '';
@@ -3074,7 +2520,7 @@ function guardarEdicionReceta() {
     // New recipe
     var catElNew = document.getElementById('receta-edit-cat');
     var recetas = getRecetas();
-    recetas.push({ name: nombreEl.value.trim(), type: 'ambas', cat: (catElNew && catElNew.value) ? catElNew.value : null });
+    recetas.push({ name: nombreEl.value.trim(), type: 'ambas', cat: (catElNew && catElNew.value) ? catElNew.value : null, img: _recetaEditImg || null });
     saveRecetas(recetas);
     // Save prep if provided
     var prepEl = document.getElementById('receta-edit-prep');
@@ -3109,6 +2555,7 @@ function guardarEdicionReceta() {
   var catElEdit = document.getElementById('receta-edit-cat');
   recetas[recetaEditIdx].name = newName;
   if (catElEdit) recetas[recetaEditIdx].cat = catElEdit.value || null;
+  recetas[recetaEditIdx].img = _recetaEditImg || null;
   saveRecetas(recetas);
 
   // Save prep instructions keyed by new name
@@ -3350,7 +2797,7 @@ function getDynamicIngredients() {
 
 
 
-var tabOrder = ['menu', 'compra', 'rutina', 'registro'];
+var tabOrder = ['menu', 'compra'];
 
 
 
@@ -3649,242 +3096,6 @@ document.addEventListener('drop', function(e) {
 });
 
 
-// ── RUTINA HELPERS ────────────────────────────────────────────────────────────
-function getTodayDayName() {
-  var days = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
-  return days[new Date().getDay()];
-}
-
-function getTodayRoutineIdx() {
-  var r = getRoutine();
-  var today = getTodayDayName();
-  for (var i = 0; i < r.length; i++) {
-    if (r[i].day.toLowerCase() === today) return i;
-  }
-  return -1; // no session today = rest day
-}
-
-function getLastKgForEx(dayName, exName) {
-  var sessions = getSessions();
-  for (var i = sessions.length - 1; i >= 0; i--) {
-    if (sessions[i].day === dayName) {
-      var ex = (sessions[i].exercises || []).find(function(e){ return e.name === exName; });
-      if (ex && ex.kg) return ex.kg;
-    }
-  }
-  return null;
-}
-
-
-function saveSession(dayName, focus, exercises) {
-  var sessions = getSessions();
-  sessions.push({ day: dayName, focus: focus, date: new Date().toISOString(), exercises: exercises });
-  localStorage.setItem('gym-sessions', JSON.stringify(sessions));
-}
-
-function openTrainingMode(di) {
-  var r = getRoutine();
-  var day = r[di];
-  if (!day) return;
-
-  var overlay = document.createElement('div');
-  overlay.className = 'rut-train-overlay';
-  overlay.id = 'rut-train-overlay';
-
-  var headerColor = day.color || 'var(--accent)';
-  var isLight = headerColor === '#c8ff00' || headerColor.startsWith('#c8ff');
-  var textCol = isLight ? '#1a2400' : '#fff';
-
-  var exCards = day.exercises.map(function(ex, ei) {
-    var lastKg = getLastKgForEx(day.day, ex.name);
-    var prevText = lastKg ? 'Anterior: ' + lastKg + ' kg' : 'Sin registro previo';
-    return '<div class="rut-ex-card">'
-      + '<div class="rut-ex-card-name">' + ex.name + '</div>'
-      + '<div class="rut-ex-card-sets">' + ex.sets + '</div>'
-      + '<div class="rut-kg-row">'
-      + '<span class="rut-kg-prev">' + prevText + '</span>'
-      + '<input class="rut-kg-input" id="rtkg-' + ei + '" type="number" inputmode="decimal" placeholder="—" value="' + (lastKg||'') + '">'
-      + '<span class="rut-kg-unit">kg</span>'
-      + '</div></div>';
-  }).join('');
-
-  overlay.innerHTML = '<div class="rut-train-header" style="background:' + headerColor + ';">'
-    + '<button class="rut-train-back" style="color:' + textCol + ';" onclick="closeTrainingMode()">←</button>'
-    + '<span class="rut-train-title" style="color:' + textCol + ';">' + day.day.toUpperCase() + ' · ' + day.focus + '</span>'
-    + '</div>'
-    + exCards
-    + '<button class="rut-train-done" onclick="saveTrainingSession(' + di + ')">✓ GUARDAR ENTRENAMIENTO</button>'
-    + '<div style="height:calc(env(safe-area-inset-bottom,0px)+20px);"></div>';
-
-  document.body.appendChild(overlay);
-}
-
-function closeTrainingMode() {
-  var el = document.getElementById('rut-train-overlay');
-  if (el) el.remove();
-}
-
-function saveTrainingSession(di) {
-  var r = getRoutine();
-  var day = r[di];
-  var exercises = day.exercises.map(function(ex, ei) {
-    var inp = document.getElementById('rtkg-' + ei);
-    return { name: ex.name, sets: ex.sets, kg: inp ? (parseFloat(inp.value)||null) : null };
-  });
-  saveSession(day.day, day.focus, exercises);
-  closeTrainingMode();
-  showToast('Entrenamiento guardado');
-  renderRutina();
-}
-
-var rutOtroOpen = false;
-function toggleRutEdit() {
-  var p = document.getElementById('rut-edit-panel');
-  if (p) p.style.display = p.style.display === 'none' ? '' : 'none';
-}
-function toggleRutOtro() {
-  rutOtroOpen = !rutOtroOpen;
-  var overlay = document.getElementById('rut-otro-overlay');
-  var icon = document.getElementById('rut-otro-icon');
-  if (!overlay) return;
-
-  if (rutOtroOpen) {
-    var r = getRoutine();
-    var todayIdx = getTodayRoutineIdx();
-    var otherDays = (todayIdx === -1) ? r : r.filter(function(_,i){ return i !== todayIdx; });
-    var rowsHTML = otherDays.map(function(day) {
-      var di = r.indexOf(day);
-      return '<div style="display:flex;align-items:center;padding:14px 20px;gap:14px;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openTrainingMode(' + di + ');toggleRutOtro();">'
-        + '<div style="width:4px;height:40px;border-radius:2px;background:' + day.color + ';flex-shrink:0;"></div>'
-        + '<div style="flex:1;">'
-        + '<div style="font-size:15px;font-weight:500;">' + day.day + '</div>'
-        + '<div style="font-size:13px;color:var(--muted);margin-top:2px;">' + day.focus + ' · ' + day.exercises.length + ' ej.</div>'
-        + '</div>'
-        + '<button style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--text);cursor:pointer;">Entrenar</button>'
-        + '</div>';
-    }).join('');
-    var rows = document.getElementById('rut-otro-rows');
-    if (rows) rows.innerHTML = rowsHTML;
-    overlay.style.display = 'block';
-    if (icon) icon.textContent = '✕';
-  } else {
-    overlay.style.display = 'none';
-    if (icon) icon.textContent = '+';
-  }
-}
-
-
-// ── RUTINA CALENDAR ──────────────────────────────────────────────────────────
-var rutCalYear = new Date().getFullYear();
-var rutCalMonth = new Date().getMonth(); // 0-based
-
-
-function borrarHistorialGym() {
-  showConfirmModal(
-    'Borrar historial',
-    'Se eliminarán todos los registros de entrenamiento.',
-    function() {
-      localStorage.removeItem('gym-sessions');
-      showToast('Historial eliminado');
-      renderRutina();
-    }
-  );
-}
-
-function renderRutCalendar() {
-  var el = document.getElementById('rut-calendar');
-  if (!el) return;
-
-  var sessions = getSessions();
-  var r = getRoutine();
-
-  // Build a map: "YYYY-MM-DD" → color
-  var sessionMap = {};
-  sessions.forEach(function(s) {
-    if (!s.date) return;
-    var d = new Date(s.date);
-    var key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-    // Find color from routine
-    var routineDay = r.find(function(rd){ return rd.day === s.day; });
-    sessionMap[key] = routineDay ? routineDay.color : 'var(--accent)';
-  });
-
-  var now = new Date();
-  var todayKey = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-
-  var firstDay = new Date(rutCalYear, rutCalMonth, 1);
-  var lastDay  = new Date(rutCalYear, rutCalMonth+1, 0);
-
-  var monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  var dowNames = ['L','M','X','J','V','S','D'];
-
-  // Start from Monday
-  var startDow = (firstDay.getDay() + 6) % 7; // 0=Mon
-  var totalDays = lastDay.getDate();
-
-  var daysHTML = dowNames.map(function(d){ return '<div class="rut-cal-dow">' + d + '</div>'; }).join('');
-
-  // Empty cells before month start
-  for (var i = 0; i < startDow; i++) {
-    daysHTML += '<div class="rut-cal-day other-month"><span class="rut-cal-day-num"></span></div>';
-  }
-
-  for (var day = 1; day <= totalDays; day++) {
-    var key = rutCalYear + '-' + String(rutCalMonth+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
-    var color = sessionMap[key] || null;
-    var isToday = key === todayKey;
-    var numStyle = isToday
-      ? 'display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;'
-      : '';
-    daysHTML += '<div class="rut-cal-day' + (isToday?' today':'') + '">'
-      + '<span class="rut-cal-day-num" style="' + numStyle + '">' + day + '</span>'
-      + (color ? '<div class="rut-cal-dot" style="background:' + color + ';"></div>' : '<div class="rut-cal-dot" style="background:transparent;"></div>')
-      + '</div>';
-  }
-
-  el.innerHTML = '<div class="rut-cal-header">'
-    + '<button class="rut-cal-nav" onclick="rutCalNav(-1)">‹</button>'
-    + '<span class="rut-cal-title">' + monthNames[rutCalMonth] + ' ' + rutCalYear + '</span>'
-    + '<button class="rut-cal-nav" onclick="rutCalNav(1)">›</button>'
-    + '</div>'
-    + '<div class="rut-cal-grid">' + daysHTML + '</div>';
-
-  // Render sessions list
-  var sl = document.getElementById('rut-sessions-list');
-  if (sl) {
-    var allSessions = getSessions().slice().reverse();
-    if (allSessions.length === 0) {
-      sl.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:8px 0;">Sin sesiones registradas</div>';
-    } else {
-      sl.innerHTML = allSessions.map(function(s) {
-        var d = s.date ? new Date(s.date) : null;
-        var dateStr = d && !isNaN(d) ? d.toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}) : 'Fecha desconocida';
-        var routineDay = r.find(function(rd){ return rd.day === s.day; });
-        var color = routineDay ? routineDay.color : 'var(--muted)';
-        var exList = (s.exercises||[]).filter(function(e){ return e.kg; }).map(function(e){
-          return '<span style="font-size:12px;color:var(--muted);">' + e.name + ': <b>' + e.kg + 'kg</b></span>';
-        }).join(' · ');
-        return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;">'
-          + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:' + (exList?'8px':'0') + ';">'
-          + '<div style="width:4px;height:32px;border-radius:2px;background:' + color + ';flex-shrink:0;"></div>'
-          + '<div style="flex:1;"><div style="font-size:14px;font-weight:500;">' + s.day + ' · ' + s.focus + '</div>'
-          + '<div style="font-size:12px;color:var(--muted);">' + dateStr + '</div></div>'
-          + '</div>'
-          + (exList ? '<div style="display:flex;flex-wrap:wrap;gap:6px;">' + exList + '</div>' : '')
-          + '</div>';
-      }).join('');
-    }
-  }
-}
-
-function rutCalNav(dir) {
-  rutCalMonth += dir;
-  if (rutCalMonth > 11) { rutCalMonth = 0; rutCalYear++; }
-  if (rutCalMonth < 0)  { rutCalMonth = 11; rutCalYear--; }
-  renderRutCalendar();
-}
-
-
 // ── PRICE KEY MIGRATION — runs after all functions defined ───────────────────
 function runPriceMigration() {
   Object.keys(localStorage).forEach(function(key) {
@@ -3925,27 +3136,26 @@ function renderWeekNav() {
   }
 }
 
-// ── CREAR MENÚ ────────────────────────────────────────────────────────────────
-var _crearLeg     = null;   // único
-var _crearTup     = null;   // único
-var _crearPesc    = null;   // único
-var _crearProtArr = [];     // multi
-var _crearCenaArr = [];     // multi
-var _crearVerdArr = [];     // multi
+// ── CREAR / RECREAR MENÚ ───────────────────────────────────────────────────────
+// Selección por las mismas categorías que el banco de recetas. Lo que se elige
+// aquí se coloca en la pantalla principal al generar; después se puede seguir
+// arrastrando o tocando cualquier casilla para cambiarla.
+var _crearLeg  = null;   // legumbre — único
+var _crearTup  = null;   // tupper arroz/pasta — único
+var _crearPool = [];     // resto de categorías — multi, en orden de selección
 
 function openCrearMenu() {
-  _crearLeg     = getCurrentLegumbre().key;
-  _crearTup     = weekVariants[weekOffset] || 'pasta-0';
-  _crearPesc    = getCurrentPescadoName();
-  _crearProtArr = getCurrentProteinasArr().slice();
-  _crearCenaArr = getCurrentCenasArr().slice();
-  _crearVerdArr = getCurrentVerdurasArr().slice();
+  _crearLeg  = getCurrentLegumbre().key;
+  _crearTup  = getCurrentVariantKey();
+  _crearPool = [];
   renderCrearMenuOpts();
   document.getElementById('crear-overlay').classList.add('visible');
 }
+
 function cerrarCrearMenu() {
   document.getElementById('crear-overlay').classList.remove('visible');
 }
+
 function recrearMenu() {
   localStorage.removeItem('menuConfirmed-' + weekOffset);
   var contentEl = document.getElementById('menu-content-wrap');
@@ -3957,43 +3167,13 @@ function recrearMenu() {
   openCrearMenu();
 }
 
-// Toggle para multi-selección (por índice para evitar escapes)
-function _toggleInArr(arr, name) {
-  var idx = arr.indexOf(name);
-  if (idx >= 0) arr.splice(idx, 1); else arr.push(name);
-}
-function toggleProteinaByIdx(idx) {
-  var items = getRecetasByCat('carne');
-  if (items[idx]) { _toggleInArr(_crearProtArr, items[idx].name); renderCrearMenuOpts(); }
-}
-function toggleCenaByIdx(idx) {
-  var items = getRecetas().filter(function(r){ return r.cat !== 'arroz' && r.cat !== 'pasta' && r.cat !== 'legumbre'; });
-  if (items[idx]) { _toggleInArr(_crearCenaArr, items[idx].name); renderCrearMenuOpts(); }
-}
-function toggleVerduraByIdx(idx) {
-  var items = getRecetasByCat('verdura');
-  if (items[idx]) { _toggleInArr(_crearVerdArr, items[idx].name); renderCrearMenuOpts(); }
+function toggleCrearPool(name) {
+  var idx = _crearPool.indexOf(name);
+  if (idx >= 0) _crearPool.splice(idx, 1); else _crearPool.push(name);
+  renderCrearMenuOpts();
 }
 
 function renderCrearMenuOpts() {
-  var legObj = LEGUMBRES.find(function(l){ return l.key === _crearLeg; }) || LEGUMBRES[0];
-  var tupObj = allVariants[_crearTup] || allVariants['pasta-0'];
-
-  // Resumen dinámico
-  function summaryMulti(arr, emoji) {
-    var val = arr.length === 0 ? '<span style="color:var(--muted)">—</span>'
-      : arr.slice(0,2).map(function(n){ return n.length>20?n.slice(0,20)+'…':n; }).join(', ')
-        + (arr.length > 2 ? ' <span style="color:var(--muted)">+' + (arr.length-2) + '</span>' : '');
-    return '<div class="crear-summary-row"><span class="crear-sum-icon">' + emoji + '</span><span class="crear-sum-val">' + val + '</span></div>';
-  }
-  document.getElementById('crear-summary').innerHTML =
-    '<div class="crear-summary-row"><span class="crear-sum-icon">🍝</span><span class="crear-sum-val">' + tupObj.label + '</span></div>'
-  + '<div class="crear-summary-row"><span class="crear-sum-icon">🫘</span><span class="crear-sum-val">' + legObj.label + '</span></div>'
-  + '<div class="crear-summary-row"><span class="crear-sum-icon">🐟</span><span class="crear-sum-val">' + (_crearPesc || '<span style="color:var(--muted)">—</span>') + '</span></div>'
-  + summaryMulti(_crearProtArr, '🍗')
-  + summaryMulti(_crearCenaArr, '🌙')
-  + summaryMulti(_crearVerdArr, '🥦');
-
   // Legumbre — único
   document.getElementById('crear-legumbre-opts').innerHTML = LEGUMBRES.map(function(l) {
     return '<div class="crear-option' + (l.key === _crearLeg ? ' sel' : '') + '" onclick="_crearLeg=\'' + l.key + '\';renderCrearMenuOpts()">'
@@ -4012,81 +3192,71 @@ function renderCrearMenuOpts() {
       + '<span class="crear-option-sub">' + (v.type === 'pasta' ? 'Pasta' : 'Arroz') + '</span></div>';
   }).join('');
 
-  // Pescado — único, del banco
-  (function() {
-    var items = getRecetasByCat('pescado');
-    if (items.length === 0) {
-      document.getElementById('crear-pescado-opts').innerHTML = '<div class="crear-bank-empty">Añade recetas de pescado al banco 📝</div>';
-      return;
-    }
-    document.getElementById('crear-pescado-opts').innerHTML = items.map(function(r) {
-      var short = r.name.length > 26 ? r.name.slice(0,26)+'…' : r.name;
-      var safe  = r.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-      return '<div class="crear-option crear-option-recipe' + (r.name === _crearPesc ? ' sel' : '') + '" onclick="_crearPesc=\'' + safe + '\';renderCrearMenuOpts()">'
-        + '<span class="crear-option-name">' + short + '</span></div>';
-    }).join('');
-  })();
+  // Resto de categorías del banco — multi, misma agrupación que el panel "Recetas"
+  var poolCats = [
+    { key:'carne',   label:'🥩 Carne' },
+    { key:'pescado', label:'🐟 Pescado' },
+    { key:'huevos',  label:'🥚 Huevos' },
+    { key:'verdura', label:'🥦 Verdura' },
+    { key:null,      label:'⚡ Otros' },
+  ];
+  var recetas = getRecetas();
+  var html = poolCats.map(function(cat) {
+    var items = cat.key === null
+      ? recetas.filter(function(r){ return !r.cat || ['arroz','pasta','carne','pescado','legumbre','huevos','verdura'].indexOf(r.cat) === -1; })
+      : recetas.filter(function(r){ return r.cat === cat.key; });
+    if (items.length === 0) return '';
+    return '<div class="crear-section-label" style="margin-top:18px;">' + cat.label + '</div>'
+      + '<div class="crear-options" style="grid-template-columns:1fr 1fr;">'
+      + items.map(function(r) {
+          var isSel = _crearPool.indexOf(r.name) >= 0;
+          var safe  = r.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+          return '<div class="crear-option crear-option-recipe crear-multi' + (isSel ? ' sel' : '') + '" onclick="toggleCrearPool(\'' + safe + '\')">'
+            + '<span class="crear-cb">' + (isSel ? '✓' : '') + '</span>'
+            + '<span class="crear-option-name">' + r.name + '</span></div>';
+        }).join('')
+      + '</div>';
+  }).join('');
+  document.getElementById('crear-pool-opts').innerHTML = html || '<div class="crear-bank-empty">Añade más recetas al banco 📝 para poder elegirlas aquí.</div>';
 
-  // Proteína — MULTI, del banco (carne)
-  (function() {
-    var items = getRecetasByCat('carne');
-    if (items.length === 0) {
-      document.getElementById('crear-proteina-opts').innerHTML = '<div class="crear-bank-empty">Añade recetas de carne al banco 📝</div>';
-      return;
-    }
-    document.getElementById('crear-proteina-opts').innerHTML = items.map(function(r, idx) {
-      var isSel = _crearProtArr.indexOf(r.name) >= 0;
-      var short = r.name.length > 22 ? r.name.slice(0,22)+'…' : r.name;
-      return '<div class="crear-option crear-option-recipe crear-multi' + (isSel ? ' sel' : '') + '" onclick="toggleProteinaByIdx(' + idx + ')">'
-        + '<span class="crear-cb">' + (isSel ? '✓' : '') + '</span>'
-        + '<span class="crear-option-name">' + short + '</span></div>';
-    }).join('');
-  })();
-
-  // Cena — MULTI, todas las recetas excepto arroz/pasta/legumbre
-  (function() {
-    var items = getRecetas().filter(function(r){ return r.cat !== 'arroz' && r.cat !== 'pasta' && r.cat !== 'legumbre'; });
-    if (items.length === 0) {
-      document.getElementById('crear-cena-opts').innerHTML = '<div class="crear-bank-empty">Añade recetas al banco 📝</div>';
-      return;
-    }
-    document.getElementById('crear-cena-opts').innerHTML = items.map(function(r, idx) {
-      var isSel = _crearCenaArr.indexOf(r.name) >= 0;
-      var short = r.name.length > 22 ? r.name.slice(0,22)+'…' : r.name;
-      return '<div class="crear-option crear-option-recipe crear-multi' + (isSel ? ' sel' : '') + '" onclick="toggleCenaByIdx(' + idx + ')">'
-        + '<span class="crear-cb">' + (isSel ? '✓' : '') + '</span>'
-        + '<span class="crear-option-name">' + short + '</span></div>';
-    }).join('');
-  })();
-
-  // Verdura — MULTI, del banco (verdura)
-  (function() {
-    var items = getRecetasByCat('verdura');
-    if (items.length === 0) {
-      document.getElementById('crear-verdura-opts').innerHTML = '<div class="crear-bank-empty">Añade recetas de verdura al banco 📝</div>';
-      return;
-    }
-    document.getElementById('crear-verdura-opts').innerHTML = items.map(function(r, idx) {
-      var isSel = _crearVerdArr.indexOf(r.name) >= 0;
-      var short = r.name.length > 22 ? r.name.slice(0,22)+'…' : r.name;
-      return '<div class="crear-option crear-option-recipe crear-multi' + (isSel ? ' sel' : '') + '" onclick="toggleVerduraByIdx(' + idx + ')">'
-        + '<span class="crear-cb">' + (isSel ? '✓' : '') + '</span>'
-        + '<span class="crear-option-name">' + short + '</span></div>';
-    }).join('');
-  })();
+  var counterEl = document.getElementById('crear-pool-counter');
+  if (counterEl) counterEl.textContent = _crearPool.length + ' / ' + POOL_SLOTS.length + ' franjas del resto de la semana';
 }
 
 function confirmarCrearMenu() {
-  localStorage.setItem('legumbre-'  + weekOffset, _crearLeg);
-  if (_crearPesc) localStorage.setItem('pescado-' + weekOffset, _crearPesc);
-  localStorage.setItem('proteinas-' + weekOffset, JSON.stringify(_crearProtArr));
-  localStorage.setItem('cenas-'     + weekOffset, JSON.stringify(_crearCenaArr));
-  localStorage.setItem('verduras-'  + weekOffset, JSON.stringify(_crearVerdArr));
+  localStorage.setItem('legumbre-' + weekOffset, _crearLeg);
   weekVariants[weekOffset] = _crearTup;
+
+  // Solo se sustituyen las franjas de los días de la semana (0-4); el fin de semana no se toca
+  var overrides = getMealOverrides();
+  for (var d = 0; d <= 4; d++) { delete overrides[d + '-comida']; delete overrides[d + '-cena']; }
+  POOL_SLOTS.forEach(function(slot, idx) {
+    var name = _crearPool[idx];
+    if (name) overrides[slot] = '<div class="meal-text">' + name + '</div>';
+  });
+  saveMealOverrides(overrides);
+
   localStorage.setItem('menuConfirmed-' + weekOffset, '1');
   cerrarCrearMenu();
   renderMenu();
   renderBatchCooking();
+
+  if (_crearPool.length > POOL_SLOTS.length) {
+    showToast('Se colocaron ' + POOL_SLOTS.length + ' platos. Arrastra el resto desde 📝 Recetas.');
+  }
+}
+
+// Si el texto de la franja coincide con una receta del banco que tiene foto, la antepone.
+function mealSlotDisplayHTML(rawHTML) {
+  if (!rawHTML) return rawHTML;
+  var tmp = document.createElement('div');
+  tmp.innerHTML = rawHTML;
+  var textEl = tmp.querySelector('.meal-text');
+  if (!textEl) return rawHTML;
+  var name = textEl.textContent.replace(/^[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ]+/, '').trim();
+  var r = getRecetas().find(function(x) { return x.name === name; });
+  if (!r || !r.img) return rawHTML;
+  return '<div class="meal-with-thumb"><img class="meal-thumb" src="' + r.img + '"><div class="meal-text-col">' + rawHTML + '</div></div>';
 }
 
 function renderMenu() {
@@ -4108,80 +3278,35 @@ function renderMenu() {
   const vData = allVariants[vKey];
   const monday = getMonday(weekOffset);
   const legumbre = getCurrentLegumbre().label;
-  const pescNombre = getCurrentPescadoName();
-  const protArr    = getCurrentProteinasArr();
-  const cenaArr    = getCurrentCenasArr();
-  const verdArr    = getCurrentVerdurasArr();
+  const mo = getMealOverrides();
+
+  function stripLabel(h) {
+    if (!h) return h;
+    return h.replace(/<div class="meal-label">[^<]*<\/div>/g, '');
+  }
+  const blankHTML = '<div class="meal-text" style="color:var(--muted)">—</div>';
+
   document.getElementById('day-grid').innerHTML = dayTemplates.map((d, i) => {
     const dayDate = new Date(monday); dayDate.setDate(dayDate.getDate() + i);
-    const dayName = ['Lun','Mar','Mié','Jue','Vie'][i];
-    const dayEdit = {};
 
-    let lunchHTML = '';
+    let lunchHTML;
     if (d.lunchType === 'legumbre') {
       lunchHTML = `<div class="meal-text col-legumbre">🫘 ${legumbre}</div><div class="meal-hint">Legumbre de la semana</div>`;
     } else if (d.lunchType === 'pasta-fija') {
       lunchHTML = `<div class="meal-text col-${vData.type}">${vData.emoji} ${vData.label}</div><div class="meal-hint">Tupper de la semana</div>`;
     } else {
-      lunchHTML = `<div class="meal-text">${d.lunchText}</div>`;
-    }
-
-    // Dynamic overrides based on selections (rotation across days)
-    var dinnerOverride    = null;
-    var lunchTextOverride = d.lunchText;
-    if (i === 0) dinnerOverride = protArr.length > 0 ? protArr[0 % protArr.length] : d.dinner;
-    if (i === 1) dinnerOverride = pescNombre;
-    if (i === 2) {
-      dinnerOverride    = protArr.length > 0 ? protArr[1 % protArr.length] : d.dinner;
-      lunchTextOverride = verdArr.length > 0 ? verdArr[0 % verdArr.length] : d.lunchText;
-    }
-    if (i === 3) {
-      if      (cenaArr.length > 0) dinnerOverride = cenaArr[0 % cenaArr.length];
-      else if (protArr.length > 0) dinnerOverride = protArr[2 % protArr.length];
-      else                         dinnerOverride = d.dinner;
-    }
-    if (i === 4 && cenaArr.length >= 2) dinnerOverride = cenaArr[1 % cenaArr.length];
-
-    // Recompute lunchHTML with overrides for fijo type
-    if (d.lunchType === 'fijo') {
-      lunchHTML = `<div class="meal-text">${lunchTextOverride}</div>`;
+      lunchHTML = blankHTML;
     }
 
     return (function() {
-    var mo = getMealOverrides();
-    // Strip any label accidentally stored in overrides
-    function stripLabel(h) {
-      if (!h) return h;
-      return h.replace(/<div class="meal-label">[^<]*<\/div>/g, '');
-    }
-    var comidaHTML = mo[i+'-comida'] !== undefined ? stripLabel(mo[i+'-comida'])
-      : (dayEdit && dayEdit.comida ? '<div class="meal-text">' + dayEdit.comida + '</div>' : lunchHTML);
-    var cenaHTML;
-    if (mo[i+'-cena'] !== undefined) {
-      cenaHTML = stripLabel(mo[i+'-cena']);
-    } else if (dayEdit && dayEdit.cena) {
-      cenaHTML = '<div class="meal-text">' + dayEdit.cena + '</div>';
-    } else if (dinnerOverride) {
-      cenaHTML = '<div class="meal-text">' + dinnerOverride + '</div>';
-    } else if (d.dinnerType === 'aleatorio') {
-      var viernesRec = getViernesCena();
-      if (viernesRec) {
-        cenaHTML = viernesRec.cat === 'legumbre'
-          ? '<div class="meal-text col-legumbre">🫘 ' + viernesRec.name + '</div><div class="meal-hint">Legumbre de la semana</div>'
-          : '<div class="meal-text">' + viernesRec.name + '</div>';
-      } else {
-        cenaHTML = '<div class="meal-text" style="color:var(--muted)">—</div>';
-      }
-    } else {
-      cenaHTML = '<div class="meal-text">' + (d.dinner || '') + '</div>';
-    }
-    return '<div class="day-card' + (d.gym ? ' gym' : '') + '" id="day-card-' + i + '">'
+    var comidaHTML = mealSlotDisplayHTML(mo[i+'-comida'] !== undefined ? stripLabel(mo[i+'-comida']) : lunchHTML);
+    var cenaHTML    = mealSlotDisplayHTML(mo[i+'-cena']   !== undefined ? stripLabel(mo[i+'-cena'])   : blankHTML);
+    return '<div class="day-card" id="day-card-' + i + '">'
       + '<div class="day-card-stripe"></div>'
       + '<div class="day-card-body">'
       + '<div class="day-left">'
       + '<div class="day-name">' + d.name + '</div>'
       + '<div class="day-date">' + formatDate(dayDate) + '</div>'
-      + '<span class="day-badge ' + (d.gym ? 'badge-gym' : 'badge-rest') + '">' + (d.gym ? d.gymDay.split('·')[0].trim() : '–') + '</span>'
       + '</div>'
       + '<div class="day-meals">'
       + '<div class="meal-row" data-day="' + i + '" data-slot="comida" ondragover="event.preventDefault()" ondrop="onMealDrop(event,' + i + ',\'comida\')" ontouchstart="onMealTouchStart(event,' + i + ',\'comida\')" id="meal-slot-' + i + '-comida">'
@@ -4232,19 +3357,18 @@ function renderWeekend() {
       var idx = wd.offset; // 5 = sábado, 6 = domingo
       var dayDate = new Date(monday); dayDate.setDate(dayDate.getDate() + idx);
       function stripLabel(h) { return h ? h.replace(/<div class="meal-label">[^<]*<\/div>/g,'') : h; }
-      var comidaHTML = mo[idx+'-comida'] !== undefined
+      var comidaHTML = mealSlotDisplayHTML(mo[idx+'-comida'] !== undefined
         ? stripLabel(mo[idx+'-comida'])
-        : '<div class="meal-text" style="color:var(--muted)">—</div>';
-      var cenaHTML = mo[idx+'-cena'] !== undefined
+        : '<div class="meal-text" style="color:var(--muted)">—</div>');
+      var cenaHTML = mealSlotDisplayHTML(mo[idx+'-cena'] !== undefined
         ? stripLabel(mo[idx+'-cena'])
-        : '<div class="meal-text" style="color:var(--muted)">—</div>';
+        : '<div class="meal-text" style="color:var(--muted)">—</div>');
       return '<div class="day-card" id="day-card-'+idx+'">'
         + '<div class="day-card-stripe" style="background:rgba(255,255,255,0.12);"></div>'
         + '<div class="day-card-body">'
         + '<div class="day-left">'
         + '<div class="day-name" style="color:var(--muted)">'+wd.name+'</div>'
         + '<div class="day-date">'+formatDate(dayDate)+'</div>'
-        + '<span class="day-badge badge-rest">Libre</span>'
         + '</div>'
         + '<div class="day-meals">'
         + '<div class="meal-row" id="meal-slot-'+idx+'-comida" data-day="'+idx+'" data-slot="comida" ondragover="event.preventDefault()" ondrop="onMealDrop(event,'+idx+',\'comida\')" ontouchstart="onMealTouchStart(event,'+idx+',\'comida\')">'
@@ -4753,60 +3877,6 @@ function getManualItems() { return getStagingItems(); }
 function renderManualItems() { renderStagingItems(); renderCompra(); }
 
 
-// ── RUTINA ────────────────────────────────────────────────────────────────────
-const routine = [
-  { day:'Lunes',   focus:'Pecho · Hombro · Tríceps', color:'#c8ff00', exercises:[
-    {name:'Press máquina',sets:'4×8-10'},{name:'Press inclinado',sets:'3×10-12'},{name:'Aperturas Pec-deck',sets:'3×12-15'},
-    {name:'Press militar',sets:'3×10-12'},{name:'Elevaciones laterales',sets:'3×12-15'},{name:'Tríceps polea',sets:'3×12-15'},
-  ]},
-  { day:'Martes',  focus:'Espalda · Bíceps', color:'#00d4ff', exercises:[
-    {name:'Jalón al pecho',sets:'4×8-10'},{name:'Remo máquina',sets:'4×10-12'},{name:'Máquina dorsales',sets:'3×12-15'},
-    {name:'Curl martillo',sets:'3×10-12'},{name:'Curl normal',sets:'3×12-15'},
-  ]},
-  { day:'Jueves',  focus:'Pierna', color:'#ff6b35', exercises:[
-    {name:'Hack squat',sets:'4×8-10'},{name:'Prensa',sets:'4×10-12'},{name:'Extensión cuádriceps',sets:'3×12-15'},
-    {name:'Curl femoral',sets:'3×10-12'},{name:'Hip Thrust',sets:'3×12-15'},
-  ]},
-  { day:'Viernes', focus:'Brazos · Hombro posterior', color:'#bf5fff', exercises:[
-    {name:'Curl martillo',sets:'3×10-12'},{name:'Curl normal',sets:'3×12-15'},{name:'Tríceps polea',sets:'3×12-15'},
-    {name:'Tríceps Katana',sets:'3×12-15'},{name:'Aperturas Pec-deck inverso',sets:'3×15'},
-  ]},
-];
-
-
-// ── GYM DATA ──────────────────────────────────────────────────────────────────
-function getRoutine() {
-  try {
-    var saved = localStorage.getItem('custom-routine');
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  return [
-    { day:'Lunes',   focus:'Pecho · Hombro · Tríceps', color:'#c8ff00',
-      exercises:[{name:'Press máquina',sets:'4×8-10'},{name:'Press inclinado',sets:'3×10-12'},{name:'Aperturas Pec-deck',sets:'3×12-15'},{name:'Press militar',sets:'3×10-12'},{name:'Elevaciones laterales',sets:'3×12-15'},{name:'Tríceps polea',sets:'3×12-15'}]},
-    { day:'Martes',  focus:'Espalda · Bíceps', color:'#00d4ff',
-      exercises:[{name:'Jalón al pecho',sets:'4×8-10'},{name:'Remo máquina',sets:'4×10-12'},{name:'Máquina dorsales',sets:'3×12-15'},{name:'Curl martillo',sets:'3×10-12'},{name:'Curl normal',sets:'3×12-15'}]},
-    { day:'Jueves',  focus:'Pierna', color:'#ff6b35',
-      exercises:[{name:'Hack squat',sets:'4×8-10'},{name:'Prensa',sets:'4×10-12'},{name:'Extensión cuádriceps',sets:'3×12-15'},{name:'Curl femoral',sets:'3×10-12'},{name:'Hip Thrust',sets:'3×12-15'}]},
-    { day:'Viernes', focus:'Brazos · Hombro posterior', color:'#bf5fff',
-      exercises:[{name:'Curl martillo',sets:'3×10-12'},{name:'Curl normal',sets:'3×12-15'},{name:'Tríceps polea',sets:'3×12-15'},{name:'Tríceps Katana',sets:'3×12-15'},{name:'Aperturas Pec-deck inverso',sets:'3×15'}]}
-  ];
-}
-
-function saveRoutine(r) {
-  localStorage.setItem('custom-routine', JSON.stringify(r));
-}
-
-function getSessions() {
-  try { return JSON.parse(localStorage.getItem('gym-sessions') || '[]'); } catch(e) { return []; }
-}
-
-function saveSession(dayName, focus, exercises) {
-  var sessions = getSessions();
-  var today = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit', year:'2-digit'});
-  sessions.push({ date: today, ts: Date.now(), day: dayName, focus: focus, exercises: exercises });
-  localStorage.setItem('gym-sessions', JSON.stringify(sessions));
-}
-
 // ── BATCH COOKING ─────────────────────────────────────────────────────────────
 function getBatchKey() {
   return 'batch-steps-' + getCurrentVariantKey();
@@ -5071,426 +4141,6 @@ function resetBatchSteps() {
 }
 
 
-function renderRutina() {
-  var r = getRoutine();
-  routine.length = 0; r.forEach(function(d) { routine.push(d); });
-
-  var todayIdx = getTodayRoutineIdx();
-  var isRestDay = todayIdx === -1;
-  var today = isRestDay ? null : r[todayIdx];
-  var sessions = getSessions();
-
-
-  // Today card
-  var todayExHTML = '';
-  var masHTML = '';
-  if (!isRestDay && today) {
-    todayExHTML = today.exercises.slice(0,3).map(function(ex) {
-      var kg = getLastKgForEx(today.day, ex.name);
-      return '<div class="rutina-ex-row">'
-        + '<div class="rutina-ex-dot" style="background:' + today.color + '"></div>'
-        + '<span class="rutina-ex-name">' + ex.name + '</span>'
-        + '<span class="rutina-ex-sets">' + ex.sets + '</span>'
-        + '<span class="rutina-ex-kg">' + (kg ? kg+'kg' : '—') + '</span>'
-        + '</div>';
-    }).join('');
-    masHTML = today.exercises.length > 3
-      ? '<div class="rutina-ver-mas">+ ' + (today.exercises.length-3) + ' ejercicios más</div>' : '';
-  }
-
-  // Other days
-  var otherDays = isRestDay ? r : r.filter(function(_,i){ return i !== todayIdx; });
-  var otroRowsHTML = otherDays.map(function(day, i) {
-    var di = r.indexOf(day);
-    return '<div class="rutina-otro-row">'
-      + '<div class="rutina-otro-bar" style="background:' + day.color + '"></div>'
-      + '<div class="rutina-otro-info">'
-      + '<div class="rutina-otro-name">' + day.day + '</div>'
-      + '<div class="rutina-otro-sub">' + day.focus + '</div>'
-      + '</div>'
-      + '<button class="rutina-otro-entrenar" onclick="openTrainingMode(' + di + ')">Entrenar</button>'
-      + '</div>';
-  }).join('');
-
-  // Week rows
-  var weekHTML = r.map(function(day, di) {
-    var isToday = di === todayIdx;
-    return '<div class="rutina-week-row" onclick="openTrainingMode(' + di + ')" style="' + (isToday ? 'border-color:' + day.color + ';' : '') + '">'
-      + '<div class="rutina-week-bar" style="background:' + day.color + '"></div>'
-      + '<div class="rutina-week-info">'
-      + '<div class="rutina-week-day">' + day.day + (isToday ? ' <span style="font-size:10px;color:var(--muted);">— hoy</span>' : '') + '</div>'
-      + '<div class="rutina-week-focus">' + day.focus + ' · ' + day.exercises.length + ' ej.</div>'
-      + '</div>'
-      
-      + '</div>';
-  }).join('');
-
-  // Edit section
-  var editHTML = r.map(function(day, di) {
-    var exRows = day.exercises.map(function(ex, ei) {
-      var safeVal = (ex.name||'').replace(/"/g,'&quot;');
-      return '<div class="edit-ex-row" id="ex-row-' + di + '-' + ei + '">'
-        + '<input class="edit-ex-name" value="' + safeVal + '" data-di="' + di + '" data-ei="' + ei + '" data-field="name" oninput="updateExField(this)">'
-        + '<input class="edit-ex-sets" value="' + ex.sets + '" data-di="' + di + '" data-ei="' + ei + '" data-field="sets" oninput="updateExField(this)">'
-        + '<button class="edit-ex-del" onclick="deleteEx(' + di + ',' + ei + ')">✕</button>'
-        + '</div>';
-    }).join('');
-    return '<div class="edit-day-card">'
-      + '<div class="edit-day-header">'
-      + '<div class="edit-day-dot" style="background:' + day.color + '"></div>'
-      + '<input class="edit-day-name-input" value="' + (day.day||'').replace(/"/g,'&quot;') + '" data-di="' + di + '" data-field="day" onchange="updateDayField(this)">'
-      + '<input class="edit-focus-input" value="' + (day.focus||'').replace(/"/g,'&quot;') + '" data-di="' + di + '" data-field="focus" onchange="updateDayField(this)">'
-      + '</div>'
-      + exRows
-      + '<button class="edit-add-ex-btn" onclick="addEx(' + di + ')">+ Añadir ejercicio</button>'
-      + '</div>';
-  }).join('');
-
-  document.getElementById('gym-grid').innerHTML = '<div class="rutina-hoy-label">Hoy</div>'
-    + (isRestDay
-      ? '<div class="rutina-today-card" style="padding:20px 16px;text-align:center;">'
-        + '<div style="font-size:28px;margin-bottom:8px;">💤</div>'
-        + '<div style="font-weight:600;font-size:15px;margin-bottom:4px;">Día de descanso</div>'
-        + '<div style="font-size:13px;color:var(--muted);">No hay sesión programada hoy</div>'
-        + '</div>'
-      : '<div class="rutina-today-card">'
-        + '<div class="rutina-today-header" style="background:' + (today ? today.color : 'var(--accent)') + ';">'
-        + '<div class="rutina-today-info">'
-        + '<div class="rutina-today-name" style="color:' + ((today && today.color==='#c8ff00')?'#1a2400':'#fff') + ';">' + (today ? today.focus : '') + '</div>'
-        + '<div class="rutina-today-sub" style="color:' + ((today && today.color==='#c8ff00')?'#3a5200':'rgba(255,255,255,0.7)') + ';">' + (today ? today.exercises.length : 0) + ' ejercicios</div>'
-        + '</div>'
-        + '<button class="rutina-entrenar-btn" style="color:' + ((today && today.color==='#c8ff00')?'#1a2400':'#fff') + ';" onclick="openTrainingMode(' + todayIdx + ')">Entrenar</button>'
-        + '</div>'
-        + '<div class="rutina-ex-list">' + todayExHTML + '</div>'
-        + masHTML
-        + '</div>')
-
-    // Entrenar otro grupo
-    + '<div class="rutina-otro-btn" id="rut-otro-btn" onclick="toggleRutOtro()">'
-    + '<div class="rutina-otro-circle" id="rut-otro-icon">+</div>'
-    + '<div><div style="font-size:14px;">Entrenar otro grupo hoy</div><div style="font-size:12px;color:var(--muted);">Mueve el entrenamiento de otro día</div></div>'
-    + '</div>'
-
-    // Week
-    + '<div class="rutina-week-label">Esta semana</div>'
-    + '<div class="rutina-week-list">' + weekHTML + '</div>'
-    + '<div class="rutina-week-label">Historial</div>'
-    + '<div class="rut-calendar" id="rut-calendar"></div>'
-    + '<div class="rutina-week-label" style="margin-top:18px;">Sesiones registradas</div>'
-    + '<div id="rut-sessions-list"></div>'
-
-    // Edit
-    + '<div style="display:flex;gap:8px;margin-bottom:18px;">'
-    + '<button class="rutina-edit-btn" style="flex:1;margin-bottom:0;" onclick="toggleRutEdit()">✏ Editar rutina</button>'
-    + '<button style="padding:12px;border-radius:10px;background:none;border:1px solid var(--border);color:var(--muted);font-size:13px;cursor:pointer;white-space:nowrap;" onclick="borrarHistorialGym()">Borrar historial</button>'
-    + '</div>'
-    + '<div id="rut-edit-panel" style="display:none;">'
-    + editHTML
-    + '<button style="width:100%;padding:12px;border-radius:10px;background:var(--accent);color:#000;border:none;font-family:Bebas Neue,sans-serif;font-size:16px;letter-spacing:1px;cursor:pointer;margin-bottom:18px;" onclick="saveRoutineFromUI()">GUARDAR CAMBIOS</button>'
-    + '</div>';
-
-  renderRutCalendar();
-}
-
-
-function toggleRutinaSection(id) {
-  var body = document.getElementById('rutina-body-' + id);
-  var arrow = document.getElementById('rutina-arrow-' + id);
-  if (!body) return;
-  var isOpen = body.classList.contains('open');
-  document.querySelectorAll('.rutina-section-body').forEach(function(b) { b.classList.remove('open'); });
-  document.querySelectorAll('.rutina-section-arrow').forEach(function(a) { a.classList.remove('open'); });
-  if (!isOpen) {
-    body.classList.add('open');
-    if (arrow) arrow.classList.add('open');
-  }
-}
-
-function toggleEditMode() {
-  var panel = document.getElementById('edit-mode-panel');
-  if (!panel) return;
-  var isOpen = panel.style.display !== 'none';
-  panel.style.display = isOpen ? 'none' : 'block';
-  var btn = panel.previousElementSibling.querySelector('button');
-  if (btn) btn.textContent = isOpen ? '✏️ EDITAR RUTINA' : '✕ CERRAR EDITOR';
-}
-
-
-function updateExField(input) {
-  var di = parseInt(input.dataset.di), ei = parseInt(input.dataset.ei);
-  var field = input.dataset.field;
-  var r = getRoutine();
-  if (r[di] && r[di].exercises[ei]) {
-    r[di].exercises[ei][field] = input.value;
-    saveRoutine(r);
-  }
-}
-
-function updateDayField(input) {
-  var di = parseInt(input.dataset.di);
-  var field = input.dataset.field;
-  var r = getRoutine();
-  if (r[di]) { r[di][field] = input.value; saveRoutine(r); }
-}
-
-function addEx(di) {
-  var r = getRoutine();
-  r[di].exercises.push({name:'Nuevo ejercicio', sets:'3×10'});
-  saveRoutine(r); renderRutina();
-  toggleRutinaSection(0);
-}
-
-function deleteEx(di, ei) {
-  var r = getRoutine();
-  r[di].exercises.splice(ei, 1);
-  saveRoutine(r); renderRutina();
-  toggleRutinaSection(0);
-}
-
-function saveRoutineFromUI() {
-  var r = getRoutine();
-  saveRoutine(r);
-  routine.length = 0; r.forEach(function(d) { routine.push(d); });
-  // Re-render so register section picks up changes
-  setTimeout(function() { renderRutina(); toggleRutinaSection(0); }, 400);
-}
-
-function openRegSession(di) {
-  var r = getRoutine();
-  var day = r[di];
-  document.getElementById('reg-day-selector').style.display = 'none';
-  var session = document.getElementById('reg-session');
-  session.classList.add('open');
-  var exInputs = day.exercises.map(function(ex, ei) {
-    var lastKg = getLastKg(day.day, ex.name);
-    return '<div class="reg-ex-input-row">'
-      + '<span class="reg-ex-label">' + ex.name + '</span>'
-      + '<span class="reg-ex-sets-label">' + ex.sets + '</span>'
-      + '<input class="reg-kg-input" type="number" inputmode="decimal" placeholder="' + (lastKg||'kg') + '" value="' + (lastKg||'') + '" id="kg-' + ei + '" onkeydown="if(event.key===\'Enter\')this.blur()">'
-      + '<span class="reg-kg-unit">kg</span>'
-      + '</div>';
-  }).join('');
-  session.innerHTML = '<div class="reg-session-header">'
-    + '<button class="reg-session-back" onclick="closeRegSession()">← Volver</button>'
-    + '<span class="reg-session-title" style="color:' + day.color + '">' + day.day.toUpperCase() + ' · ' + day.focus + '</span>'
-    + '</div>'
-    + exInputs
-    + '<button class="reg-session-save" onclick="saveRegSession(' + di + ')">GUARDAR ENTRENAMIENTO</button>';
-  regSelectedDay = di;
-}
-
-function closeRegSession() {
-  document.getElementById('reg-day-selector').style.display = '';
-  var s = document.getElementById('reg-session');
-  s.classList.remove('open'); s.innerHTML = '';
-  regSelectedDay = null;
-}
-
-function getLastKg(dayName, exName) {
-  var sessions = getSessions();
-  for (var i = sessions.length - 1; i >= 0; i--) {
-    if (sessions[i].day === dayName) {
-      var ex = sessions[i].exercises.find(function(e) { return e.name === exName; });
-      if (ex && ex.kg) return ex.kg;
-    }
-  }
-  return '';
-}
-
-function saveRegSession(di) {
-  var r = getRoutine();
-  var day = r[di];
-  var exercises = day.exercises.map(function(ex, ei) {
-    var inp = document.getElementById('kg-' + ei);
-    return { name: ex.name, sets: ex.sets, kg: inp ? (parseFloat(inp.value)||null) : null };
-  });
-  saveSession(day.day, day.focus, exercises);
-  closeRegSession();
-  toggleRutinaSection(1);
-  var btn = document.querySelector('#rutina-body-reg .reg-day-btn:nth-child(' + (di+1) + ')');
-  renderRegistro();
-  // Show success
-  alert('✓ Entrenamiento guardado!');
-}
-
-// ── PROGRESO TAB ──────────────────────────────────────────────────────────────
-function renderRegistro() {
-  var sessions = getSessions();
-  var r = getRoutine();
-  var el = document.getElementById('registro-content');
-  if (!el) return;
-
-  if (sessions.length === 0) {
-    el.innerHTML = '<div class="prog-empty">💪<br><br>Aún no hay entrenamientos registrados.<br>Ve a Rutina y pulsa Entrenar.</div>';
-    return;
-  }
-
-  // ── Stats ─────────────────────────────────────────────────────────────────
-  var totalSessions = sessions.length;
-
-  // Max kg ever
-  var allKgs = [];
-  sessions.forEach(function(s) {
-    (s.exercises||[]).forEach(function(e) { if (e.kg) allKgs.push(parseFloat(e.kg)); });
-  });
-  var maxKg = allKgs.length ? Math.max.apply(null, allKgs) : 0;
-
-  // Streak: consecutive weeks with at least 1 session
-  var weekSet = {};
-  sessions.forEach(function(s) {
-    if (!s.date) return;
-    var d = new Date(s.date);
-    if (isNaN(d)) return;
-    var mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay()+6)%7));
-    var key = mon.toISOString().slice(0,10);
-    weekSet[key] = true;
-  });
-  var weekKeys = Object.keys(weekSet).sort();
-  var streak = 0;
-  if (weekKeys.length) {
-    streak = 1;
-    for (var i = weekKeys.length-1; i > 0; i--) {
-      var cur = new Date(weekKeys[i]), prev = new Date(weekKeys[i-1]);
-      if ((cur-prev) <= 7*86400000+1000) streak++;
-      else break;
-    }
-  }
-
-  var statsHTML = '<div class="prog-stats-row">'
-    + '<div class="prog-stat-box"><div class="prog-stat-num">' + totalSessions + '</div><div class="prog-stat-lbl">sesiones</div></div>'
-    + '<div class="prog-stat-box"><div class="prog-stat-num">' + (maxKg||'—') + '<span class="prog-stat-unit">' + (maxKg?'kg':'') + '</span></div><div class="prog-stat-lbl">máx histórico</div></div>'
-    + '<div class="prog-stat-box"><div class="prog-stat-num">' + streak + '<span class="prog-stat-unit">sem</span></div><div class="prog-stat-lbl">racha</div></div>'
-    + '</div>';
-
-  // ── Exercise map ──────────────────────────────────────────────────────────
-  var exMap = {};
-  sessions.forEach(function(s) {
-    (s.exercises||[]).forEach(function(e) {
-      if (!e.kg) return;
-      var key = e.name;
-      if (!exMap[key]) exMap[key] = [];
-      exMap[key].push({ date: s.date, kg: parseFloat(e.kg), day: s.day });
-    });
-  });
-
-  var exNames = Object.keys(exMap);
-  if (!exNames.length) {
-    el.innerHTML = statsHTML + '<div class="prog-empty">Registra pesos en los entrenamientos para ver progreso.</div>';
-    return;
-  }
-
-  // ── Chips ─────────────────────────────────────────────────────────────────
-  var selEx = window._progSelEx || exNames[0];
-  if (!exMap[selEx]) selEx = exNames[0];
-  window._progSelEx = selEx;
-
-  var chipsHTML = '<div class="prog-section-lbl">Progreso por ejercicio</div>'
-    + '<div class="prog-ex-chips">'
-    + exNames.map(function(n) {
-        var safeN = n.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-        return '<button class="prog-ex-chip' + (n===selEx?' active':'') + '" onclick="progSelectEx(\'' + safeN + '\')">' + n + '</button>';
-      }).join('')
-    + '</div>';
-
-  // ── Chart for selected exercise ───────────────────────────────────────────
-  var entries = exMap[selEx].slice().sort(function(a,b){ return new Date(a.date)-new Date(b.date); });
-  var firstKg = entries[0].kg;
-  var bestKg = Math.max.apply(null, entries.map(function(e){ return e.kg; }));
-  var lastKg = entries[entries.length-1].kg;
-  var delta = lastKg - firstKg;
-  var deltaStr = (delta >= 0 ? '+' : '') + delta.toFixed(1) + ' kg';
-  var deltaColor = delta >= 0 ? 'var(--accent)' : '#ff6b6b';
-
-  // Group by month for bars
-  var monthMap = {};
-  entries.forEach(function(e) {
-    var d = new Date(e.date);
-    if (isNaN(d)) return;
-    var key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-    if (!monthMap[key]) monthMap[key] = [];
-    monthMap[key].push(e.kg);
-  });
-  var monthKeys = Object.keys(monthMap).sort().slice(-6);
-  var monthNames = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  var maxBar = Math.max.apply(null, monthKeys.map(function(k){ return Math.max.apply(null,monthMap[k]); }));
-
-  // Find routine day for this exercise
-  var routineDay = null;
-  r.forEach(function(d) {
-    d.exercises.forEach(function(e) { if (e.name === selEx) routineDay = d; });
-  });
-
-  var barsHTML = '<div class="prog-bars">'
-    + monthKeys.map(function(k) {
-        var avg = monthMap[k].reduce(function(s,v){return s+v;},0)/monthMap[k].length;
-        var h = Math.round((avg/maxBar)*70);
-        var mo = parseInt(k.split('-')[1])-1;
-        return '<div class="prog-bar-wrap">'
-          + '<div class="prog-bar-kg">' + Math.round(avg) + '</div>'
-          + '<div class="prog-bar" style="height:' + h + 'px;background:' + (routineDay?routineDay.color:'var(--accent)') + ';"></div>'
-          + '<div class="prog-bar-lbl">' + monthNames[mo] + '</div>'
-          + '</div>';
-      }).join('')
-    + '</div>';
-
-  var chartHTML = '<div class="prog-chart-card">'
-    + '<div class="prog-chart-header">'
-    + '<div><div class="prog-chart-name">' + selEx + '</div><div class="prog-chart-sub">' + (routineDay ? routineDay.focus + ' · ' + entries.length + ' registros' : entries.length + ' registros') + '</div></div>'
-    + '<div><div class="prog-chart-delta" style="color:' + deltaColor + ';">' + deltaStr + '</div><div class="prog-chart-delta-lbl">desde el inicio</div></div>'
-    + '</div>'
-    + barsHTML
-    + '<div class="prog-3stats">'
-    + '<div class="prog-3stat"><div class="prog-3stat-lbl">Inicio</div><div class="prog-3stat-val">' + firstKg + ' kg</div></div>'
-    + '<div class="prog-3stat"><div class="prog-3stat-lbl">Mejor</div><div class="prog-3stat-val">' + bestKg + ' kg</div></div>'
-    + '<div class="prog-3stat"><div class="prog-3stat-lbl">Último</div><div class="prog-3stat-val" style="color:var(--accent);">' + lastKg + ' kg</div></div>'
-    + '</div></div>';
-
-  // ── Session list ──────────────────────────────────────────────────────────
-  var sessHTML = '<div class="prog-section-lbl">Últimas sesiones</div>'
-    + sessions.slice().reverse().map(function(s, si) {
-        var d = s.date ? new Date(s.date) : null;
-        var dateStr = d && !isNaN(d) ? d.toLocaleDateString('es-ES',{day:'numeric',month:'short'}) : '—';
-        var rd = r.find(function(x){ return x.day === s.day; });
-        var color = rd ? rd.color : 'var(--muted)';
-        var exWithKg = (s.exercises||[]).filter(function(e){ return e.kg; });
-        var detailHTML = exWithKg.map(function(e) {
-          return '<div class="prog-detail-row"><span>' + e.name + '</span><span style="font-weight:500;">' + e.kg + ' kg</span></div>';
-        }).join('');
-        var idx2 = 'ps-' + si;
-        return '<div class="prog-session-row" onclick="toggleProgSession(\'' + idx2 + '\')">'
-          + '<div class="prog-session-bar" style="background:' + color + ';"></div>'
-          + '<div class="prog-session-info">'
-          + '<div class="prog-session-name">' + s.day + ' · ' + s.focus + '</div>'
-          + '<div class="prog-session-sub">' + dateStr + ' · ' + (s.exercises||[]).length + ' ejercicios</div>'
-          + '</div>'
-          + '<div style="color:var(--muted);font-size:16px;" id="arr-' + idx2 + '">›</div>'
-          + '</div>'
-          + (detailHTML ? '<div class="prog-session-detail" id="' + idx2 + '">' + detailHTML + '</div>' : '');
-      }).join('');
-
-  el.innerHTML = statsHTML + chipsHTML + chartHTML + sessHTML;
-}
-
-function progSelectEx(name) {
-  window._progSelEx = name;
-  renderRegistro();
-}
-
-function toggleProgSession(id) {
-  var el = document.getElementById(id);
-  var arr = document.getElementById('arr-' + id);
-  if (!el) return;
-  var open = el.classList.toggle('open');
-  if (arr) arr.textContent = open ? '⌄' : '›';
-}
-
-
-function toggleSessionDetail(idx) {
-  var el = document.getElementById('sess-detail-' + idx);
-  if (!el) return;
-  el.style.display = el.style.display === 'block' ? 'none' : 'block';
-}
-
 
 function switchTab(id, btn) {
   if (navigator.vibrate) navigator.vibrate(8);
@@ -5506,8 +4156,6 @@ function switchTab(id, btn) {
 
   if (id === 'compra') renderCompra();
   if (id === 'menu') { renderMenu(); renderBatchCooking(); }
-  if (id === 'registro') renderRegistro();
-  if (id === 'rutina') renderRutina();
 }
 
 
@@ -5516,10 +4164,8 @@ function renderAll() {
   renderWeekNav();
   renderMenu();
   renderCompra();
-  renderRutina();
   renderManualItems();
   renderBatchCooking();
-  renderRegistro();
 }
 
 // Ensure DOM is ready before first render
@@ -5636,6 +4282,13 @@ setTimeout(function(){
     <div class="receta-edit-body">
       <div class="receta-edit-label">Nombre del plato</div>
       <input class="recetas-input" id="receta-edit-nombre" placeholder="Ej: Muslo de pollo al ajillo" style="width:100%;box-sizing:border-box;">
+      <div class="receta-edit-label">Foto (opcional)</div>
+      <div class="receta-edit-img-row">
+        <img id="receta-edit-img-preview" class="receta-edit-img-preview" style="display:none;">
+        <label class="receta-edit-img-btn" for="receta-edit-img-input">🖼 Añadir foto</label>
+        <input type="file" id="receta-edit-img-input" accept="image/*" style="display:none;" onchange="onRecetaImgPicked(event)">
+        <button type="button" id="receta-edit-img-remove" class="receta-edit-img-remove" style="display:none;" onclick="quitarRecetaImg()">✕ Quitar</button>
+      </div>
       <div class="receta-edit-label">Categoría</div>
       <select id="receta-edit-cat" class="recetas-input" style="width:100%;box-sizing:border-box;">
         <option value="">Sin categoría</option>
@@ -5683,27 +4336,15 @@ setTimeout(function(){
       <button onclick="cerrarCrearMenu()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px 8px;">✕</button>
     </div>
 
-    <!-- Resumen dinámico -->
-    <div class="crear-summary" id="crear-summary"></div>
-
     <div class="crear-section-label">🫘 Legumbre · Lunes</div>
     <div class="crear-options" id="crear-legumbre-opts" style="grid-template-columns:1fr 1fr 1fr;"></div>
 
     <div class="crear-section-label" style="margin-top:18px;">🍝 Tupper · Martes y Jueves</div>
     <div class="crear-options" id="crear-tupper-opts" style="grid-template-columns:1fr 1fr;"></div>
 
-    <div class="crear-section-label" style="margin-top:18px;">🐟 Pescado · Martes cena</div>
-    <div class="crear-options" id="crear-pescado-opts" style="grid-template-columns:1fr 1fr;"></div>
+    <div id="crear-pool-opts"></div>
 
-    <div class="crear-section-label" style="margin-top:18px;">🍗 Proteína · Lunes y Miércoles <span class="crear-multi-hint">multi</span></div>
-    <div class="crear-options" id="crear-proteina-opts" style="grid-template-columns:1fr 1fr;"></div>
-
-    <div class="crear-section-label" style="margin-top:18px;">🌙 Cena · Jueves y Viernes <span class="crear-multi-hint">multi</span></div>
-    <div class="crear-options" id="crear-cena-opts" style="grid-template-columns:1fr 1fr;"></div>
-
-    <div class="crear-section-label" style="margin-top:18px;">🥦 Verdura · Miércoles <span class="crear-multi-hint">multi</span></div>
-    <div class="crear-options" id="crear-verdura-opts" style="grid-template-columns:1fr 1fr;"></div>
-
+    <div class="crear-pool-counter" id="crear-pool-counter"></div>
     <button class="btn-generar" onclick="confirmarCrearMenu()">Generar menú ✓</button>
   </div>
 </div>
@@ -5732,18 +4373,6 @@ setTimeout(function(){
       <button onclick="document.getElementById('add-item-overlay').style.display='none';" style="flex:1;padding:12px;border-radius:8px;background:none;border:1px solid var(--border);color:var(--muted);font-size:15px;cursor:pointer;">Cancelar</button>
       <button onclick="addItemCommit()" style="flex:1;padding:12px;border-radius:8px;background:var(--accent);border:none;color:#000;font-size:15px;font-weight:600;cursor:pointer;">Añadir</button>
     </div>
-  </div>
-</div>
-
-
-<div id="rut-otro-overlay" style="display:none;position:fixed;inset:0;z-index:7500;background:rgba(0,0,0,0.6);" onclick="if(event.target===this)toggleRutOtro()">
-  <div id="rut-otro-sheet" style="position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:20px 20px 0 0;padding-bottom:calc(env(safe-area-inset-bottom,0px)+8px);">
-    <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px;">
-      <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;">Entrenar otro grupo</span>
-      <button onclick="toggleRutOtro()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:0;line-height:1;">✕</button>
-    </div>
-    <div id="rut-otro-rows" style="border-top:1px solid var(--border);"></div>
   </div>
 </div>
 
