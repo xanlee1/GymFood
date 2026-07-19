@@ -66,6 +66,7 @@
     padding-top: env(safe-area-inset-top, 0px);
   }
   .cal-header {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -136,20 +137,18 @@
   /* TABS */
   .tabs-container { margin:6px 0 0; }
 
-  /* CART BUTTON (Compra) */
+  /* CART BUTTON (Compra) — vive dentro de cal-header, nunca invade la fila de días */
   .compra-cart-btn {
-    position: fixed;
-    top: calc(env(safe-area-inset-top, 0px) + 14px);
-    right: 14px;
-    z-index: 110;
-    width: 44px; height: 44px;
+    position: absolute;
+    top: 50%; right: 14px;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 32px; height: 32px;
     border-radius: 50%;
-    background: rgba(15,15,15,0.75);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
     color: var(--text);
-    font-size: 20px;
+    font-size: 15px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
   }
@@ -628,23 +627,39 @@
     overflow-y: auto;
     padding: 8px 12px 12px;
   }
-  .receta-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+  .receta-cat-section { margin-bottom: 20px; }
+  .receta-cat-header { display: flex; align-items: center; gap: 8px; padding: 4px 4px 10px; }
+  .receta-cat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .receta-cat-label { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .receta-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .receta-card {
+    position: relative;
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 8px 14px;
-    margin: 4px;
+    border-radius: 16px;
+    overflow: hidden;
     cursor: grab;
-    font-size: 14px;
     user-select: none;
     touch-action: none;
-    transition: border-color 0.15s;
+    transition: border-color 0.15s, transform 0.1s;
   }
-  .receta-chip:active { cursor: grabbing; border-color: var(--accent); }
-  .receta-chip-img { width:22px; height:22px; border-radius:6px; object-fit:cover; flex-shrink:0; }
+  .receta-card:active { cursor: grabbing; border-color: var(--accent); }
+  .receta-card-img-wrap {
+    width: 100%; aspect-ratio: 1 / 1;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .receta-card-img { width: 100%; height: 100%; object-fit: cover; }
+  .receta-card-emoji-ph { font-size: 34px; opacity: 0.45; }
+  .receta-card-name { padding: 10px 12px; font-size: 14px; font-weight: 600; line-height: 1.3; }
+  .receta-card-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(168,130,255,0.9); color: #fff;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+    padding: 3px 8px; border-radius: 20px;
+  }
+  .receta-card.current-leg { border-color: #a882ff; box-shadow: 0 0 0 2px rgba(168,130,255,0.2); }
   .recetas-empty-msg {
     text-align: center;
     color: var(--muted);
@@ -810,14 +825,14 @@
     25% { transform: rotate(-1deg); }
     75% { transform: rotate(1deg); }
   }
-  .receta-chip.edit-mode {
+  .receta-card.edit-mode {
     border-color: rgba(200,255,0,0.4);
     background: rgba(200,255,0,0.06);
     animation: chipWiggle 0.4s ease 1;
     cursor: pointer !important;
     touch-action: auto !important;
   }
-  .receta-chip.edit-mode:active {
+  .receta-card.edit-mode:active {
     background: rgba(200,255,0,0.12);
     transform: scale(0.97);
   }
@@ -907,7 +922,7 @@
   /* ── iOS UX ───────────────────────────────────────────────────────────────── */
 
   /* Eliminar delay 300ms en todos los elementos interactivos */
-  button, a, .check-item, .meal-row, .receta-chip,
+  button, a, .check-item, .meal-row,
   .week-arrow, .day-card,
   [onclick], [ontouchstart] {
     touch-action: manipulation;
@@ -917,10 +932,6 @@
   .week-arrow:active, .fab-circle:active, .fab-pill:active, .compra-cart-btn:active {
     transform: scale(0.93);
     transition: transform 0.08s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  .receta-chip:active {
-    transform: scale(0.92);
-    transition: transform 0.1s cubic-bezier(0.34,1.56,0.64,1);
   }
   .check-item:active {
     transform: scale(0.98);
@@ -1008,46 +1019,6 @@
   .meal-thumb { width:84px; height:84px; border-radius:14px; object-fit:cover; flex-shrink:0; }
   .meal-text-col { flex:1; min-width:0; }
 
-  .crear-overlay {
-    position:fixed; inset:0; z-index:5000; background:rgba(0,0,0,0.65);
-    display:none; align-items:flex-end;
-  }
-  .crear-overlay.visible { display:flex; }
-  .crear-sheet {
-    width:100%; background:var(--surface);
-    border-radius:24px 24px 0 0;
-    padding:16px 20px calc(env(safe-area-inset-bottom,0px) + 24px);
-    max-height:92vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
-    transform:translateY(100%);
-    transition:transform 0.38s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  .crear-overlay.visible .crear-sheet { transform:translateY(0); }
-  .crear-handle { width:36px; height:4px; background:rgba(255,255,255,0.18); border-radius:2px; margin:0 auto 18px; }
-  .crear-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; margin-bottom:18px; }
-  .crear-section-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
-  .crear-options { display:grid; gap:10px; margin-bottom:22px; }
-  .crear-option {
-    background:var(--surface2); border:2px solid transparent; border-radius:14px;
-    padding:14px 12px; display:flex; flex-direction:column; align-items:center;
-    gap:6px; cursor:pointer; transition:border-color 0.15s, background 0.15s;
-    text-align:center; position:relative;
-  }
-  .crear-option.sel { border-color:var(--accent); background:rgba(200,255,0,0.06); }
-  .crear-option-emoji { font-size:26px; }
-  .crear-option-name { font-size:13px; font-weight:600; line-height:1.3; }
-  .crear-option-sub { font-size:11px; color:var(--muted); }
-  .crear-option-recipe { padding:10px 12px; min-height:44px; display:flex; align-items:center; gap:6px; }
-  .crear-option-recipe .crear-option-name { font-size:11px; white-space:normal; line-height:1.3; text-align:left; flex:1; }
-  .crear-multi { cursor:pointer; }
-  .crear-cb { font-size:11px; font-weight:700; color:var(--accent); width:14px; flex-shrink:0; text-align:center; }
-  .crear-bank-empty { font-size:12px; color:var(--muted); padding:8px 4px; font-style:italic; }
-  .crear-pool-counter { font-size:12px; color:var(--muted); text-align:center; margin-bottom:10px; }
-  .btn-generar {
-    width:100%; background:var(--accent); color:#000;
-    font-family:'Bebas Neue',sans-serif; font-size:19px; letter-spacing:2px;
-    border:none; padding:16px; border-radius:14px; cursor:pointer; margin-top:4px;
-  }
-
   /* Spring en panel de recetas */
   .recetas-panel {
     transition: transform 0.42s cubic-bezier(0.34,1.56,0.64,1) !important;
@@ -1108,13 +1079,12 @@
 </head>
 <body>
 
-<button class="compra-cart-btn" id="compra-cart-btn" onclick="abrirCompra()" aria-label="Lista de la compra">🛒</button>
-
 <div class="cal-strip" id="cal-strip">
   <div class="cal-header">
     <button class="cal-arrow" onclick="changeWeek(-1)">‹</button>
     <span class="cal-month-name" id="cal-month"></span>
     <button class="cal-arrow" onclick="changeWeek(1)">›</button>
+    <button class="compra-cart-btn" id="compra-cart-btn" onclick="abrirCompra()" aria-label="Lista de la compra">🛒</button>
   </div>
   <div class="cal-days-row" id="cal-days"></div>
 </div>
@@ -1125,7 +1095,7 @@
   <div id="menu-empty-state" class="menu-empty-state" style="display:none;">
     <div class="menu-empty-icon">🗓</div>
     <div class="menu-empty-title">Sin menú esta semana</div>
-    <div class="menu-empty-sub">Elige tu legumbre y tupper para generar el plan de comidas</div>
+    <div class="menu-empty-sub">Arrastra tus platos desde el banco de recetas a cada día</div>
     <button class="btn-crear-menu" onclick="openCrearMenu()">Crear menú</button>
   </div>
 
@@ -1141,8 +1111,8 @@
 </div><!-- /main-scroll -->
 
 <div class="menu-fab-row">
-  <button class="fab-circle" onclick="abrirRecetas()" aria-label="Recetas">📝</button>
-  <button class="fab-pill" onclick="recrearMenu()">↺ Recrear</button>
+  <button class="fab-circle" onclick="recrearMenu()" aria-label="Recrear">↺</button>
+  <button class="fab-pill" onclick="abrirRecetas()">📝 Recetas</button>
 </div>
 
 <div class="compra-overlay" id="compra-overlay">
@@ -1225,104 +1195,18 @@ const dayTemplates = [
   { name:'Vie' },
 ];
 
-// Franjas que no tienen rol fijo — se llenan con la selección de "Crear menú" (en orden)
-// o quedan en blanco para que arrastres o toques para elegir.
-const POOL_SLOTS = ['0-cena', '1-cena', '2-comida', '2-cena', '3-cena', '4-comida', '4-cena'];
-
-// ── STORES (dinámicas según semana) ──────────────────────────────────────────
-
-// Items fijos siempre presentes
-const storesFijo = {
-  dia: [
-    {name:'Tostadas integrales (5 paquetes de 2)', price:2.50},
-    {name:'Tostadas integrales', price:2.50},
-    {name:'Lonchas de pavo', price:2.00},
-    {name:'Lonchas de jamón', price:2.20},
-    {name:'Queso semicurado', price:2.50},
-    {name:'Aguacates', price:3.00},
-    {name:'Mix frutos secos', price:3.50},
-    {name:'Huevos de corral', price:2.00},
-    {name:'Bacon en tacos', price:2.00},
-    {name:'Merluza argentina congelada', price:3.50},
-    {name:'Tortillas de trigo', price:1.50},
-    {name:'Patatas', price:1.00},
-  ],
-  carniceria: [
-    {name:'Pechuga de pollo', price:5.00},
-    {name:'Muslo de pollo', price:3.00},
-  ],
-  fruteria: [
-    {name:'Pimiento rojo', price:1.80},
-    {name:'Pimiento verde', price:0.90},
-    {name:'Champiñones', price:2.40},
-    {name:'Brócoli', price:1.20},
-    {name:'Tomate de buey', price:0.80},
-    {name:'Plátanos', price:1.20},
-    {name:'Manzanas', price:1.50},
-  ],
-};
-
-// Items exclusivos semana PASTA
-const storesPasta = {
-  dia: [
-    {name:'Tortiglioni', price:1.80},
-    {name:'Tomate triturado', price:1.20},
-  ],
-  carniceria: [
-    {name:'Carne picada 400g', price:3.50},
-  ],
-  fruteria: [],
-};
-
-// Items exclusivos semana PASTA variante nata
-const storesPastaExtra = {
-  dia: [
-    {name:'Nata para cocinar', price:1.20},
-  ],
-  carniceria: [],
-  fruteria: [],
-};
-
-// Items exclusivos semana ARROZ
-const storesArroz = {
-  dia: [
-    {name:'Arroz basmati', price:1.30},
-    {name:'Leche de coco light', price:1.80},
-  ],
-  carniceria: [],
-  fruteria: [],
-};
-
+// ── STORES (100% dinámicas: solo lo que sale de los platos/ingredientes del menú) ──
 function getStores() {
-  const vKey = getCurrentVariantKey();
-  const vData = allVariants[vKey];
-  const isPasta = vData.type === 'pasta';
-  const tostadas = (((weekOffset % 2) + 2) % 2) === 0;
-
-  const diaFijo = storesFijo.dia.filter(function(i) {
-    if (i.name.indexOf('pavo') !== -1) return tostadas;
-    if (i.name.indexOf('jamón') !== -1) return !tostadas;
-    return true;
-  });
-
-  const diaExtra = isPasta
-    ? [...storesPasta.dia, ...(vKey === 'pasta-1' ? storesPastaExtra.dia : [])]
-    : storesArroz.dia;
-
-  const carniceriaExtra = isPasta ? storesPasta.carniceria : storesArroz.carniceria;
-
-  // Merge dynamic ingredients from menu
   var dynIng = getDynamicIngredients();
   function dynItems(storeKey) {
     return Object.keys(dynIng[storeKey]).map(function(name) {
       return { name: name, price: 0, dynamic: true };
     });
   }
-
   return [
-    { name:'Supermercado', icon:'🏪', items: [...diaFijo, ...diaExtra, ...dynItems('s').filter(function(d){ return !([...diaFijo,...diaExtra].some(function(e){ return e.name.toLowerCase()===d.name.toLowerCase(); })); })] },
-    { name:'Carnicería', icon:'🥩', items: [...storesFijo.carniceria, ...carniceriaExtra, ...dynItems('c').filter(function(d){ return !([...storesFijo.carniceria,...carniceriaExtra].some(function(e){ return e.name.toLowerCase()===d.name.toLowerCase(); })); })] },
-    { name:'Frutería', icon:'🥦', items: [...storesFijo.fruteria] },
+    { name:'Supermercado', icon:'🏪', items: dynItems('s') },
+    { name:'Carnicería', icon:'🥩', items: dynItems('c') },
+    { name:'Frutería', icon:'🥦', items: dynItems('f') },
   ];
 }
 
@@ -1744,15 +1628,14 @@ function renderRecetasPanel() {
     });
     if (items.length === 0) return;
     var currentLeg = (typeof getCurrentLegumbre === 'function') ? getCurrentLegumbre().label : '';
-    html_out += '<div style="margin-bottom:10px;">'
-      + '<div style="font-size:11px;font-weight:700;color:' + cat.color + ';letter-spacing:1px;padding:4px 4px 6px;text-transform:uppercase;">'
-      + cat.label + '</div>'
-      + '<div style="display:flex;flex-wrap:wrap;">'
+    html_out += '<div class="receta-cat-section">'
+      + '<div class="receta-cat-header"><span class="receta-cat-dot" style="background:' + cat.color + '"></span>'
+      + '<span class="receta-cat-label" style="color:' + cat.color + '">' + cat.label + '</span></div>'
+      + '<div class="receta-card-grid">'
       + items.map(function(x) {
         var isCurrentLeg = cat.key === 'legumbre' && x.r.name === currentLeg;
         var editMode = recetasEditMode;
-        return '<div class="receta-chip' + (editMode ? ' edit-mode' : '') + '"'
-          + (isCurrentLeg && !editMode ? ' style="border-color:#a882ff;background:rgba(168,130,255,0.15);"' : '')
+        return '<div class="receta-card' + (editMode ? ' edit-mode' : '') + (isCurrentLeg && !editMode ? ' current-leg' : '') + '"'
           + (editMode
               ? ' onclick="abrirEditarReceta(' + x.i + ')"'
               : ''
@@ -1760,9 +1643,11 @@ function renderRecetasPanel() {
                 + ' ondragend="onRecetaDragEnd()"'
                 + ' ontouchstart="onRecetaTouchStart(event,' + x.i + ')"')
           + '>'
-          + (x.r.img ? '<img class="receta-chip-img" src="' + x.r.img + '">' : '')
-          + x.r.name
-          + (isCurrentLeg && !editMode ? ' <span style="font-size:10px;color:#a882ff;font-weight:600;">✓ esta semana</span>' : '')
+          + (isCurrentLeg && !editMode ? '<span class="receta-card-badge">✓ esta semana</span>' : '')
+          + '<div class="receta-card-img-wrap">'
+          + (x.r.img ? '<img class="receta-card-img" src="' + x.r.img + '">' : '<span class="receta-card-emoji-ph">' + cat.label.split(' ')[0] + '</span>')
+          + '</div>'
+          + '<div class="receta-card-name">' + x.r.name + '</div>'
           + '</div>';
       }).join('')
       + '</div></div>';
@@ -2888,110 +2773,17 @@ function renderWeekNav() {
 }
 
 // ── CREAR / RECREAR MENÚ ───────────────────────────────────────────────────────
-// Selección por las mismas categorías que el banco de recetas. Lo que se elige
-// aquí se coloca en la pantalla principal al generar; después se puede seguir
-// arrastrando o tocando cualquier casilla para cambiarla.
-var _crearLeg  = null;   // legumbre — único
-var _crearTup  = null;   // tupper arroz/pasta — único
-var _crearPool = [];     // resto de categorías — multi, en orden de selección
-
+// "Crear menú", "Recrear" y el botón "Recetas" abren el mismo panel (el banco de
+// recetas categorizado): se arrastra cada plato directamente al día que se quiera.
 function openCrearMenu() {
-  _crearLeg  = getCurrentLegumbre().key;
-  _crearTup  = getCurrentVariantKey();
-  _crearPool = [];
-  renderCrearMenuOpts();
-  document.getElementById('crear-overlay').classList.add('visible');
-}
-
-function cerrarCrearMenu() {
-  document.getElementById('crear-overlay').classList.remove('visible');
+  localStorage.setItem('menuConfirmed-' + weekOffset, '1');
+  renderMenu();
+  abrirRecetas();
 }
 
 function recrearMenu() {
-  localStorage.removeItem('menuConfirmed-' + weekOffset);
-  var contentEl = document.getElementById('menu-content-wrap');
-  var emptyEl   = document.getElementById('menu-empty-state');
-  if (contentEl) contentEl.style.display = 'none';
-  if (emptyEl)   emptyEl.style.display   = 'flex';
+  resetMealOverrides();
   openCrearMenu();
-}
-
-function toggleCrearPool(name) {
-  var idx = _crearPool.indexOf(name);
-  if (idx >= 0) _crearPool.splice(idx, 1); else _crearPool.push(name);
-  renderCrearMenuOpts();
-}
-
-function renderCrearMenuOpts() {
-  // Legumbre — único
-  document.getElementById('crear-legumbre-opts').innerHTML = LEGUMBRES.map(function(l) {
-    return '<div class="crear-option' + (l.key === _crearLeg ? ' sel' : '') + '" onclick="_crearLeg=\'' + l.key + '\';renderCrearMenuOpts()">'
-      + '<span class="crear-option-emoji">' + l.emoji + '</span>'
-      + '<span class="crear-option-name">' + l.label + '</span></div>';
-  }).join('');
-
-  // Tupper — único
-  document.getElementById('crear-tupper-opts').innerHTML = Object.keys(allVariants).map(function(k) {
-    var v = allVariants[k];
-    var words = v.label.split(' ');
-    var short = words.slice(0,4).join(' ') + (words.length > 4 ? '…' : '');
-    return '<div class="crear-option' + (k === _crearTup ? ' sel' : '') + '" onclick="_crearTup=\'' + k + '\';renderCrearMenuOpts()">'
-      + '<span class="crear-option-emoji">' + v.emoji + '</span>'
-      + '<span class="crear-option-name">' + short + '</span>'
-      + '<span class="crear-option-sub">' + (v.type === 'pasta' ? 'Pasta' : 'Arroz') + '</span></div>';
-  }).join('');
-
-  // Resto de categorías del banco — multi, misma agrupación que el panel "Recetas"
-  var poolCats = [
-    { key:'carne',   label:'🥩 Carne' },
-    { key:'pescado', label:'🐟 Pescado' },
-    { key:'huevos',  label:'🥚 Huevos' },
-    { key:'verdura', label:'🥦 Verdura' },
-    { key:null,      label:'⚡ Otros' },
-  ];
-  var recetas = getRecetas();
-  var html = poolCats.map(function(cat) {
-    var items = cat.key === null
-      ? recetas.filter(function(r){ return !r.cat || ['arroz','pasta','carne','pescado','legumbre','huevos','verdura'].indexOf(r.cat) === -1; })
-      : recetas.filter(function(r){ return r.cat === cat.key; });
-    if (items.length === 0) return '';
-    return '<div class="crear-section-label" style="margin-top:18px;">' + cat.label + '</div>'
-      + '<div class="crear-options" style="grid-template-columns:1fr 1fr;">'
-      + items.map(function(r) {
-          var isSel = _crearPool.indexOf(r.name) >= 0;
-          var safe  = r.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-          return '<div class="crear-option crear-option-recipe crear-multi' + (isSel ? ' sel' : '') + '" onclick="toggleCrearPool(\'' + safe + '\')">'
-            + '<span class="crear-cb">' + (isSel ? '✓' : '') + '</span>'
-            + '<span class="crear-option-name">' + r.name + '</span></div>';
-        }).join('')
-      + '</div>';
-  }).join('');
-  document.getElementById('crear-pool-opts').innerHTML = html || '<div class="crear-bank-empty">Añade más recetas al banco 📝 para poder elegirlas aquí.</div>';
-
-  var counterEl = document.getElementById('crear-pool-counter');
-  if (counterEl) counterEl.textContent = _crearPool.length + ' / ' + POOL_SLOTS.length + ' franjas del resto de la semana';
-}
-
-function confirmarCrearMenu() {
-  localStorage.setItem('legumbre-' + weekOffset, _crearLeg);
-  weekVariants[weekOffset] = _crearTup;
-
-  // Solo se sustituyen las franjas de los días de la semana (0-4); el fin de semana no se toca
-  var overrides = getMealOverrides();
-  for (var d = 0; d <= 4; d++) { delete overrides[d + '-comida']; delete overrides[d + '-cena']; }
-  POOL_SLOTS.forEach(function(slot, idx) {
-    var name = _crearPool[idx];
-    if (name) overrides[slot] = '<div class="meal-text">' + name + '</div>';
-  });
-  saveMealOverrides(overrides);
-
-  localStorage.setItem('menuConfirmed-' + weekOffset, '1');
-  cerrarCrearMenu();
-  renderMenu();
-
-  if (_crearPool.length > POOL_SLOTS.length) {
-    showToast('Se colocaron ' + POOL_SLOTS.length + ' platos. Arrastra el resto desde 📝 Recetas.');
-  }
 }
 
 // Si el texto de la franja coincide con una receta del banco que tiene foto, la antepone.
@@ -3785,28 +3577,6 @@ setTimeout(function(){
       <button class="meal-picker-close" onclick="closeMealPicker()">✕</button>
     </div>
     <div class="meal-picker-list" id="meal-picker-list"></div>
-  </div>
-</div>
-
-<!-- CREAR MENÚ MODAL -->
-<div class="crear-overlay" id="crear-overlay" onclick="if(event.target===this)cerrarCrearMenu()">
-  <div class="crear-sheet" id="crear-sheet">
-    <div class="crear-handle"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-      <div class="crear-title" style="margin-bottom:0;">Crear menú</div>
-      <button onclick="cerrarCrearMenu()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px 8px;">✕</button>
-    </div>
-
-    <div class="crear-section-label">🫘 Legumbre · Lunes</div>
-    <div class="crear-options" id="crear-legumbre-opts" style="grid-template-columns:1fr 1fr 1fr;"></div>
-
-    <div class="crear-section-label" style="margin-top:18px;">🍝 Tupper · Martes y Jueves</div>
-    <div class="crear-options" id="crear-tupper-opts" style="grid-template-columns:1fr 1fr;"></div>
-
-    <div id="crear-pool-opts"></div>
-
-    <div class="crear-pool-counter" id="crear-pool-counter"></div>
-    <button class="btn-generar" onclick="confirmarCrearMenu()">Generar menú ✓</button>
   </div>
 </div>
 
