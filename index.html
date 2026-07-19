@@ -858,26 +858,6 @@
     user-select: text !important;
   }
 
-  .compra-totals-bar {
-    position: sticky;
-    bottom: env(safe-area-inset-bottom,0px);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    margin: 0 0 12px;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-    z-index: 100;
-  }
-  .compra-total-item { text-align: center; flex: 1; }
-  .compra-total-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 3px; }
-  .compra-total-val { font-size: 18px; font-weight: 600; }
-  .compra-total-val.marked { color: var(--accent); }
-  .compra-totals-divider { width: 1px; height: 32px; background: var(--border); }
 
   /* ── iOS UX ───────────────────────────────────────────────────────────────── */
 
@@ -922,8 +902,8 @@
     border:none; padding:14px 40px; border-radius:14px; cursor:pointer;
   }
   .meal-slot-content { cursor:pointer; }
-  .meal-with-thumb { display:flex; align-items:stretch; gap:14px; margin:-12px 0 -12px -16px; }
-  .meal-thumb { width:96px; border-radius:0; object-fit:cover; flex-shrink:0; align-self:stretch; }
+  .meal-with-thumb { display:flex; align-items:center; gap:14px; margin:-12px 0 -12px -16px; }
+  .meal-thumb { width:96px; aspect-ratio:1/1; height:auto; border-radius:0; object-fit:cover; flex-shrink:0; }
   .meal-text-col { flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; padding:12px 16px 12px 0; }
 
   /* Spring en panel de recetas */
@@ -2587,23 +2567,7 @@ function renderCompra() {
   const stores = getStores();
   const excluded = getExcluded();
 
-  const grandTotal = stores.reduce((s,st)=>{
-    const storeKey = st.name;
-    let extras = [];
-    try { extras = JSON.parse(localStorage.getItem('store-extra-'+storeKey) || '[]'); } catch {}
-    return s
-      + st.items.filter(i=>!excluded.includes(i.name)).reduce((a,i)=>a+getPrice(i),0)
-      + extras.reduce((a,i)=>{ const sp=localStorage.getItem(priceKey(i.name)); return a+(sp!==null?parseFloat(sp):(i.price||0)); },0);
-  },0)
-  + getExtraCategories().reduce((s,cat)=>{
-    return s + getCatItems(cat.id).reduce((a,i)=>{
-      const sp = localStorage.getItem('price:'+i.name);
-      return a + (sp !== null ? parseFloat(sp) : (i.price||0));
-    },0);
-  },0);
-
   const cats = getExtraCategories();
-  const catsTotal = cats.reduce((s, cat) => s + getCatItems(cat.id).reduce((a,i)=>a+(i.price||0),0), 0);
   const catsHTML = cats.map(cat => {
     const items = getCatItems(cat.id);
     const catTotal = items.reduce((a,i)=>{ const sp=localStorage.getItem('price:'+i.name); return a+(sp!==null?parseFloat(sp):(i.price||0)); },0);
@@ -2707,17 +2671,7 @@ function renderCompra() {
         </div>
       </div>
     </div><div class="divider"></div>`;
-  }).join('') + catsHTML + `<div class="compra-totals-bar" id="compra-totals-bar">
-    <div class="compra-total-item">
-      <div class="compra-total-lbl">Total estimado</div>
-      <div class="compra-total-val">${(grandTotal + catsTotal).toFixed(2)}€</div>
-    </div>
-    <div class="compra-totals-divider"></div>
-    <div class="compra-total-item">
-      <div class="compra-total-lbl">En cesta</div>
-      <div class="compra-total-val marked" id="compra-marked-total">0.00€</div>
-    </div>
-  </div>`;
+  }).join('') + catsHTML;
 }
 
 function getCheckedKey() { return 'checked-items-' + weekOffset; }
@@ -2738,29 +2692,6 @@ function toggleItem(key, el) {
   saveCheckedItem(key, checkedItems[key]);
   item.classList.toggle('checked', checkedItems[key]);
   if (navigator.vibrate) navigator.vibrate(checkedItems[key] ? [12] : [6]);
-  updateMarkedTotal();
-}
-
-function updateMarkedTotal() {
-  var total = 0;
-  document.querySelectorAll('.check-item.checked').forEach(function(item) {
-    var name = item.dataset.ci;
-    if (!name) return;
-    // Try localStorage first
-    var saved = localStorage.getItem(priceKey(name));
-    if (saved !== null) {
-      total += parseFloat(saved) || 0;
-      return;
-    }
-    // Fallback: read from rendered price span text (~X.XX€)
-    var priceSpan = item.querySelector('.item-price');
-    if (priceSpan) {
-      var m = priceSpan.textContent.match(/([\d.]+)/);
-      if (m) total += parseFloat(m[1]) || 0;
-    }
-  });
-  var el = document.getElementById('compra-marked-total');
-  if (el) el.textContent = total.toFixed(2) + '€';
 }
 
 // ── ITEMS MANUALES + DRAG & DROP + CATEGORÍAS ─────────────────────────────────
